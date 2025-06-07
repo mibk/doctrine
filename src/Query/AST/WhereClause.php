@@ -9,7 +9,7 @@ use Doctrine\ORM\Query\SqlWalker;
 /**
  * WhereClause ::= "WHERE" ConditionalExpression
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class WhereClause extends Node
 {

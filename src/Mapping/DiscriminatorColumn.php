@@ -19,6 +19,7 @@ final class DiscriminatorColumn implements MappingAttribute
 		public readonly string|null $enumType = null,
 		/** @var array<string, mixed> */
 		public readonly array $options = [],
-	) {
+	)
+	{
 	}
 }

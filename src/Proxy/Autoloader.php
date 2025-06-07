@@ -34,7 +34,7 @@ final class Autoloader
 	 */
 	public static function resolveFile(string $proxyDir, string $proxyNamespace, string $className): string
 	{
-		if (! str_starts_with($className, $proxyNamespace)) {
+		if (!str_starts_with($className, $proxyNamespace)) {
 			throw new NotAProxyClass($className, $proxyNamespace);
 		}
 
@@ -58,21 +58,22 @@ final class Autoloader
 		string $proxyDir,
 		string $proxyNamespace,
 		Closure|null $notFoundCallback = null,
-	): Closure {
+	): Closure
+	{
 		$proxyNamespace = ltrim($proxyNamespace, '\\');
 
-		$autoloader = /** @param class-string $className */ static function (string $className) use ($proxyDir, $proxyNamespace, $notFoundCallback): void {
+		$autoloader = /** @param class-string $className */ static function(string $className) use ($proxyDir, $proxyNamespace, $notFoundCallback): void {
 			if ($proxyNamespace === '') {
 				return;
 			}
 
-			if (! str_starts_with($className, $proxyNamespace)) {
+			if (!str_starts_with($className, $proxyNamespace)) {
 				return;
 			}
 
 			$file = Autoloader::resolveFile($proxyDir, $proxyNamespace, $className);
 
-			if ($notFoundCallback && ! file_exists($file)) {
+			if ($notFoundCallback && !file_exists($file)) {
 				$notFoundCallback($proxyDir, $proxyNamespace, $className);
 			}
 

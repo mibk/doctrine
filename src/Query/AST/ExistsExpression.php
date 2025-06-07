@@ -9,14 +9,15 @@ use Doctrine\ORM\Query\SqlWalker;
 /**
  * ExistsExpression ::= ["NOT"] "EXISTS" "(" Subselect ")"
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class ExistsExpression extends Node
 {
 	public function __construct(
 		public Subselect $subselect,
 		public bool $not = false,
-	) {
+	)
+	{
 	}
 
 	public function dispatch(SqlWalker $walker): string

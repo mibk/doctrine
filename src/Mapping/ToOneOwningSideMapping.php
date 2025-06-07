@@ -26,7 +26,7 @@ abstract class ToOneOwningSideMapping extends OwningSideMapping implements ToOne
 	public array $joinColumnFieldNames = [];
 
 	/**
-	 * @param array<string, mixed> $mappingArray
+	 * @param         array<string, mixed> $mappingArray
 	 * @phpstan-param array{
 	 *     fieldName: string,
 	 *     sourceEntity: class-string,
@@ -61,7 +61,7 @@ abstract class ToOneOwningSideMapping extends OwningSideMapping implements ToOne
 		}
 
 		if ($instance->orphanRemoval) {
-			if (! $instance->isCascadeRemove()) {
+			if (!$instance->isCascadeRemove()) {
 				$instance->cascade[] = 'remove';
 			}
 
@@ -72,8 +72,8 @@ abstract class ToOneOwningSideMapping extends OwningSideMapping implements ToOne
 	}
 
 	/**
-	 * @param mixed[]      $mappingArray
-	 * @param class-string $name
+	 * @param         mixed[]      $mappingArray
+	 * @param         class-string $name
 	 * @phpstan-param array{
 	 *     fieldName: string,
 	 *     sourceEntity: class-string,
@@ -101,7 +101,8 @@ abstract class ToOneOwningSideMapping extends OwningSideMapping implements ToOne
 		string $name,
 		array|null $table,
 		bool $isInheritanceTypeSingleTable,
-	): static {
+	): static
+	{
 		if (isset($mappingArray['joinColumns'])) {
 			foreach ($mappingArray['joinColumns'] as $index => $joinColumn) {
 				if (empty($joinColumn['name'])) {
@@ -117,7 +118,7 @@ abstract class ToOneOwningSideMapping extends OwningSideMapping implements ToOne
 			// Apply default join column
 			$mapping->joinColumns = [
 				JoinColumnMapping::fromMappingArray([
-					'name' => $namingStrategy->joinColumnName($mapping->fieldName, $name),
+					'name'                 => $namingStrategy->joinColumnName($mapping->fieldName, $name),
 					'referencedColumnName' => $namingStrategy->referenceColumnName(),
 				]),
 			];
@@ -126,7 +127,7 @@ abstract class ToOneOwningSideMapping extends OwningSideMapping implements ToOne
 		$uniqueConstraintColumns = [];
 
 		foreach ($mapping->joinColumns as $joinColumn) {
-			if ($mapping->isOneToOne() && ! $isInheritanceTypeSingleTable) {
+			if ($mapping->isOneToOne() && !$isInheritanceTypeSingleTable) {
 				if (count($mapping->joinColumns) === 1) {
 					if (empty($mapping->id)) {
 						$joinColumn->unique = true;
@@ -141,21 +142,21 @@ abstract class ToOneOwningSideMapping extends OwningSideMapping implements ToOne
 			}
 
 			if ($joinColumn->name[0] === '`') {
-				$joinColumn->name   = trim($joinColumn->name, '`');
+				$joinColumn->name = trim($joinColumn->name, '`');
 				$joinColumn->quoted = true;
 			}
 
 			if ($joinColumn->referencedColumnName[0] === '`') {
 				$joinColumn->referencedColumnName = trim($joinColumn->referencedColumnName, '`');
-				$joinColumn->quoted               = true;
+				$joinColumn->quoted = true;
 			}
 
 			$mapping->sourceToTargetKeyColumns[$joinColumn->name] = $joinColumn->referencedColumnName;
-			$mapping->joinColumnFieldNames[$joinColumn->name]     = $joinColumn->fieldName ?? $joinColumn->name;
+			$mapping->joinColumnFieldNames[$joinColumn->name] = $joinColumn->fieldName ?? $joinColumn->name;
 		}
 
 		if ($uniqueConstraintColumns) {
-			if (! $table) {
+			if (!$table) {
 				throw new RuntimeException('ClassMetadata::setTable() has to be called before defining a one to one relationship.');
 			}
 

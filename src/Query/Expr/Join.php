@@ -11,7 +11,7 @@ use function strtoupper;
 /**
  * Expression class for DQL join.
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class Join implements Stringable
 {
@@ -32,7 +32,8 @@ class Join implements Stringable
 		protected string|null $conditionType = null,
 		protected string|Comparison|Composite|Func|null $condition = null,
 		protected string|null $indexBy = null,
-	) {
+	)
+	{
 	}
 
 	/** @phpstan-return self::INNER_JOIN|self::LEFT_JOIN */
@@ -70,8 +71,8 @@ class Join implements Stringable
 	public function __toString(): string
 	{
 		return strtoupper($this->joinType) . ' JOIN ' . $this->join
-			 . ($this->alias ? ' ' . $this->alias : '')
-			 . ($this->indexBy ? ' INDEX BY ' . $this->indexBy : '')
-			 . ($this->condition ? ' ' . strtoupper($this->conditionType) . ' ' . $this->condition : '');
+			. ($this->alias ? ' ' . $this->alias : '')
+			. ($this->indexBy ? ' INDEX BY ' . $this->indexBy : '')
+			. ($this->condition ? ' ' . strtoupper($this->conditionType) . ' ' . $this->condition : '');
 	}
 }

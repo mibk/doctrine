@@ -34,19 +34,19 @@ interface EntityPersister
 	 */
 	public function getInserts(): array;
 
-	 /**
-	  * Gets the INSERT SQL used by the persister to persist a new entity.
-	  *
-	  * @TODO It should not be here.
-	  *       But its necessary since JoinedSubclassPersister#executeInserts invoke the root persister.
-	  */
+	/**
+	 * Gets the INSERT SQL used by the persister to persist a new entity.
+	 *
+	 * @TODO It should not be here.
+	 *       But its necessary since JoinedSubclassPersister#executeInserts invoke the root persister.
+	 */
 	public function getInsertSQL(): string;
 
 	/**
 	 * Gets the SELECT SQL to select one or more entities by a set of field criteria.
 	 *
-	 * @param mixed[]|Criteria $criteria
-	 * @param mixed[]|null     $orderBy
+	 * @param         mixed[]|Criteria $criteria
+	 * @param         mixed[]|null     $orderBy
 	 * @phpstan-param AssociationMapping|null $assoc
 	 * @phpstan-param LockMode::*|null $lockMode
 	 */
@@ -142,17 +142,17 @@ interface EntityPersister
 	/**
 	 * Loads an entity by a list of field criteria.
 	 *
-	 * @param mixed[]                 $criteria The criteria by which to load the entity.
-	 * @param object|null             $entity   The entity to load the data into. If not specified,
+	 * @param mixed[]     $criteria The criteria by which to load the entity.
+	 * @param object|null $entity   The entity to load the data into. If not specified,
 	 *                                          a new entity is created.
-	 * @param AssociationMapping|null $assoc    The association that connects the entity
+	 * @param AssociationMapping|null $assoc The association that connects the entity
 	 *                                          to load to another entity, if any.
-	 * @param mixed[]                 $hints    Hints for entity creation.
-	 * @param LockMode|int|null       $lockMode One of the \Doctrine\DBAL\LockMode::* constants
+	 * @param mixed[]           $hints    Hints for entity creation.
+	 * @param LockMode|int|null $lockMode One of the \Doctrine\DBAL\LockMode::* constants
 	 *                                          or NULL if no specific lock mode should be used
 	 *                                          for loading the entity.
-	 * @param int|null                $limit    Limit number of results.
-	 * @param string[]|null           $orderBy  Criteria to order by.
+	 * @param         int|null      $limit   Limit number of results.
+	 * @param         string[]|null $orderBy Criteria to order by.
 	 * @phpstan-param array<string, mixed>       $criteria
 	 * @phpstan-param array<string, mixed>       $hints
 	 * @phpstan-param LockMode::*|null           $lockMode
@@ -175,7 +175,7 @@ interface EntityPersister
 	/**
 	 * Loads an entity by identifier.
 	 *
-	 * @param object|null $entity The entity to load the data into. If not specified, a new entity is created.
+	 * @param         object|null $entity The entity to load the data into. If not specified, a new entity is created.
 	 * @phpstan-param array<string, mixed> $identifier The entity identifier.
 	 *
 	 * @return object|null The loaded and managed entity instance or NULL if the entity can not be found.
@@ -188,8 +188,8 @@ interface EntityPersister
 	 * Loads an entity of this persister's mapped class as part of a single-valued
 	 * association from another entity.
 	 *
-	 * @param AssociationMapping $assoc        The association to load.
-	 * @param object             $sourceEntity The entity that owns the association (not necessarily the "owning side").
+	 * @param         AssociationMapping $assoc        The association to load.
+	 * @param         object             $sourceEntity The entity that owns the association (not necessarily the "owning side").
 	 * @phpstan-param array<string, mixed> $identifier The identifier of the entity to load. Must be provided if
 	 *                                               the association to load represents the owning side, otherwise
 	 *                                               the identifier is derived from the $sourceEntity.

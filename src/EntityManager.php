@@ -114,8 +114,9 @@ class EntityManager implements EntityManagerInterface
 		private Connection $conn,
 		private Configuration $config,
 		EventManager|null $eventManager = null,
-	) {
-		if (! $config->getMetadataDriverImpl()) {
+	)
+	{
+		if (!$config->getMetadataDriverImpl()) {
 			throw MissingMappingDriverImplementation::create();
 		}
 
@@ -133,8 +134,8 @@ class EntityManager implements EntityManagerInterface
 		$this->configureMetadataCache();
 
 		$this->repositoryFactory = $config->getRepositoryFactory();
-		$this->unitOfWork        = new UnitOfWork($this);
-		$this->proxyFactory      = new ProxyFactory(
+		$this->unitOfWork = new UnitOfWork($this);
+		$this->proxyFactory = new ProxyFactory(
 			$this,
 			$config->getProxyDir(),
 			$config->getProxyNamespace(),
@@ -142,9 +143,9 @@ class EntityManager implements EntityManagerInterface
 		);
 
 		if ($config->isSecondLevelCacheEnabled()) {
-			$cacheConfig  = $config->getSecondLevelCacheConfiguration();
+			$cacheConfig = $config->getSecondLevelCacheConfiguration();
 			$cacheFactory = $cacheConfig->getCacheFactory();
-			$this->cache  = $cacheFactory->createCache($this);
+			$this->cache = $cacheFactory->createCache($this);
 		}
 	}
 
@@ -189,7 +190,7 @@ class EntityManager implements EntityManagerInterface
 
 			return $return;
 		} finally {
-			if (! $successful) {
+			if (!$successful) {
 				$this->close();
 				if ($this->conn->isTransactionActive()) {
 					$this->conn->rollBack();
@@ -224,7 +225,7 @@ class EntityManager implements EntityManagerInterface
 	{
 		$query = new Query($this);
 
-		if (! empty($dql)) {
+		if (!empty($dql)) {
 			$query->setDQL($dql);
 		}
 
@@ -275,7 +276,7 @@ class EntityManager implements EntityManagerInterface
 			$this->checkLockRequirements($lockMode, $class);
 		}
 
-		if (! is_array($id)) {
+		if (!is_array($id)) {
 			if ($class->isIdentifierComposite) {
 				throw ORMInvalidArgumentException::invalidCompositeIdentifier();
 			}
@@ -299,7 +300,7 @@ class EntityManager implements EntityManagerInterface
 		$sortedId = [];
 
 		foreach ($class->identifier as $identifier) {
-			if (! isset($id[$identifier])) {
+			if (!isset($id[$identifier])) {
 				throw MissingIdentifierField::fromFieldAndClass($identifier, $class->name);
 			}
 
@@ -322,21 +323,21 @@ class EntityManager implements EntityManagerInterface
 
 		// Check identity map first
 		if ($entity !== false) {
-			if (! ($entity instanceof $class->name)) {
+			if (!($entity instanceof $class->name)) {
 				return null;
 			}
 
 			switch (true) {
-				case $lockMode === LockMode::OPTIMISTIC:
-					$this->lock($entity, $lockMode, $lockVersion);
-					break;
+			case $lockMode === LockMode::OPTIMISTIC:
+				$this->lock($entity, $lockMode, $lockVersion);
+				break;
 
-				case $lockMode === LockMode::NONE:
-				case $lockMode === LockMode::PESSIMISTIC_READ:
-				case $lockMode === LockMode::PESSIMISTIC_WRITE:
-					$persister = $unitOfWork->getEntityPersister($class->name);
-					$persister->refresh($sortedId, $entity, $lockMode);
-					break;
+			case $lockMode === LockMode::NONE:
+			case $lockMode === LockMode::PESSIMISTIC_READ:
+			case $lockMode === LockMode::PESSIMISTIC_WRITE:
+				$persister = $unitOfWork->getEntityPersister($class->name);
+				$persister->refresh($sortedId, $entity, $lockMode);
+				break;
 			}
 
 			return $entity; // Hit!
@@ -345,21 +346,21 @@ class EntityManager implements EntityManagerInterface
 		$persister = $unitOfWork->getEntityPersister($class->name);
 
 		switch (true) {
-			case $lockMode === LockMode::OPTIMISTIC:
-				$entity = $persister->load($sortedId);
+		case $lockMode === LockMode::OPTIMISTIC:
+			$entity = $persister->load($sortedId);
 
-				if ($entity !== null) {
-					$unitOfWork->lock($entity, $lockMode, $lockVersion);
-				}
+			if ($entity !== null) {
+				$unitOfWork->lock($entity, $lockMode, $lockVersion);
+			}
 
-				return $entity;
+			return $entity;
 
-			case $lockMode === LockMode::PESSIMISTIC_READ:
-			case $lockMode === LockMode::PESSIMISTIC_WRITE:
-				return $persister->load($sortedId, null, null, [], $lockMode);
+		case $lockMode === LockMode::PESSIMISTIC_READ:
+		case $lockMode === LockMode::PESSIMISTIC_WRITE:
+			return $persister->load($sortedId, null, null, [], $lockMode);
 
-			default:
-				return $persister->loadById($sortedId);
+		default:
+			return $persister->loadById($sortedId);
 		}
 	}
 
@@ -367,14 +368,14 @@ class EntityManager implements EntityManagerInterface
 	{
 		$class = $this->metadataFactory->getMetadataFor(ltrim($entityName, '\\'));
 
-		if (! is_array($id)) {
+		if (!is_array($id)) {
 			$id = [$class->identifier[0] => $id];
 		}
 
 		$sortedId = [];
 
 		foreach ($class->identifier as $identifier) {
-			if (! isset($id[$identifier])) {
+			if (!isset($id[$identifier])) {
 				throw MissingIdentifierField::fromFieldAndClass($identifier, $class->name);
 			}
 
@@ -504,7 +505,7 @@ class EntityManager implements EntityManagerInterface
 	{
 		return $this->unitOfWork->isScheduledForInsert($object)
 			|| $this->unitOfWork->isInIdentityMap($object)
-			&& ! $this->unitOfWork->isScheduledForDelete($object);
+			&& !$this->unitOfWork->isScheduledForDelete($object);
 	}
 
 	public function getEventManager(): EventManager
@@ -531,7 +532,7 @@ class EntityManager implements EntityManagerInterface
 
 	public function isOpen(): bool
 	{
-		return ! $this->closed;
+		return !$this->closed;
 	}
 
 	public function getUnitOfWork(): UnitOfWork
@@ -542,13 +543,13 @@ class EntityManager implements EntityManagerInterface
 	public function newHydrator(string|int $hydrationMode): AbstractHydrator
 	{
 		return match ($hydrationMode) {
-			Query::HYDRATE_OBJECT => new Internal\Hydration\ObjectHydrator($this),
-			Query::HYDRATE_ARRAY => new Internal\Hydration\ArrayHydrator($this),
-			Query::HYDRATE_SCALAR => new Internal\Hydration\ScalarHydrator($this),
+			Query::HYDRATE_OBJECT        => new Internal\Hydration\ObjectHydrator($this),
+			Query::HYDRATE_ARRAY         => new Internal\Hydration\ArrayHydrator($this),
+			Query::HYDRATE_SCALAR        => new Internal\Hydration\ScalarHydrator($this),
 			Query::HYDRATE_SINGLE_SCALAR => new Internal\Hydration\SingleScalarHydrator($this),
-			Query::HYDRATE_SIMPLEOBJECT => new Internal\Hydration\SimpleObjectHydrator($this),
+			Query::HYDRATE_SIMPLEOBJECT  => new Internal\Hydration\SimpleObjectHydrator($this),
 			Query::HYDRATE_SCALAR_COLUMN => new Internal\Hydration\ScalarColumnHydrator($this),
-			default => $this->createCustomHydrator((string) $hydrationMode),
+			default                      => $this->createCustomHydrator((string) $hydrationMode),
 		};
 	}
 
@@ -594,24 +595,24 @@ class EntityManager implements EntityManagerInterface
 	private function checkLockRequirements(LockMode|int $lockMode, ClassMetadata $class): void
 	{
 		switch ($lockMode) {
-			case LockMode::OPTIMISTIC:
-				if (! $class->isVersioned) {
-					throw OptimisticLockException::notVersioned($class->name);
-				}
+		case LockMode::OPTIMISTIC:
+			if (!$class->isVersioned) {
+				throw OptimisticLockException::notVersioned($class->name);
+			}
 
-				break;
-			case LockMode::PESSIMISTIC_READ:
-			case LockMode::PESSIMISTIC_WRITE:
-				if (! $this->getConnection()->isTransactionActive()) {
-					throw TransactionRequiredException::transactionRequired();
-				}
+			break;
+		case LockMode::PESSIMISTIC_READ:
+		case LockMode::PESSIMISTIC_WRITE:
+			if (!$this->getConnection()->isTransactionActive()) {
+				throw TransactionRequiredException::transactionRequired();
+			}
 		}
 	}
 
 	private function configureMetadataCache(): void
 	{
 		$metadataCache = $this->config->getMetadataCache();
-		if (! $metadataCache) {
+		if (!$metadataCache) {
 			return;
 		}
 

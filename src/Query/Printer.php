@@ -9,7 +9,7 @@ use function str_repeat;
 /**
  * A parse tree printer for Doctrine Query Language parser.
  *
- * @link        http://www.phpdoctrine.org
+ * @link http://www.phpdoctrine.org
  */
 class Printer
 {
@@ -57,7 +57,7 @@ class Printer
 	 */
 	public function println(string $str): void
 	{
-		if (! $this->silent) {
+		if (!$this->silent) {
 			echo str_repeat('    ', $this->indent), $str, "\n";
 		}
 	}

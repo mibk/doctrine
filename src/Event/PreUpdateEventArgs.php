@@ -23,7 +23,7 @@ class PreUpdateEventArgs extends LifecycleEventArgs
 	private array $entityChangeSet;
 
 	/**
-	 * @param mixed[][] $changeSet
+	 * @param         mixed[][] $changeSet
 	 * @phpstan-param array<string, array{mixed, mixed}|PersistentCollection> $changeSet
 	 */
 	public function __construct(object $entity, EntityManagerInterface $em, array &$changeSet)
@@ -36,7 +36,7 @@ class PreUpdateEventArgs extends LifecycleEventArgs
 	/**
 	 * Retrieves entity changeset.
 	 *
-	 * @return mixed[][]
+	 * @return         mixed[][]
 	 * @phpstan-return array<string, array{mixed, mixed}|PersistentCollection>
 	 */
 	public function getEntityChangeSet(): array
@@ -89,7 +89,7 @@ class PreUpdateEventArgs extends LifecycleEventArgs
 	 */
 	private function assertValidField(string $field): void
 	{
-		if (! isset($this->entityChangeSet[$field])) {
+		if (!isset($this->entityChangeSet[$field])) {
 			throw new InvalidArgumentException(sprintf(
 				'Field "%s" is not a valid field of the entity "%s" in PreUpdateEventArgs.',
 				$field,

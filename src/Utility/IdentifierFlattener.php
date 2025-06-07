@@ -31,7 +31,8 @@ final class IdentifierFlattener
 		 * The metadata factory, used to retrieve the ORM metadata of entity classes.
 		 */
 		private readonly ClassMetadataFactory $metadataFactory,
-	) {
+	)
+	{
 	}
 
 	/**
@@ -39,7 +40,7 @@ final class IdentifierFlattener
 	 *
 	 * @param mixed[] $id
 	 *
-	 * @return mixed[]
+	 * @return         mixed[]
 	 * @phpstan-return array<string, mixed>
 	 */
 	public function flattenIdentifier(ClassMetadata $class, array $id): array

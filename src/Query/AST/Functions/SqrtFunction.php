@@ -14,7 +14,7 @@ use function sprintf;
 /**
  * "SQRT" "(" SimpleArithmeticExpression ")"
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class SqrtFunction extends FunctionNode
 {

@@ -9,7 +9,7 @@ use Doctrine\ORM\Query\SqlWalker;
 /**
  * RangeVariableDeclaration ::= AbstractSchemaName ["AS"] AliasIdentificationVariable
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class RangeVariableDeclaration extends Node
 {
@@ -17,7 +17,8 @@ class RangeVariableDeclaration extends Node
 		public string $abstractSchemaName,
 		public string $aliasIdentificationVariable,
 		public bool $isRoot = true,
-	) {
+	)
+	{
 	}
 
 	public function dispatch(SqlWalker $walker): string

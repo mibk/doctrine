@@ -10,8 +10,8 @@ use Attribute;
 final class OneToOne implements MappingAttribute
 {
 	/**
-	 * @param class-string|null  $targetEntity
-	 * @param array<string>|null $cascade
+	 * @param         class-string|null  $targetEntity
+	 * @param         array<string>|null $cascade
 	 * @phpstan-param 'LAZY'|'EAGER'|'EXTRA_LAZY' $fetch
 	 */
 	public function __construct(
@@ -21,6 +21,7 @@ final class OneToOne implements MappingAttribute
 		public readonly array|null $cascade = null,
 		public readonly string $fetch = 'LAZY',
 		public readonly bool $orphanRemoval = false,
-	) {
+	)
+	{
 	}
 }

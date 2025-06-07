@@ -9,7 +9,7 @@ use Doctrine\ORM\Query\SqlWalker;
 /**
  * CoalesceExpression ::= "COALESCE" "(" ScalarExpression {"," ScalarExpression}* ")"
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class CoalesceExpression extends Node
 {

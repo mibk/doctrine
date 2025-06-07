@@ -9,7 +9,7 @@ use Doctrine\ORM\Query\SqlWalker;
 /**
  * ConditionalTerm ::= ConditionalFactor {"AND" ConditionalFactor}*
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class ConditionalTerm extends Node implements Phase2OptimizableConditional
 {

@@ -14,7 +14,7 @@ use function sprintf;
 /**
  * "UPPER" "(" StringPrimary ")"
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class UpperFunction extends FunctionNode
 {

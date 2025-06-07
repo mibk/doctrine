@@ -37,7 +37,7 @@ class DefaultQuoteStrategy implements QuoteStrategy
 	{
 		$tableName = $class->table['name'];
 
-		if (! empty($class->table['schema'])) {
+		if (!empty($class->table['schema'])) {
 			$tableName = $class->table['schema'] . '.' . $class->table['name'];
 		}
 
@@ -67,7 +67,8 @@ class DefaultQuoteStrategy implements QuoteStrategy
 		JoinColumnMapping $joinColumn,
 		ClassMetadata $class,
 		AbstractPlatform $platform,
-	): string {
+	): string
+	{
 		return isset($joinColumn->quoted)
 			? $platform->quoteSingleIdentifier($joinColumn->referencedColumnName)
 			: $joinColumn->referencedColumnName;
@@ -77,7 +78,8 @@ class DefaultQuoteStrategy implements QuoteStrategy
 		ManyToManyOwningSideMapping $association,
 		ClassMetadata $class,
 		AbstractPlatform $platform,
-	): string {
+	): string
+	{
 		$schema = '';
 
 		if (isset($association->joinTable->schema)) {
@@ -110,9 +112,9 @@ class DefaultQuoteStrategy implements QuoteStrategy
 			// Association defined as Id field
 			$assoc = $class->associationMappings[$fieldName];
 			assert($assoc->isToOneOwningSide());
-			$joinColumns            = $assoc->joinColumns;
+			$joinColumns = $assoc->joinColumns;
 			$assocQuotedColumnNames = array_map(
-				static fn (JoinColumnMapping $joinColumn) => isset($joinColumn->quoted)
+				static fn(JoinColumnMapping $joinColumn) => isset($joinColumn->quoted)
 					? $platform->quoteSingleIdentifier($joinColumn->name)
 					: $joinColumn->name,
 				$joinColumns,
@@ -129,16 +131,17 @@ class DefaultQuoteStrategy implements QuoteStrategy
 		int $counter,
 		AbstractPlatform $platform,
 		ClassMetadata|null $class = null,
-	): string {
+	): string
+	{
 		// 1 ) Concatenate column name and counter
 		// 2 ) Trim the column alias to the maximum identifier length of the platform.
 		//     If the alias is to long, characters are cut off from the beginning.
 		// 3 ) Strip non alphanumeric characters
 		// 4 ) Prefix with "_" if the result its numeric
 		$columnName .= '_' . $counter;
-		$columnName  = substr($columnName, -$platform->getMaxIdentifierLength());
-		$columnName  = preg_replace('/[^A-Za-z0-9_]/', '', $columnName);
-		$columnName  = is_numeric($columnName) ? '_' . $columnName : $columnName;
+		$columnName = substr($columnName, -$platform->getMaxIdentifierLength());
+		$columnName = preg_replace('/[^A-Za-z0-9_]/', '', $columnName);
+		$columnName = is_numeric($columnName) ? '_' . $columnName : $columnName;
 
 		return $this->getSQLResultCasing($platform, $columnName);
 	}

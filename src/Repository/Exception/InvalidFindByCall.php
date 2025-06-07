@@ -12,10 +12,11 @@ final class InvalidFindByCall extends LogicException implements RepositoryExcept
 	public static function fromInverseSideUsage(
 		string $entityName,
 		string $associationFieldName,
-	): self {
+	): self
+	{
 		return new self(
 			"You cannot search for the association field '" . $entityName . '#' . $associationFieldName . "', " .
-			'because it is the inverse side of an association. Find methods only work on owning side associations.',
+				'because it is the inverse side of an association. Find methods only work on owning side associations.',
 		);
 	}
 }

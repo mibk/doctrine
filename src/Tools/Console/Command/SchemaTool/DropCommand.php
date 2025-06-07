@@ -16,19 +16,19 @@ use function sprintf;
 /**
  * Command to drop the database schema for a set of classes based on their mappings.
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class DropCommand extends AbstractCommand
 {
 	protected function configure(): void
 	{
 		$this->setName('orm:schema-tool:drop')
-			 ->setDescription('Drop the complete database schema of EntityManager Storage Connection or generate the corresponding SQL output')
-			 ->addOption('em', null, InputOption::VALUE_REQUIRED, 'Name of the entity manager to operate on')
-			 ->addOption('dump-sql', null, InputOption::VALUE_NONE, 'Instead of trying to apply generated SQLs into EntityManager Storage Connection, output them.')
-			 ->addOption('force', 'f', InputOption::VALUE_NONE, "Don't ask for the deletion of the database, but force the operation to run.")
-			 ->addOption('full-database', null, InputOption::VALUE_NONE, 'Instead of using the Class Metadata to detect the database table schema, drop ALL assets that the database contains.')
-			 ->setHelp(<<<'EOT'
+			->setDescription('Drop the complete database schema of EntityManager Storage Connection or generate the corresponding SQL output')
+			->addOption('em', null, InputOption::VALUE_REQUIRED, 'Name of the entity manager to operate on')
+			->addOption('dump-sql', null, InputOption::VALUE_NONE, 'Instead of trying to apply generated SQLs into EntityManager Storage Connection, output them.')
+			->addOption('force', 'f', InputOption::VALUE_NONE, "Don't ask for the deletion of the database, but force the operation to run.")
+			->addOption('full-database', null, InputOption::VALUE_NONE, 'Instead of using the Class Metadata to detect the database table schema, drop ALL assets that the database contains.')
+			->setHelp(<<<'EOT'
 Processes the schema and either drop the database schema of EntityManager Storage Connection or generate the SQL output.
 Beware that the complete database is dropped by this command, even tables that are not relevant to your metadata model.
 
@@ -52,8 +52,8 @@ EOT);
 	protected function executeSchemaCommand(InputInterface $input, OutputInterface $output, SchemaTool $schemaTool, array $metadatas, SymfonyStyle $ui): int
 	{
 		$isFullDatabaseDrop = $input->getOption('full-database');
-		$dumpSql            = $input->getOption('dump-sql') === true;
-		$force              = $input->getOption('force') === true;
+		$dumpSql = $input->getOption('dump-sql') === true;
+		$force = $input->getOption('force') === true;
 
 		if ($dumpSql) {
 			if ($isFullDatabaseDrop) {

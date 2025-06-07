@@ -9,7 +9,7 @@ use Doctrine\ORM\Query\SqlWalker;
 /**
  * OrderByClause ::= "ORDER" "BY" OrderByItem {"," OrderByItem}*
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class OrderByClause extends Node
 {

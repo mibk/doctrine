@@ -7,7 +7,7 @@ namespace Doctrine\ORM\Mapping\Builder;
 /**
  * Embedded Builder
  *
- * @link        www.doctrine-project.com
+ * @link www.doctrine-project.com
  */
 class EmbeddedBuilder
 {
@@ -15,7 +15,8 @@ class EmbeddedBuilder
 	public function __construct(
 		private readonly ClassMetadataBuilder $builder,
 		private array $mapping,
-	) {
+	)
+	{
 	}
 
 	/**

@@ -31,14 +31,14 @@ trait ReflectionBasedDriver
 
 		if (
 			isset($metadata->fieldMappings[$property->name]->declared)
-			&& $metadata->fieldMappings[$property->name]->declared === $declaringClass
+				&& $metadata->fieldMappings[$property->name]->declared === $declaringClass
 		) {
 			return true;
 		}
 
 		if (
 			isset($metadata->associationMappings[$property->name]->declared)
-			&& $metadata->associationMappings[$property->name]->declared === $declaringClass
+				&& $metadata->associationMappings[$property->name]->declared === $declaringClass
 		) {
 			return true;
 		}

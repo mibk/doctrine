@@ -7,7 +7,7 @@ namespace Doctrine\ORM\Query\Expr;
 /**
  * Expression class for building DQL and parts.
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class Andx extends Composite
 {

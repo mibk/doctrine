@@ -35,9 +35,9 @@ use function strtoupper;
  * Similarly, if you remove entities from a collection that is part of a one-many
  * mapping this will only result in the nulling out of the foreign keys on flush.
  *
- * @phpstan-template TKey of array-key
- * @phpstan-template T
- * @template-extends AbstractLazyCollection<TKey,T>
+ * @phpstan-template    TKey of array-key
+ * @phpstan-template    T
+ * @template-extends    AbstractLazyCollection<TKey,T>
  * @template-implements Selectable<TKey,T>
  */
 final class PersistentCollection extends AbstractLazyCollection implements Selectable
@@ -78,16 +78,17 @@ final class PersistentCollection extends AbstractLazyCollection implements Selec
 	/**
 	 * Creates a new persistent collection.
 	 *
-	 * @param EntityManagerInterface $em        The EntityManager the collection will be associated with.
-	 * @param ClassMetadata          $typeClass The class descriptor of the entity type of this collection.
+	 * @param         EntityManagerInterface $em        The EntityManager the collection will be associated with.
+	 * @param         ClassMetadata          $typeClass The class descriptor of the entity type of this collection.
 	 * @phpstan-param Collection<TKey, T>&Selectable<TKey, T> $collection The collection elements.
 	 */
 	public function __construct(
 		private EntityManagerInterface|null $em,
 		private readonly ClassMetadata|null $typeClass,
 		Collection $collection,
-	) {
-		$this->collection  = $collection;
+	)
+	{
+		$this->collection = $collection;
 		$this->initialized = true;
 	}
 
@@ -98,8 +99,8 @@ final class PersistentCollection extends AbstractLazyCollection implements Selec
 	 */
 	public function setOwner(object $entity, AssociationMapping&ToManyAssociationMapping $assoc): void
 	{
-		$this->owner            = $entity;
-		$this->association      = $assoc;
+		$this->owner = $entity;
+		$this->association = $assoc;
 		$this->backRefFieldName = $assoc->isOwningSide() ? $assoc->inversedBy : $assoc->mappedBy;
 	}
 
@@ -179,7 +180,7 @@ final class PersistentCollection extends AbstractLazyCollection implements Selec
 	 */
 	public function initialize(): void
 	{
-		if ($this->initialized || ! $this->association) {
+		if ($this->initialized || !$this->association) {
 			return;
 		}
 
@@ -195,7 +196,7 @@ final class PersistentCollection extends AbstractLazyCollection implements Selec
 	public function takeSnapshot(): void
 	{
 		$this->snapshot = $this->unwrap()->toArray();
-		$this->isDirty  = false;
+		$this->isDirty = false;
 	}
 
 	/**
@@ -296,7 +297,7 @@ final class PersistentCollection extends AbstractLazyCollection implements Selec
 		//       association (table). Without initializing the collection.
 		$removed = parent::remove($key);
 
-		if (! $removed) {
+		if (!$removed) {
 			return $removed;
 		}
 
@@ -304,9 +305,9 @@ final class PersistentCollection extends AbstractLazyCollection implements Selec
 
 		if (
 			$this->association !== null &&
-			$this->association->isToMany() &&
-			$this->owner &&
-			$this->getMapping()->orphanRemoval
+				$this->association->isToMany() &&
+				$this->owner &&
+				$this->getMapping()->orphanRemoval
 		) {
 			$this->getUnitOfWork()->scheduleOrphanRemoval($removed);
 		}
@@ -318,7 +319,7 @@ final class PersistentCollection extends AbstractLazyCollection implements Selec
 	{
 		$removed = parent::removeElement($element);
 
-		if (! $removed) {
+		if (!$removed) {
 			return $removed;
 		}
 
@@ -326,9 +327,9 @@ final class PersistentCollection extends AbstractLazyCollection implements Selec
 
 		if (
 			$this->association !== null &&
-			$this->association->isToMany() &&
-			$this->owner &&
-			$this->getMapping()->orphanRemoval
+				$this->association->isToMany() &&
+				$this->owner &&
+				$this->getMapping()->orphanRemoval
 		) {
 			$this->getUnitOfWork()->scheduleOrphanRemoval($element);
 		}
@@ -339,8 +340,8 @@ final class PersistentCollection extends AbstractLazyCollection implements Selec
 	public function containsKey(mixed $key): bool
 	{
 		if (
-			! $this->initialized && $this->getMapping()->fetch === ClassMetadata::FETCH_EXTRA_LAZY
-			&& isset($this->getMapping()->indexBy)
+			!$this->initialized && $this->getMapping()->fetch === ClassMetadata::FETCH_EXTRA_LAZY
+				&& isset($this->getMapping()->indexBy)
 		) {
 			$persister = $this->getUnitOfWork()->getCollectionPersister($this->getMapping());
 
@@ -352,7 +353,7 @@ final class PersistentCollection extends AbstractLazyCollection implements Selec
 
 	public function contains(mixed $element): bool
 	{
-		if (! $this->initialized && $this->getMapping()->fetch === ClassMetadata::FETCH_EXTRA_LAZY) {
+		if (!$this->initialized && $this->getMapping()->fetch === ClassMetadata::FETCH_EXTRA_LAZY) {
 			$persister = $this->getUnitOfWork()->getCollectionPersister($this->getMapping());
 
 			return $this->unwrap()->contains($element) || $persister->contains($this, $element);
@@ -364,13 +365,13 @@ final class PersistentCollection extends AbstractLazyCollection implements Selec
 	public function get(string|int $key): mixed
 	{
 		if (
-			! $this->initialized
-			&& $this->getMapping()->fetch === ClassMetadata::FETCH_EXTRA_LAZY
-			&& isset($this->getMapping()->indexBy)
+			!$this->initialized
+				&& $this->getMapping()->fetch === ClassMetadata::FETCH_EXTRA_LAZY
+				&& isset($this->getMapping()->indexBy)
 		) {
 			assert($this->em !== null);
 			assert($this->typeClass !== null);
-			if (! $this->typeClass->isIdentifierComposite && $this->typeClass->isIdentifier($this->getMapping()->indexBy)) {
+			if (!$this->typeClass->isIdentifierComposite && $this->typeClass->isIdentifier($this->getMapping()->indexBy)) {
 				return $this->em->find($this->typeClass->name, $key);
 			}
 
@@ -382,7 +383,7 @@ final class PersistentCollection extends AbstractLazyCollection implements Selec
 
 	public function count(): int
 	{
-		if (! $this->initialized && $this->association !== null && $this->getMapping()->fetch === ClassMetadata::FETCH_EXTRA_LAZY) {
+		if (!$this->initialized && $this->association !== null && $this->getMapping()->fetch === ClassMetadata::FETCH_EXTRA_LAZY) {
 			$persister = $this->getUnitOfWork()->getCollectionPersister($this->association);
 
 			return $persister->count($this) + ($this->isDirty ? $this->unwrap()->count() : 0);
@@ -427,7 +428,7 @@ final class PersistentCollection extends AbstractLazyCollection implements Selec
 
 	public function offsetSet(mixed $offset, mixed $value): void
 	{
-		if (! isset($offset)) {
+		if (!isset($offset)) {
 			$this->add($value);
 
 			return;
@@ -454,13 +455,13 @@ final class PersistentCollection extends AbstractLazyCollection implements Selec
 			return;
 		}
 
-		$uow         = $this->getUnitOfWork();
+		$uow = $this->getUnitOfWork();
 		$association = $this->getMapping();
 
 		if (
 			$association->isToMany() &&
-			$association->orphanRemoval &&
-			$this->owner
+				$association->orphanRemoval &&
+				$this->owner
 		) {
 			// we need to initialize here, as orphan removal acts like implicit cascadeRemove,
 			// hence for event listeners we need the objects in memory.
@@ -491,7 +492,7 @@ final class PersistentCollection extends AbstractLazyCollection implements Selec
 	 * Internal note: Tried to implement Serializable first but that did not work well
 	 *                with circular references. This solution seems simpler and works well.
 	 *
-	 * @return string[]
+	 * @return         string[]
 	 * @phpstan-return array{0: string, 1: string}
 	 */
 	public function __sleep(): array
@@ -509,7 +510,7 @@ final class PersistentCollection extends AbstractLazyCollection implements Selec
 	 */
 	public function first()
 	{
-		if (! $this->initialized && ! $this->isDirty && $this->getMapping()->fetch === ClassMetadata::FETCH_EXTRA_LAZY) {
+		if (!$this->initialized && !$this->isDirty && $this->getMapping()->fetch === ClassMetadata::FETCH_EXTRA_LAZY) {
 			$persister = $this->getUnitOfWork()->getCollectionPersister($this->getMapping());
 
 			return array_values($persister->slice($this, 0, 1))[0] ?? false;
@@ -525,12 +526,12 @@ final class PersistentCollection extends AbstractLazyCollection implements Selec
 	 * Keys have to be preserved by this method. Calling this method will only return the
 	 * selected slice and NOT change the elements contained in the collection slice is called on.
 	 *
-	 * @return mixed[]
+	 * @return         mixed[]
 	 * @phpstan-return array<TKey,T>
 	 */
 	public function slice(int $offset, int|null $length = null): array
 	{
-		if (! $this->initialized && ! $this->isDirty && $this->getMapping()->fetch === ClassMetadata::FETCH_EXTRA_LAZY) {
+		if (!$this->initialized && !$this->isDirty && $this->getMapping()->fetch === ClassMetadata::FETCH_EXTRA_LAZY) {
 			$persister = $this->getUnitOfWork()->getCollectionPersister($this->getMapping());
 
 			return $persister->slice($this, $offset, $length);
@@ -558,7 +559,7 @@ final class PersistentCollection extends AbstractLazyCollection implements Selec
 
 		$this->initialize();
 
-		$this->owner    = null;
+		$this->owner = null;
 		$this->snapshot = [];
 
 		$this->changed();
@@ -589,16 +590,16 @@ final class PersistentCollection extends AbstractLazyCollection implements Selec
 			return new ArrayCollection($persister->loadCriteria($this, $criteria));
 		}
 
-		$builder         = Criteria::expr();
+		$builder = Criteria::expr();
 		$ownerExpression = $builder->eq($this->backRefFieldName, $this->owner);
-		$expression      = $criteria->getWhereExpression();
-		$expression      = $expression ? $builder->andX($expression, $ownerExpression) : $ownerExpression;
+		$expression = $criteria->getWhereExpression();
+		$expression = $expression ? $builder->andX($expression, $ownerExpression) : $ownerExpression;
 
 		$criteria = clone $criteria;
 		$criteria->where($expression);
 		$criteria->orderBy(
 			$criteria->orderings() ?: array_map(
-				static fn (string $order): Order => Order::from(strtoupper($order)),
+				static fn(string $order): Order => Order::from(strtoupper($order)),
 				$association->orderBy(),
 			),
 		);
@@ -651,9 +652,9 @@ final class PersistentCollection extends AbstractLazyCollection implements Selec
 	 */
 	private function restoreNewObjectsInDirtyCollection(array $newObjects): void
 	{
-		$loadedObjects               = $this->unwrap()->toArray();
-		$newObjectsByOid             = array_combine(array_map('spl_object_id', $newObjects), $newObjects);
-		$loadedObjectsByOid          = array_combine(array_map('spl_object_id', $loadedObjects), $loadedObjects);
+		$loadedObjects = $this->unwrap()->toArray();
+		$newObjectsByOid = array_combine(array_map('spl_object_id', $newObjects), $newObjects);
+		$loadedObjectsByOid = array_combine(array_map('spl_object_id', $loadedObjects), $loadedObjects);
 		$newObjectsThatWereNotLoaded = array_diff_key($newObjectsByOid, $loadedObjectsByOid);
 
 		if ($newObjectsThatWereNotLoaded) {

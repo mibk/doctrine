@@ -50,14 +50,14 @@ class QueryBuilder implements Stringable
 	 */
 	private array $dqlParts = [
 		'distinct' => false,
-		'select'  => [],
-		'from'    => [],
-		'join'    => [],
-		'set'     => [],
-		'where'   => null,
-		'groupBy' => [],
-		'having'  => null,
-		'orderBy' => [],
+		'select'   => [],
+		'from'     => [],
+		'join'     => [],
+		'set'      => [],
+		'where'    => null,
+		'groupBy'  => [],
+		'having'   => null,
+		'orderBy'  => [],
 	];
 
 	private QueryType $type = QueryType::Select;
@@ -124,7 +124,8 @@ class QueryBuilder implements Stringable
 	 */
 	public function __construct(
 		private readonly EntityManagerInterface $em,
-	) {
+	)
+	{
 		$this->parameters = new ArrayCollection();
 	}
 
@@ -262,7 +263,7 @@ class QueryBuilder implements Stringable
 	public function getQuery(): Query
 	{
 		$parameters = clone $this->parameters;
-		$query      = $this->em->createQuery($this->getDQL())
+		$query = $this->em->createQuery($this->getDQL())
 			->setParameters($parameters)
 			->setFirstResult($this->firstResult)
 			->setMaxResults($this->maxResults);
@@ -330,7 +331,7 @@ class QueryBuilder implements Stringable
 	{
 		$aliases = $this->getRootAliases();
 
-		if (! isset($aliases[0])) {
+		if (!isset($aliases[0])) {
 			throw new RuntimeException('No alias was set before invoking getRootAlias().');
 		}
 
@@ -349,7 +350,7 @@ class QueryBuilder implements Stringable
 	 *     $qb->getRootAliases(); // array('u')
 	 * </code>
 	 *
-	 * @return string[]
+	 * @return         string[]
 	 * @phpstan-return list<string>
 	 */
 	public function getRootAliases(): array
@@ -361,10 +362,10 @@ class QueryBuilder implements Stringable
 				$spacePos = strrpos($fromClause, ' ');
 
 				/** @phpstan-var class-string $from */
-				$from  = substr($fromClause, 0, $spacePos);
+				$from = substr($fromClause, 0, $spacePos);
 				$alias = substr($fromClause, $spacePos + 1);
 
-				$fromClause = new Query\Expr\From($from, $alias);
+				$fromClause = new Query\Expr\From ($from, $alias);
 			}
 
 			$aliases[] = $fromClause->getAlias();
@@ -386,7 +387,7 @@ class QueryBuilder implements Stringable
 	 *     $qb->getAllAliases(); // array('u','a')
 	 * </code>
 	 *
-	 * @return string[]
+	 * @return         string[]
 	 * @phpstan-return list<string>
 	 */
 	public function getAllAliases(): array
@@ -406,7 +407,7 @@ class QueryBuilder implements Stringable
 	 *     $qb->getRootEntities(); // array('User')
 	 * </code>
 	 *
-	 * @return string[]
+	 * @return         string[]
 	 * @phpstan-return list<class-string>
 	 */
 	public function getRootEntities(): array
@@ -418,10 +419,10 @@ class QueryBuilder implements Stringable
 				$spacePos = strrpos($fromClause, ' ');
 
 				/** @phpstan-var class-string $from */
-				$from  = substr($fromClause, 0, $spacePos);
+				$from = substr($fromClause, 0, $spacePos);
 				$alias = substr($fromClause, $spacePos + 1);
 
-				$fromClause = new Query\Expr\From($from, $alias);
+				$fromClause = new Query\Expr\From ($from, $alias);
 			}
 
 			$entities[] = $fromClause->getFrom();
@@ -504,10 +505,10 @@ class QueryBuilder implements Stringable
 		$key = Parameter::normalizeName($key);
 
 		$filteredParameters = $this->parameters->filter(
-			static fn (Parameter $parameter): bool => $key === $parameter->getName(),
+			static fn(Parameter $parameter): bool => $key === $parameter->getName(),
 		);
 
-		return ! $filteredParameters->isEmpty() ? $filteredParameters->first() : null;
+		return !$filteredParameters->isEmpty() ? $filteredParameters->first() : null;
 	}
 
 	/**
@@ -566,12 +567,12 @@ class QueryBuilder implements Stringable
 		if ($append && ($dqlPartName === 'where' || $dqlPartName === 'having')) {
 			throw new InvalidArgumentException(
 				"Using \$append = true does not have an effect with 'where' or 'having' " .
-				'parts. See QueryBuilder#andWhere() for an example for correct usage.',
+					'parts. See QueryBuilder#andWhere() for an example for correct usage.',
 			);
 		}
 
 		$isMultiple = is_array($this->dqlParts[$dqlPartName])
-			&& ! ($dqlPartName === 'join' && ! $append);
+			&& !($dqlPartName === 'join' && !$append);
 
 		// Allow adding any part retrieved from self::getDQLParts().
 		if (is_array($dqlPart) && $dqlPartName !== 'join') {
@@ -652,7 +653,7 @@ class QueryBuilder implements Stringable
 	{
 		if ($this->dqlParts['distinct'] !== $flag) {
 			$this->dqlParts['distinct'] = $flag;
-			$this->dql                  = null;
+			$this->dql = null;
 		}
 
 		return $this;
@@ -704,11 +705,11 @@ class QueryBuilder implements Stringable
 	{
 		$this->type = QueryType::Delete;
 
-		if (! $delete) {
+		if (!$delete) {
 			return $this;
 		}
 
-		if (! $alias) {
+		if (!$alias) {
 			throw new InvalidArgumentException(sprintf(
 				'%s(): The alias for entity %s must not be omitted.',
 				__METHOD__,
@@ -716,7 +717,7 @@ class QueryBuilder implements Stringable
 			));
 		}
 
-		return $this->add('from', new Expr\From($delete, $alias));
+		return $this->add('from', new Expr\From ($delete, $alias));
 	}
 
 	/**
@@ -739,11 +740,11 @@ class QueryBuilder implements Stringable
 	{
 		$this->type = QueryType::Update;
 
-		if (! $update) {
+		if (!$update) {
 			return $this;
 		}
 
-		if (! $alias) {
+		if (!$alias) {
 			throw new InvalidArgumentException(sprintf(
 				'%s(): The alias for entity %s must not be omitted.',
 				__METHOD__,
@@ -751,7 +752,7 @@ class QueryBuilder implements Stringable
 			));
 		}
 
-		return $this->add('from', new Expr\From($update, $alias));
+		return $this->add('from', new Expr\From ($update, $alias));
 	}
 
 	/**
@@ -772,7 +773,7 @@ class QueryBuilder implements Stringable
 	 */
 	public function from(string $from, string $alias, string|null $indexBy = null): static
 	{
-		return $this->add('from', new Expr\From($from, $alias, $indexBy), true);
+		return $this->add('from', new Expr\From ($from, $alias, $indexBy), true);
 	}
 
 	/**
@@ -799,7 +800,7 @@ class QueryBuilder implements Stringable
 	{
 		$rootAliases = $this->getRootAliases();
 
-		if (! in_array($alias, $rootAliases, true)) {
+		if (!in_array($alias, $rootAliases, true)) {
 			throw new Query\QueryException(
 				sprintf('Specified root alias %s must be set before invoking indexBy().', $alias),
 			);
@@ -811,7 +812,7 @@ class QueryBuilder implements Stringable
 				continue;
 			}
 
-			$fromClause = new Expr\From($fromClause->getFrom(), $fromClause->getAlias(), $indexBy);
+			$fromClause = new Expr\From ($fromClause->getFrom(), $fromClause->getAlias(), $indexBy);
 		}
 
 		return $this;
@@ -841,7 +842,8 @@ class QueryBuilder implements Stringable
 		string|null $conditionType = null,
 		string|Expr\Composite|Expr\Comparison|Expr\Func|null $condition = null,
 		string|null $indexBy = null,
-	): static {
+	): static
+	{
 		return $this->innerJoin($join, $alias, $conditionType, $condition, $indexBy);
 	}
 
@@ -868,7 +870,8 @@ class QueryBuilder implements Stringable
 		string|null $conditionType = null,
 		string|Expr\Composite|Expr\Comparison|Expr\Func|null $condition = null,
 		string|null $indexBy = null,
-	): static {
+	): static
+	{
 		$parentAlias = substr($join, 0, (int) strpos($join, '.'));
 
 		$rootAlias = $this->findRootAlias($alias, $parentAlias);
@@ -909,7 +912,8 @@ class QueryBuilder implements Stringable
 		string|null $conditionType = null,
 		string|Expr\Composite|Expr\Comparison|Expr\Func|null $condition = null,
 		string|null $indexBy = null,
-	): static {
+	): static
+	{
 		$parentAlias = substr($join, 0, (int) strpos($join, '.'));
 
 		$rootAlias = $this->findRootAlias($alias, $parentAlias);
@@ -971,7 +975,7 @@ class QueryBuilder implements Stringable
 	{
 		self::validateVariadicParameter($predicates);
 
-		if (! (count($predicates) === 1 && $predicates[0] instanceof Expr\Composite)) {
+		if (!(count($predicates) === 1 && $predicates[0] instanceof Expr\Composite)) {
 			$predicates = new Expr\Andx($predicates);
 		}
 
@@ -1092,7 +1096,7 @@ class QueryBuilder implements Stringable
 	{
 		self::validateVariadicParameter($having);
 
-		if (! (count($having) === 1 && ($having[0] instanceof Expr\Andx || $having[0] instanceof Expr\Orx))) {
+		if (!(count($having) === 1 && ($having[0] instanceof Expr\Andx || $having[0] instanceof Expr\Orx))) {
 			$having = new Expr\Andx($having);
 		}
 
@@ -1182,7 +1186,7 @@ class QueryBuilder implements Stringable
 	public function addCriteria(Criteria $criteria): static
 	{
 		$allAliases = $this->getAllAliases();
-		if (! isset($allAliases[0])) {
+		if (!isset($allAliases[0])) {
 			throw new Query\QueryException('No aliases are set before invoking addCriteria().');
 		}
 
@@ -1205,7 +1209,7 @@ class QueryBuilder implements Stringable
 				}
 			}
 
-			if (! $hasValidAlias) {
+			if (!$hasValidAlias) {
 				$sort = $allAliases[0] . '.' . $sort;
 			}
 
@@ -1246,33 +1250,33 @@ class QueryBuilder implements Stringable
 
 	private function getDQLForDelete(): string
 	{
-		 return 'DELETE'
-			  . $this->getReducedDQLQueryPart('from', ['pre' => ' ', 'separator' => ', '])
-			  . $this->getReducedDQLQueryPart('where', ['pre' => ' WHERE '])
-			  . $this->getReducedDQLQueryPart('orderBy', ['pre' => ' ORDER BY ', 'separator' => ', ']);
+		return 'DELETE'
+			. $this->getReducedDQLQueryPart('from', ['pre' => ' ', 'separator' => ', '])
+			. $this->getReducedDQLQueryPart('where', ['pre' => ' WHERE '])
+			. $this->getReducedDQLQueryPart('orderBy', ['pre' => ' ORDER BY ', 'separator' => ', ']);
 	}
 
 	private function getDQLForUpdate(): string
 	{
-		 return 'UPDATE'
-			  . $this->getReducedDQLQueryPart('from', ['pre' => ' ', 'separator' => ', '])
-			  . $this->getReducedDQLQueryPart('set', ['pre' => ' SET ', 'separator' => ', '])
-			  . $this->getReducedDQLQueryPart('where', ['pre' => ' WHERE '])
-			  . $this->getReducedDQLQueryPart('orderBy', ['pre' => ' ORDER BY ', 'separator' => ', ']);
+		return 'UPDATE'
+			. $this->getReducedDQLQueryPart('from', ['pre' => ' ', 'separator' => ', '])
+			. $this->getReducedDQLQueryPart('set', ['pre' => ' SET ', 'separator' => ', '])
+			. $this->getReducedDQLQueryPart('where', ['pre' => ' WHERE '])
+			. $this->getReducedDQLQueryPart('orderBy', ['pre' => ' ORDER BY ', 'separator' => ', ']);
 	}
 
 	private function getDQLForSelect(): string
 	{
 		$dql = 'SELECT'
-			 . ($this->dqlParts['distinct'] === true ? ' DISTINCT' : '')
-			 . $this->getReducedDQLQueryPart('select', ['pre' => ' ', 'separator' => ', ']);
+			. ($this->dqlParts['distinct'] === true ? ' DISTINCT' : '')
+			. $this->getReducedDQLQueryPart('select', ['pre' => ' ', 'separator' => ', ']);
 
-		$fromParts   = $this->getDQLPart('from');
-		$joinParts   = $this->getDQLPart('join');
+		$fromParts = $this->getDQLPart('from');
+		$joinParts = $this->getDQLPart('join');
 		$fromClauses = [];
 
 		// Loop through all FROM clauses
-		if (! empty($fromParts)) {
+		if (!empty($fromParts)) {
 			$dql .= ' FROM ';
 
 			foreach ($fromParts as $from) {
@@ -1289,10 +1293,10 @@ class QueryBuilder implements Stringable
 		}
 
 		$dql .= implode(', ', $fromClauses)
-			  . $this->getReducedDQLQueryPart('where', ['pre' => ' WHERE '])
-			  . $this->getReducedDQLQueryPart('groupBy', ['pre' => ' GROUP BY ', 'separator' => ', '])
-			  . $this->getReducedDQLQueryPart('having', ['pre' => ' HAVING '])
-			  . $this->getReducedDQLQueryPart('orderBy', ['pre' => ' ORDER BY ', 'separator' => ', ']);
+			. $this->getReducedDQLQueryPart('where', ['pre' => ' WHERE '])
+			. $this->getReducedDQLQueryPart('groupBy', ['pre' => ' GROUP BY ', 'separator' => ', '])
+			. $this->getReducedDQLQueryPart('having', ['pre' => ' HAVING '])
+			. $this->getReducedDQLQueryPart('orderBy', ['pre' => ' ORDER BY ', 'separator' => ', ']);
 
 		return $dql;
 	}
@@ -1307,14 +1311,14 @@ class QueryBuilder implements Stringable
 		}
 
 		return ($options['pre'] ?? '')
-			 . (is_array($queryPart) ? implode($options['separator'], $queryPart) : $queryPart)
-			 . ($options['post'] ?? '');
+			. (is_array($queryPart) ? implode($options['separator'], $queryPart) : $queryPart)
+			. ($options['post'] ?? '');
 	}
 
 	/**
 	 * Resets DQL parts.
 	 *
-	 * @param string[]|null $parts
+	 * @param         string[]|null $parts
 	 * @phpstan-param list<string>|null $parts
 	 *
 	 * @return $this
@@ -1340,7 +1344,7 @@ class QueryBuilder implements Stringable
 	public function resetDQLPart(string $part): static
 	{
 		$this->dqlParts[$part] = is_array($this->dqlParts[$part]) ? [] : null;
-		$this->dql             = null;
+		$this->dql = null;
 
 		return $this;
 	}

@@ -71,7 +71,7 @@ final class FieldMapping implements ArrayAccess
 	public string|int|null $default   = null;
 
 	/**
-	 * @param string $type       The type name of the mapped field. Can be one of
+	 * @param string $type The type name of the mapped field. Can be one of
 	 *                           Doctrine's mapping types or a custom mapping type.
 	 * @param string $fieldName  The name of the field in the Entity.
 	 * @param string $columnName The column name. Optional. Defaults to the field name.
@@ -80,11 +80,12 @@ final class FieldMapping implements ArrayAccess
 		public string $type,
 		public string $fieldName,
 		public string $columnName,
-	) {
+	)
+	{
 	}
 
 	/**
-	 * @param array<string, mixed> $mappingArray
+	 * @param         array<string, mixed> $mappingArray
 	 * @phpstan-param array{
 	 *     type: string,
 	 *     fieldName: string,

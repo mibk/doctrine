@@ -9,7 +9,7 @@ use Doctrine\ORM\Query\SqlWalker;
 /**
  * DeleteClause ::= "DELETE" ["FROM"] AbstractSchemaName [["AS"] AliasIdentificationVariable]
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class DeleteClause extends Node
 {

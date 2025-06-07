@@ -12,7 +12,7 @@ use Doctrine\ORM\Query\TokenType;
 /**
  * "BIT_OR" "(" ArithmeticPrimary "," ArithmeticPrimary ")"
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class BitOrFunction extends FunctionNode
 {

@@ -19,8 +19,9 @@ final class ReflectionReadonlyProperty extends ReflectionProperty
 {
 	public function __construct(
 		private readonly ReflectionProperty $wrappedProperty,
-	) {
-		if (! $wrappedProperty->isReadOnly()) {
+	)
+	{
+		if (!$wrappedProperty->isReadOnly()) {
 			throw new InvalidArgumentException('Given property is not readonly.');
 		}
 
@@ -34,7 +35,7 @@ final class ReflectionReadonlyProperty extends ReflectionProperty
 
 	public function setValue(mixed $objectOrValue, mixed $value = null): void
 	{
-		if (func_num_args() < 2 || $objectOrValue === null || ! $this->isInitialized($objectOrValue)) {
+		if (func_num_args() < 2 || $objectOrValue === null || !$this->isInitialized($objectOrValue)) {
 			$this->wrappedProperty->setValue(...func_get_args());
 
 			return;

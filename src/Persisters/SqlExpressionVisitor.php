@@ -24,7 +24,8 @@ class SqlExpressionVisitor extends ExpressionVisitor
 	public function __construct(
 		private readonly BasicEntityPersister $persister,
 		private readonly ClassMetadata $classMetadata,
-	) {
+	)
+	{
 	}
 
 	/** Converts a comparison expression into the target query language output. */
@@ -35,9 +36,9 @@ class SqlExpressionVisitor extends ExpressionVisitor
 
 		if (
 			isset($this->classMetadata->associationMappings[$field]) &&
-			$value !== null &&
-			! is_object($value) &&
-			! in_array($comparison->getOperator(), [Comparison::IN, Comparison::NIN], true)
+				$value !== null &&
+				!is_object($value) &&
+				!in_array($comparison->getOperator(), [Comparison::IN, Comparison::NIN], true)
 		) {
 			throw MatchingAssociationFieldRequiresObject::fromClassAndAssociation(
 				$this->classMetadata->name,
@@ -63,9 +64,9 @@ class SqlExpressionVisitor extends ExpressionVisitor
 
 		return match ($expr->getType()) {
 			CompositeExpression::TYPE_AND => '(' . implode(' AND ', $expressionList) . ')',
-			CompositeExpression::TYPE_OR => '(' . implode(' OR ', $expressionList) . ')',
+			CompositeExpression::TYPE_OR  => '(' . implode(' OR ', $expressionList) . ')',
 			CompositeExpression::TYPE_NOT => 'NOT (' . $expressionList[0] . ')',
-			default => throw new RuntimeException('Unknown composite ' . $expr->getType()),
+			default                       => throw new RuntimeException('Unknown composite ' . $expr->getType()),
 		};
 	}
 

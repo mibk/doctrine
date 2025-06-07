@@ -12,7 +12,7 @@ use function func_num_args;
 /**
  * NewObjectExpression ::= "NEW" IdentificationVariable "(" NewObjectArg {"," NewObjectArg}* ")"
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class NewObjectExpression extends Node
 {

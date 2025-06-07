@@ -66,8 +66,8 @@ class ReadWriteCachedEntityPersister extends AbstractEntityPersister
 
 	public function delete(object $entity): bool
 	{
-		$key     = new EntityCacheKey($this->class->rootEntityName, $this->uow->getEntityIdentifier($entity));
-		$lock    = $this->region->lock($key);
+		$key = new EntityCacheKey($this->class->rootEntityName, $this->uow->getEntityIdentifier($entity));
+		$lock = $this->region->lock($key);
 		$deleted = $this->persister->delete($entity);
 
 		if ($deleted) {
@@ -79,8 +79,8 @@ class ReadWriteCachedEntityPersister extends AbstractEntityPersister
 		}
 
 		$this->queuedCache['delete'][] = [
-			'lock'   => $lock,
-			'key'    => $key,
+			'lock' => $lock,
+			'key'  => $key,
 		];
 
 		return $deleted;
@@ -88,7 +88,7 @@ class ReadWriteCachedEntityPersister extends AbstractEntityPersister
 
 	public function update(object $entity): void
 	{
-		$key  = new EntityCacheKey($this->class->rootEntityName, $this->uow->getEntityIdentifier($entity));
+		$key = new EntityCacheKey($this->class->rootEntityName, $this->uow->getEntityIdentifier($entity));
 		$lock = $this->region->lock($key);
 
 		$this->persister->update($entity);
@@ -98,8 +98,8 @@ class ReadWriteCachedEntityPersister extends AbstractEntityPersister
 		}
 
 		$this->queuedCache['update'][] = [
-			'lock'   => $lock,
-			'key'    => $key,
+			'lock' => $lock,
+			'key'  => $key,
 		];
 	}
 }

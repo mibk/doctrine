@@ -15,6 +15,7 @@ final class Entity implements MappingAttribute
 	public function __construct(
 		public readonly string|null $repositoryClass = null,
 		public readonly bool $readOnly = false,
-	) {
+	)
+	{
 	}
 }

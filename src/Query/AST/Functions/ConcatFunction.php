@@ -12,7 +12,7 @@ use Doctrine\ORM\Query\TokenType;
 /**
  * "CONCAT" "(" StringPrimary "," StringPrimary {"," StringPrimary }* ")"
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class ConcatFunction extends FunctionNode
 {
@@ -40,7 +40,7 @@ class ConcatFunction extends FunctionNode
 		$parser->match(TokenType::T_IDENTIFIER);
 		$parser->match(TokenType::T_OPEN_PARENTHESIS);
 
-		$this->firstStringPrimary  = $parser->StringPrimary();
+		$this->firstStringPrimary = $parser->StringPrimary();
 		$this->concatExpressions[] = $this->firstStringPrimary;
 
 		$parser->match(TokenType::T_COMMA);

@@ -20,7 +20,7 @@ use function is_int;
 /**
  * Provides an enclosed support for parameter inferring.
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 final class ParameterTypeInferer
 {

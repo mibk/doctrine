@@ -12,7 +12,7 @@ use Doctrine\ORM\Query\TokenType;
 /**
  * "LOCATE" "(" StringPrimary "," StringPrimary ["," SimpleArithmeticExpression]")"
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class LocateFunction extends FunctionNode
 {
@@ -25,7 +25,7 @@ class LocateFunction extends FunctionNode
 	{
 		$platform = $sqlWalker->getConnection()->getDatabasePlatform();
 
-		$firstString  = $sqlWalker->walkStringPrimary($this->firstStringPrimary);
+		$firstString = $sqlWalker->walkStringPrimary($this->firstStringPrimary);
 		$secondString = $sqlWalker->walkStringPrimary($this->secondStringPrimary);
 
 		if ($this->simpleArithmeticExpression) {

@@ -9,7 +9,7 @@ use Doctrine\ORM\Query\SqlWalker;
 /**
  * ConditionalExpression ::= ConditionalTerm {"OR" ConditionalTerm}*
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class ConditionalExpression extends Node
 {

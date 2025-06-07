@@ -10,7 +10,7 @@ use Doctrine\ORM\Query\SqlWalker;
 /**
  * LikeExpression ::= StringExpression ["NOT"] "LIKE" string ["ESCAPE" char]
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class LikeExpression extends Node
 {
@@ -19,7 +19,8 @@ class LikeExpression extends Node
 		public InputParameter|FunctionNode|PathExpression|Literal $stringPattern,
 		public Literal|null $escapeChar = null,
 		public bool $not = false,
-	) {
+	)
+	{
 	}
 
 	public function dispatch(SqlWalker $walker): string

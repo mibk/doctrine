@@ -12,6 +12,7 @@ final class GeneratedValue implements MappingAttribute
 	/** @phpstan-param 'AUTO'|'SEQUENCE'|'IDENTITY'|'NONE'|'CUSTOM' $strategy */
 	public function __construct(
 		public readonly string $strategy = 'AUTO',
-	) {
+	)
+	{
 	}
 }

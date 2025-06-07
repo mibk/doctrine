@@ -9,7 +9,7 @@ use Doctrine\ORM\Query\SqlWalker;
 /**
  * ArithmeticTerm ::= ArithmeticFactor {("*" | "/") ArithmeticFactor}*
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class ArithmeticTerm extends Node
 {

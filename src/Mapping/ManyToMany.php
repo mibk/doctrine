@@ -10,8 +10,8 @@ use Attribute;
 final class ManyToMany implements MappingAttribute
 {
 	/**
-	 * @param class-string  $targetEntity
-	 * @param string[]|null $cascade
+	 * @param         class-string  $targetEntity
+	 * @param         string[]|null $cascade
 	 * @phpstan-param 'LAZY'|'EAGER'|'EXTRA_LAZY' $fetch
 	 */
 	public function __construct(
@@ -22,6 +22,7 @@ final class ManyToMany implements MappingAttribute
 		public readonly string $fetch = 'LAZY',
 		public readonly bool $orphanRemoval = false,
 		public readonly string|null $indexBy = null,
-	) {
+	)
+	{
 	}
 }

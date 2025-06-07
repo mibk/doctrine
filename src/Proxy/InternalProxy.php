@@ -9,7 +9,7 @@ use Doctrine\Persistence\Proxy;
 /**
  * @internal
  *
- * @template T of object
+ * @template         T of object
  * @template-extends Proxy<T>
  */
 interface InternalProxy extends Proxy

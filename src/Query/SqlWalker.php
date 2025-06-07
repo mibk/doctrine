@@ -144,11 +144,12 @@ class SqlWalker
 		private readonly Query $query,
 		private readonly ParserResult $parserResult,
 		private array $queryComponents,
-	) {
-		$this->rsm           = $parserResult->getResultSetMapping();
-		$this->em            = $query->getEntityManager();
-		$this->conn          = $this->em->getConnection();
-		$this->platform      = $this->conn->getDatabasePlatform();
+	)
+	{
+		$this->rsm = $parserResult->getResultSetMapping();
+		$this->em = $query->getEntityManager();
+		$this->conn = $this->em->getConnection();
+		$this->platform = $this->conn->getDatabasePlatform();
 		$this->quoteStrategy = $this->em->getConfiguration()->getQuoteStrategy();
 	}
 
@@ -181,7 +182,7 @@ class SqlWalker
 	 *
 	 * @param string $dqlAlias The DQL alias.
 	 *
-	 * @return mixed[]
+	 * @return         mixed[]
 	 * @phpstan-return QueryComponent
 	 */
 	public function getQueryComponent(string $dqlAlias): array
@@ -233,7 +234,7 @@ class SqlWalker
 		return match (true) {
 			$statement instanceof AST\UpdateStatement => $this->createUpdateStatementExecutor($statement),
 			$statement instanceof AST\DeleteStatement => $this->createDeleteStatementExecutor($statement),
-			default => new Exec\SingleSelectExecutor($statement, $this),
+			default                                   => new Exec\SingleSelectExecutor($statement, $this),
 		};
 	}
 
@@ -262,7 +263,7 @@ class SqlWalker
 	{
 		$tableName .= $dqlAlias ? '@[' . $dqlAlias . ']' : '';
 
-		if (! isset($this->tableAliasMap[$tableName])) {
+		if (!isset($this->tableAliasMap[$tableName])) {
 			$this->tableAliasMap[$tableName] = (preg_match('/[a-z]/i', $tableName[0]) ? strtolower($tableName[0]) : 't')
 				. $this->tableAliasCounter++ . '_';
 		}
@@ -298,7 +299,8 @@ class SqlWalker
 	private function generateClassTableInheritanceJoins(
 		ClassMetadata $class,
 		string $dqlAlias,
-	): string {
+	): string
+	{
 		$sql = '';
 
 		$baseTableAlias = $this->getSQLTableAlias($class->getTableName(), $dqlAlias);
@@ -306,7 +308,7 @@ class SqlWalker
 		// INNER JOIN parent class tables
 		foreach ($class->parentClasses as $parentClassName) {
 			$parentClass = $this->em->getClassMetadata($parentClassName);
-			$tableAlias  = $this->getSQLTableAlias($parentClass->getTableName(), $dqlAlias);
+			$tableAlias = $this->getSQLTableAlias($parentClass->getTableName(), $dqlAlias);
 
 			// If this is a joined association we must use left joins to preserve the correct result.
 			$sql .= isset($this->queryComponents[$dqlAlias]['relation']) ? ' LEFT ' : ' INNER ';
@@ -331,7 +333,7 @@ class SqlWalker
 
 		// LEFT JOIN child class tables
 		foreach ($class->subClasses as $subClassName) {
-			$subClass   = $this->em->getClassMetadata($subClassName);
+			$subClass = $this->em->getClassMetadata($subClassName);
 			$tableAlias = $this->getSQLTableAlias($subClass->getTableName(), $dqlAlias);
 
 			$sql .= ' LEFT JOIN ' . $this->quoteStrategy->getTableName($subClass, $this->platform) . ' ' . $tableAlias . ' ON ';
@@ -354,9 +356,9 @@ class SqlWalker
 
 		foreach ($this->selectedClasses as $selectedClass) {
 			$dqlAlias = $selectedClass['dqlAlias'];
-			$qComp    = $this->queryComponents[$dqlAlias];
+			$qComp = $this->queryComponents[$dqlAlias];
 
-			if (! isset($qComp['relation']->orderBy)) {
+			if (!isset($qComp['relation']->orderBy)) {
 				continue;
 			}
 
@@ -365,7 +367,7 @@ class SqlWalker
 
 			foreach ($qComp['relation']->orderBy as $fieldName => $orientation) {
 				$columnName = $this->quoteStrategy->getColumnName($fieldName, $qComp['metadata'], $this->platform);
-				$tableName  = $qComp['metadata']->isInheritanceTypeJoined()
+				$tableName = $qComp['metadata']->isInheritanceTypeJoined()
 					? $persister->getOwningTable($fieldName)
 					: $qComp['metadata']->getTableName();
 
@@ -377,7 +379,7 @@ class SqlWalker
 				}
 
 				$this->orderedColumnsMap[$orderedColumn] = $orientation;
-				$orderedColumns[]                        = $orderedColumn . ' ' . $orientation;
+				$orderedColumns[] = $orderedColumn . ' ' . $orientation;
 			}
 		}
 
@@ -396,7 +398,7 @@ class SqlWalker
 		foreach ($dqlAliases as $dqlAlias) {
 			$class = $this->getMetadataForDqlAlias($dqlAlias);
 
-			if (! $class->isInheritanceTypeSingleTable()) {
+			if (!$class->isInheritanceTypeSingleTable()) {
 				continue;
 			}
 
@@ -404,7 +406,7 @@ class SqlWalker
 				? $this->getSQLTableAlias($class->getTableName(), $dqlAlias) . '.'
 				: '';
 
-			$conn   = $this->em->getConnection();
+			$conn = $this->em->getConnection();
 			$values = [];
 
 			if ($class->discriminatorValue !== null) { // discriminators can be 0
@@ -445,30 +447,31 @@ class SqlWalker
 	private function generateFilterConditionSQL(
 		ClassMetadata $targetEntity,
 		string $targetTableAlias,
-	): string {
-		if (! $this->em->hasFilters()) {
+	): string
+	{
+		if (!$this->em->hasFilters()) {
 			return '';
 		}
 
 		switch ($targetEntity->inheritanceType) {
-			case ClassMetadata::INHERITANCE_TYPE_NONE:
-				break;
-			case ClassMetadata::INHERITANCE_TYPE_JOINED:
-				// The classes in the inheritance will be added to the query one by one,
-				// but only the root node is getting filtered
-				if ($targetEntity->name !== $targetEntity->rootEntityName) {
-					return '';
-				}
-
-				break;
-			case ClassMetadata::INHERITANCE_TYPE_SINGLE_TABLE:
-				// With STI the table will only be queried once, make sure that the filters
-				// are added to the root entity
-				$targetEntity = $this->em->getClassMetadata($targetEntity->rootEntityName);
-				break;
-			default:
-				//@todo: throw exception?
+		case ClassMetadata::INHERITANCE_TYPE_NONE:
+			break;
+		case ClassMetadata::INHERITANCE_TYPE_JOINED:
+			// The classes in the inheritance will be added to the query one by one,
+			// but only the root node is getting filtered
+			if ($targetEntity->name !== $targetEntity->rootEntityName) {
 				return '';
+			}
+
+			break;
+		case ClassMetadata::INHERITANCE_TYPE_SINGLE_TABLE:
+			// With STI the table will only be queried once, make sure that the filters
+			// are added to the root entity
+			$targetEntity = $this->em->getClassMetadata($targetEntity->rootEntityName);
+			break;
+		default:
+			//@todo: throw exception?
+			return '';
 		}
 
 		$filterClauses = [];
@@ -487,7 +490,7 @@ class SqlWalker
 	 */
 	public function walkSelectStatement(AST\SelectStatement $selectStatement): string
 	{
-		$sql       = $this->createSqlForFinalizer($selectStatement);
+		$sql = $this->createSqlForFinalizer($selectStatement);
 		$finalizer = new Exec\SingleSelectSqlFinalizer($sql);
 
 		return $finalizer->finalizeSql($this->query);
@@ -512,7 +515,7 @@ class SqlWalker
 		}
 
 		$orderBySql = $this->generateOrderedCollectionOrderByItems();
-		if (! $selectStatement->orderByClause && $orderBySql) {
+		if (!$selectStatement->orderByClause && $orderBySql) {
 			$sql .= ' ORDER BY ' . $orderBySql;
 		}
 
@@ -527,7 +530,7 @@ class SqlWalker
 
 		if ($lockMode === LockMode::OPTIMISTIC) {
 			foreach ($this->selectedClasses as $selectedClass) {
-				if (! $selectedClass['class']->isVersioned) {
+				if (!$selectedClass['class']->isVersioned) {
 					throw OptimisticLockException::lockFailed($selectedClass['class']->name);
 				}
 			}
@@ -540,7 +543,7 @@ class SqlWalker
 	public function walkUpdateStatement(AST\UpdateStatement $updateStatement): string
 	{
 		$this->useSqlTableAliases = false;
-		$this->rsm->isSelect      = false;
+		$this->rsm->isSelect = false;
 
 		return $this->walkUpdateClause($updateStatement->updateClause)
 			. $this->walkWhereClause($updateStatement->whereClause);
@@ -552,7 +555,7 @@ class SqlWalker
 	public function walkDeleteStatement(AST\DeleteStatement $deleteStatement): string
 	{
 		$this->useSqlTableAliases = false;
-		$this->rsm->isSelect      = false;
+		$this->rsm->isSelect = false;
 
 		return $this->walkDeleteClause($deleteStatement->deleteClause)
 			. $this->walkWhereClause($deleteStatement->whereClause);
@@ -564,9 +567,9 @@ class SqlWalker
 	 */
 	public function walkEntityIdentificationVariable(string $identVariable): string
 	{
-		$class      = $this->getMetadataForDqlAlias($identVariable);
+		$class = $this->getMetadataForDqlAlias($identVariable);
 		$tableAlias = $this->getSQLTableAlias($class->getTableName(), $identVariable);
-		$sqlParts   = [];
+		$sqlParts = [];
 
 		foreach ($this->quoteStrategy->getIdentifierColumnNames($class, $this->platform) as $columnName) {
 			$sqlParts[] = $tableAlias . '.' . $columnName;
@@ -584,7 +587,7 @@ class SqlWalker
 
 		if (
 			$fieldName !== null && $class->isInheritanceTypeJoined() &&
-			isset($class->fieldMappings[$fieldName]->inherited)
+				isset($class->fieldMappings[$fieldName]->inherited)
 		) {
 			$class = $this->em->getClassMetadata($class->fieldMappings[$fieldName]->inherited);
 		}
@@ -601,51 +604,51 @@ class SqlWalker
 		assert($pathExpr->field !== null);
 
 		switch ($pathExpr->type) {
-			case AST\PathExpression::TYPE_STATE_FIELD:
-				$fieldName = $pathExpr->field;
-				$dqlAlias  = $pathExpr->identificationVariable;
-				$class     = $this->getMetadataForDqlAlias($dqlAlias);
+		case AST\PathExpression::TYPE_STATE_FIELD:
+			$fieldName = $pathExpr->field;
+			$dqlAlias = $pathExpr->identificationVariable;
+			$class = $this->getMetadataForDqlAlias($dqlAlias);
 
-				if ($this->useSqlTableAliases) {
-					$sql .= $this->walkIdentificationVariable($dqlAlias, $fieldName) . '.';
-				}
+			if ($this->useSqlTableAliases) {
+				$sql .= $this->walkIdentificationVariable($dqlAlias, $fieldName) . '.';
+			}
 
-				$sql .= $this->quoteStrategy->getColumnName($fieldName, $class, $this->platform);
-				break;
+			$sql .= $this->quoteStrategy->getColumnName($fieldName, $class, $this->platform);
+			break;
 
-			case AST\PathExpression::TYPE_SINGLE_VALUED_ASSOCIATION:
-				// 1- the owning side:
-				//    Just use the foreign key, i.e. u.group_id
-				$fieldName = $pathExpr->field;
-				$dqlAlias  = $pathExpr->identificationVariable;
-				$class     = $this->getMetadataForDqlAlias($dqlAlias);
+		case AST\PathExpression::TYPE_SINGLE_VALUED_ASSOCIATION:
+			// 1- the owning side:
+			//    Just use the foreign key, i.e. u.group_id
+			$fieldName = $pathExpr->field;
+			$dqlAlias = $pathExpr->identificationVariable;
+			$class = $this->getMetadataForDqlAlias($dqlAlias);
 
-				if (isset($class->associationMappings[$fieldName]->inherited)) {
-					$class = $this->em->getClassMetadata($class->associationMappings[$fieldName]->inherited);
-				}
+			if (isset($class->associationMappings[$fieldName]->inherited)) {
+				$class = $this->em->getClassMetadata($class->associationMappings[$fieldName]->inherited);
+			}
 
-				$assoc = $class->associationMappings[$fieldName];
+			$assoc = $class->associationMappings[$fieldName];
 
-				if (! $assoc->isOwningSide()) {
-					throw QueryException::associationPathInverseSideNotSupported($pathExpr);
-				}
+			if (!$assoc->isOwningSide()) {
+				throw QueryException::associationPathInverseSideNotSupported($pathExpr);
+			}
 
-				assert($assoc->isToOneOwningSide());
+			assert($assoc->isToOneOwningSide());
 
-				// COMPOSITE KEYS NOT (YET?) SUPPORTED
-				if (count($assoc->sourceToTargetKeyColumns) > 1) {
-					throw QueryException::associationPathCompositeKeyNotSupported();
-				}
+			// COMPOSITE KEYS NOT (YET?) SUPPORTED
+			if (count($assoc->sourceToTargetKeyColumns) > 1) {
+				throw QueryException::associationPathCompositeKeyNotSupported();
+			}
 
-				if ($this->useSqlTableAliases) {
-					$sql .= $this->getSQLTableAlias($class->getTableName(), $dqlAlias) . '.';
-				}
+			if ($this->useSqlTableAliases) {
+				$sql .= $this->getSQLTableAlias($class->getTableName(), $dqlAlias) . '.';
+			}
 
-				$sql .= reset($assoc->targetToSourceKeyColumns);
-				break;
+			$sql .= reset($assoc->targetToSourceKeyColumns);
+			break;
 
-			default:
-				throw QueryException::invalidPathExpression($pathExpr);
+		default:
+			throw QueryException::invalidPathExpression($pathExpr);
 		}
 
 		return $sql;
@@ -656,24 +659,24 @@ class SqlWalker
 	 */
 	public function walkSelectClause(AST\SelectClause $selectClause): string
 	{
-		$sql                  = 'SELECT ' . ($selectClause->isDistinct ? 'DISTINCT ' : '');
+		$sql = 'SELECT ' . ($selectClause->isDistinct ? 'DISTINCT ' : '');
 		$sqlSelectExpressions = array_filter(array_map($this->walkSelectExpression(...), $selectClause->selectExpressions));
 
 		if ($this->query->getHint(Query::HINT_INTERNAL_ITERATION) === true && $selectClause->isDistinct) {
 			$this->query->setHint(self::HINT_DISTINCT, true);
 		}
 
-		$addMetaColumns = ! $this->query->getHint(Query::HINT_FORCE_PARTIAL_LOAD) &&
+		$addMetaColumns = !$this->query->getHint(Query::HINT_FORCE_PARTIAL_LOAD) &&
 			$this->query->getHydrationMode() === Query::HYDRATE_OBJECT
 			|| $this->query->getHint(Query::HINT_INCLUDE_META_COLUMNS);
 
 		foreach ($this->selectedClasses as $selectedClass) {
-			$class       = $selectedClass['class'];
-			$dqlAlias    = $selectedClass['dqlAlias'];
+			$class = $selectedClass['class'];
+			$dqlAlias = $selectedClass['dqlAlias'];
 			$resultAlias = $selectedClass['resultAlias'];
 
 			// Register as entity or joined entity result
-			if (! isset($this->queryComponents[$dqlAlias]['relation'])) {
+			if (!isset($this->queryComponents[$dqlAlias]['relation'])) {
 				$this->rsm->addEntityResult($class->name, $dqlAlias, $resultAlias);
 			} else {
 				assert(isset($this->queryComponents[$dqlAlias]['parent']));
@@ -688,8 +691,8 @@ class SqlWalker
 
 			if ($class->isInheritanceTypeSingleTable() || $class->isInheritanceTypeJoined()) {
 				// Add discriminator columns to SQL
-				$rootClass   = $this->em->getClassMetadata($class->rootEntityName);
-				$tblAlias    = $this->getSQLTableAlias($rootClass->getTableName(), $dqlAlias);
+				$rootClass = $this->em->getClassMetadata($class->rootEntityName);
+				$tblAlias = $this->getSQLTableAlias($rootClass->getTableName(), $dqlAlias);
 				$discrColumn = $rootClass->getDiscriminatorColumn();
 				$columnAlias = $this->getSQLColumnAlias($discrColumn->name);
 
@@ -697,36 +700,36 @@ class SqlWalker
 
 				$this->rsm->setDiscriminatorColumn($dqlAlias, $columnAlias);
 				$this->rsm->addMetaResult($dqlAlias, $columnAlias, $discrColumn->fieldName, false, $discrColumn->type);
-				if (! empty($discrColumn->enumType)) {
+				if (!empty($discrColumn->enumType)) {
 					$this->rsm->addEnumResult($columnAlias, $discrColumn->enumType);
 				}
 			}
 
 			// Add foreign key columns to SQL, if necessary
-			if (! $addMetaColumns && ! $class->containsForeignIdentifier) {
+			if (!$addMetaColumns && !$class->containsForeignIdentifier) {
 				continue;
 			}
 
 			// Add foreign key columns of class and also parent classes
 			foreach ($class->associationMappings as $assoc) {
 				if (
-					! $assoc->isToOneOwningSide()
-					|| ( ! $addMetaColumns && ! isset($assoc->id))
+					!$assoc->isToOneOwningSide()
+						|| (!$addMetaColumns && !isset($assoc->id))
 				) {
 					continue;
 				}
 
-				$targetClass   = $this->em->getClassMetadata($assoc->targetEntity);
-				$isIdentifier  = (isset($assoc->id) && $assoc->id === true);
-				$owningClass   = isset($assoc->inherited) ? $this->em->getClassMetadata($assoc->inherited) : $class;
+				$targetClass = $this->em->getClassMetadata($assoc->targetEntity);
+				$isIdentifier = (isset($assoc->id) && $assoc->id === true);
+				$owningClass = isset($assoc->inherited) ? $this->em->getClassMetadata($assoc->inherited) : $class;
 				$sqlTableAlias = $this->getSQLTableAlias($owningClass->getTableName(), $dqlAlias);
 
 				foreach ($assoc->joinColumns as $joinColumn) {
-					$columnName  = $joinColumn->name;
+					$columnName = $joinColumn->name;
 					$columnAlias = $this->getSQLColumnAlias($columnName);
-					$columnType  = PersisterHelper::getTypeOfColumn($joinColumn->referencedColumnName, $targetClass, $this->em);
+					$columnType = PersisterHelper::getTypeOfColumn($joinColumn->referencedColumnName, $targetClass, $this->em);
 
-					$quotedColumnName       = $this->quoteStrategy->getJoinColumnName($joinColumn, $class, $this->platform);
+					$quotedColumnName = $this->quoteStrategy->getJoinColumnName($joinColumn, $class, $this->platform);
 					$sqlSelectExpressions[] = $sqlTableAlias . '.' . $quotedColumnName . ' AS ' . $columnAlias;
 
 					$this->rsm->addMetaResult($dqlAlias, $columnAlias, $columnName, $isIdentifier, $columnType);
@@ -734,13 +737,13 @@ class SqlWalker
 			}
 
 			// Add foreign key columns to SQL, if necessary
-			if (! $addMetaColumns) {
+			if (!$addMetaColumns) {
 				continue;
 			}
 
 			// Add foreign key columns of subclasses
 			foreach ($class->subClasses as $subClassName) {
-				$subClass      = $this->em->getClassMetadata($subClassName);
+				$subClass = $this->em->getClassMetadata($subClassName);
 				$sqlTableAlias = $this->getSQLTableAlias($subClass->getTableName(), $dqlAlias);
 
 				foreach ($subClass->associationMappings as $assoc) {
@@ -753,11 +756,11 @@ class SqlWalker
 						$targetClass = $this->em->getClassMetadata($assoc->targetEntity);
 
 						foreach ($assoc->joinColumns as $joinColumn) {
-							$columnName  = $joinColumn->name;
+							$columnName = $joinColumn->name;
 							$columnAlias = $this->getSQLColumnAlias($columnName);
-							$columnType  = PersisterHelper::getTypeOfColumn($joinColumn->referencedColumnName, $targetClass, $this->em);
+							$columnType = PersisterHelper::getTypeOfColumn($joinColumn->referencedColumnName, $targetClass, $this->em);
 
-							$quotedColumnName       = $this->quoteStrategy->getJoinColumnName($joinColumn, $subClass, $this->platform);
+							$quotedColumnName = $this->quoteStrategy->getJoinColumnName($joinColumn, $subClass, $this->platform);
 							$sqlSelectExpressions[] = $sqlTableAlias . '.' . $quotedColumnName . ' AS ' . $columnAlias;
 
 							$this->rsm->addMetaResult($dqlAlias, $columnAlias, $columnName, $subClass->isIdentifier($columnName), $columnType);
@@ -776,7 +779,7 @@ class SqlWalker
 	public function walkFromClause(AST\FromClause $fromClause): string
 	{
 		$identificationVarDecls = $fromClause->identificationVariableDeclarations;
-		$sqlParts               = [];
+		$sqlParts = [];
 
 		foreach ($identificationVarDecls as $identificationVariableDecl) {
 			$sqlParts[] = $this->walkIdentificationVariableDeclaration($identificationVariableDecl);
@@ -809,40 +812,40 @@ class SqlWalker
 	public function walkIndexBy(AST\IndexBy $indexBy): void
 	{
 		$pathExpression = $indexBy->singleValuedPathExpression;
-		$alias          = $pathExpression->identificationVariable;
+		$alias = $pathExpression->identificationVariable;
 		assert($pathExpression->field !== null);
 
 		switch ($pathExpression->type) {
-			case AST\PathExpression::TYPE_STATE_FIELD:
-				$field = $pathExpression->field;
-				break;
+		case AST\PathExpression::TYPE_STATE_FIELD:
+			$field = $pathExpression->field;
+			break;
 
-			case AST\PathExpression::TYPE_SINGLE_VALUED_ASSOCIATION:
-				// Just use the foreign key, i.e. u.group_id
-				$fieldName = $pathExpression->field;
-				$class     = $this->getMetadataForDqlAlias($alias);
+		case AST\PathExpression::TYPE_SINGLE_VALUED_ASSOCIATION:
+			// Just use the foreign key, i.e. u.group_id
+			$fieldName = $pathExpression->field;
+			$class = $this->getMetadataForDqlAlias($alias);
 
-				if (isset($class->associationMappings[$fieldName]->inherited)) {
-					$class = $this->em->getClassMetadata($class->associationMappings[$fieldName]->inherited);
-				}
+			if (isset($class->associationMappings[$fieldName]->inherited)) {
+				$class = $this->em->getClassMetadata($class->associationMappings[$fieldName]->inherited);
+			}
 
-				$association = $class->associationMappings[$fieldName];
+			$association = $class->associationMappings[$fieldName];
 
-				if (! $association->isOwningSide()) {
-					throw QueryException::associationPathInverseSideNotSupported($pathExpression);
-				}
+			if (!$association->isOwningSide()) {
+				throw QueryException::associationPathInverseSideNotSupported($pathExpression);
+			}
 
-				assert($association->isToOneOwningSide());
+			assert($association->isToOneOwningSide());
 
-				if (count($association->sourceToTargetKeyColumns) > 1) {
-					throw QueryException::associationPathCompositeKeyNotSupported();
-				}
+			if (count($association->sourceToTargetKeyColumns) > 1) {
+				throw QueryException::associationPathCompositeKeyNotSupported();
+			}
 
-				$field = reset($association->targetToSourceKeyColumns);
-				break;
+			$field = reset($association->targetToSourceKeyColumns);
+			break;
 
-			default:
-				throw QueryException::invalidPathExpression($pathExpression);
+		default:
+			throw QueryException::invalidPathExpression($pathExpression);
 		}
 
 		if (isset($this->scalarFields[$alias][$field])) {
@@ -868,8 +871,9 @@ class SqlWalker
 	private function generateRangeVariableDeclarationSQL(
 		AST\RangeVariableDeclaration $rangeVariableDeclaration,
 		bool $buildNestedJoins,
-	): string {
-		$class    = $this->em->getClassMetadata($rangeVariableDeclaration->abstractSchemaName);
+	): string
+	{
+		$class = $this->em->getClassMetadata($rangeVariableDeclaration->abstractSchemaName);
 		$dqlAlias = $rangeVariableDeclaration->aliasIdentificationVariable;
 
 		if ($rangeVariableDeclaration->isRoot) {
@@ -878,17 +882,17 @@ class SqlWalker
 
 		$sql = $this->platform->appendLockHint(
 			$this->quoteStrategy->getTableName($class, $this->platform) . ' ' .
-			$this->getSQLTableAlias($class->getTableName(), $dqlAlias),
+				$this->getSQLTableAlias($class->getTableName(), $dqlAlias),
 			$this->query->getHint(Query::HINT_LOCK_MODE) ?: LockMode::NONE,
 		);
 
-		if (! $class->isInheritanceTypeJoined()) {
+		if (!$class->isInheritanceTypeJoined()) {
 			return $sql;
 		}
 
 		$classTableInheritanceJoins = $this->generateClassTableInheritanceJoins($class, $dqlAlias);
 
-		if (! $buildNestedJoins) {
+		if (!$buildNestedJoins) {
 			return $sql . $classTableInheritanceJoins;
 		}
 
@@ -906,17 +910,18 @@ class SqlWalker
 		AST\JoinAssociationDeclaration $joinAssociationDeclaration,
 		int $joinType = AST\Join::JOIN_TYPE_INNER,
 		AST\ConditionalExpression|AST\Phase2OptimizableConditional|null $condExpr = null,
-	): string {
+	): string
+	{
 		$sql = '';
 
 		$associationPathExpression = $joinAssociationDeclaration->joinAssociationPathExpression;
-		$joinedDqlAlias            = $joinAssociationDeclaration->aliasIdentificationVariable;
-		$indexBy                   = $joinAssociationDeclaration->indexBy;
+		$joinedDqlAlias = $joinAssociationDeclaration->aliasIdentificationVariable;
+		$indexBy = $joinAssociationDeclaration->indexBy;
 
 		$relation = $this->queryComponents[$joinedDqlAlias]['relation'] ?? null;
 		assert($relation !== null);
-		$targetClass     = $this->em->getClassMetadata($relation->targetEntity);
-		$sourceClass     = $this->em->getClassMetadata($relation->sourceEntity);
+		$targetClass = $this->em->getClassMetadata($relation->targetEntity);
+		$sourceClass = $this->em->getClassMetadata($relation->sourceEntity);
 		$targetTableName = $this->quoteStrategy->getTableName($targetClass, $this->platform);
 
 		$targetTableAlias = $this->getSQLTableAlias($targetClass->getTableName(), $joinedDqlAlias);
@@ -925,7 +930,7 @@ class SqlWalker
 		// Ensure we got the owning side, since it has all mapping info
 		$assoc = $this->em->getMetadataFactory()->getOwningSide($relation);
 
-		if ($this->query->getHint(Query::HINT_INTERNAL_ITERATION) === true && (! $this->query->getHint(self::HINT_DISTINCT) || isset($this->selectedClasses[$joinedDqlAlias]))) {
+		if ($this->query->getHint(Query::HINT_INTERNAL_ITERATION) === true && (!$this->query->getHint(self::HINT_DISTINCT) || isset($this->selectedClasses[$joinedDqlAlias]))) {
 			if ($relation->isToMany()) {
 				throw QueryException::iterateWithFetchJoinNotAllowed($assoc);
 			}
@@ -941,100 +946,100 @@ class SqlWalker
 		// be the owning side and previously we ensured that $assoc is always the owning side of the associations.
 		// The owning side is necessary at this point because only it contains the JoinColumn information.
 		switch (true) {
-			case $assoc->isToOne():
-				assert($assoc->isToOneOwningSide());
-				$conditions = [];
+		case $assoc->isToOne():
+			assert($assoc->isToOneOwningSide());
+			$conditions = [];
 
-				foreach ($assoc->joinColumns as $joinColumn) {
-					$quotedSourceColumn = $this->quoteStrategy->getJoinColumnName($joinColumn, $targetClass, $this->platform);
-					$quotedTargetColumn = $this->quoteStrategy->getReferencedJoinColumnName($joinColumn, $targetClass, $this->platform);
+			foreach ($assoc->joinColumns as $joinColumn) {
+				$quotedSourceColumn = $this->quoteStrategy->getJoinColumnName($joinColumn, $targetClass, $this->platform);
+				$quotedTargetColumn = $this->quoteStrategy->getReferencedJoinColumnName($joinColumn, $targetClass, $this->platform);
 
-					if ($relation->isOwningSide()) {
-						$conditions[] = $sourceTableAlias . '.' . $quotedSourceColumn . ' = ' . $targetTableAlias . '.' . $quotedTargetColumn;
+				if ($relation->isOwningSide()) {
+					$conditions[] = $sourceTableAlias . '.' . $quotedSourceColumn . ' = ' . $targetTableAlias . '.' . $quotedTargetColumn;
 
-						continue;
-					}
-
-					$conditions[] = $sourceTableAlias . '.' . $quotedTargetColumn . ' = ' . $targetTableAlias . '.' . $quotedSourceColumn;
+					continue;
 				}
 
-				// Apply remaining inheritance restrictions
-				$discrSql = $this->generateDiscriminatorColumnConditionSQL([$joinedDqlAlias]);
+				$conditions[] = $sourceTableAlias . '.' . $quotedTargetColumn . ' = ' . $targetTableAlias . '.' . $quotedSourceColumn;
+			}
 
-				if ($discrSql) {
-					$conditions[] = $discrSql;
-				}
+			// Apply remaining inheritance restrictions
+			$discrSql = $this->generateDiscriminatorColumnConditionSQL([$joinedDqlAlias]);
 
-				// Apply the filters
-				$filterExpr = $this->generateFilterConditionSQL($targetClass, $targetTableAlias);
+			if ($discrSql) {
+				$conditions[] = $discrSql;
+			}
 
-				if ($filterExpr) {
-					$conditions[] = $filterExpr;
-				}
+			// Apply the filters
+			$filterExpr = $this->generateFilterConditionSQL($targetClass, $targetTableAlias);
 
-				$targetTableJoin = [
-					'table' => $targetTableName . ' ' . $targetTableAlias,
-					'condition' => implode(' AND ', $conditions),
-				];
-				break;
+			if ($filterExpr) {
+				$conditions[] = $filterExpr;
+			}
 
-			case $assoc->isManyToMany():
-				// Join relation table
-				$joinTable      = $assoc->joinTable;
-				$joinTableAlias = $this->getSQLTableAlias($joinTable->name, $joinedDqlAlias);
-				$joinTableName  = $this->quoteStrategy->getJoinTableName($assoc, $sourceClass, $this->platform);
+			$targetTableJoin = [
+				'table'     => $targetTableName . ' ' . $targetTableAlias,
+				'condition' => implode(' AND ', $conditions),
+			];
+			break;
 
-				$conditions      = [];
-				$relationColumns = $relation->isOwningSide()
-					? $assoc->joinTable->joinColumns
-					: $assoc->joinTable->inverseJoinColumns;
+		case $assoc->isManyToMany():
+			// Join relation table
+			$joinTable = $assoc->joinTable;
+			$joinTableAlias = $this->getSQLTableAlias($joinTable->name, $joinedDqlAlias);
+			$joinTableName = $this->quoteStrategy->getJoinTableName($assoc, $sourceClass, $this->platform);
 
-				foreach ($relationColumns as $joinColumn) {
-					$quotedSourceColumn = $this->quoteStrategy->getJoinColumnName($joinColumn, $targetClass, $this->platform);
-					$quotedTargetColumn = $this->quoteStrategy->getReferencedJoinColumnName($joinColumn, $targetClass, $this->platform);
+			$conditions = [];
+			$relationColumns = $relation->isOwningSide()
+				? $assoc->joinTable->joinColumns
+				: $assoc->joinTable->inverseJoinColumns;
 
-					$conditions[] = $sourceTableAlias . '.' . $quotedTargetColumn . ' = ' . $joinTableAlias . '.' . $quotedSourceColumn;
-				}
+			foreach ($relationColumns as $joinColumn) {
+				$quotedSourceColumn = $this->quoteStrategy->getJoinColumnName($joinColumn, $targetClass, $this->platform);
+				$quotedTargetColumn = $this->quoteStrategy->getReferencedJoinColumnName($joinColumn, $targetClass, $this->platform);
 
-				$sql .= $joinTableName . ' ' . $joinTableAlias . ' ON ' . implode(' AND ', $conditions);
+				$conditions[] = $sourceTableAlias . '.' . $quotedTargetColumn . ' = ' . $joinTableAlias . '.' . $quotedSourceColumn;
+			}
 
-				// Join target table
-				$sql .= $joinType === AST\Join::JOIN_TYPE_LEFT || $joinType === AST\Join::JOIN_TYPE_LEFTOUTER ? ' LEFT JOIN ' : ' INNER JOIN ';
+			$sql .= $joinTableName . ' ' . $joinTableAlias . ' ON ' . implode(' AND ', $conditions);
 
-				$conditions      = [];
-				$relationColumns = $relation->isOwningSide()
-					? $assoc->joinTable->inverseJoinColumns
-					: $assoc->joinTable->joinColumns;
+			// Join target table
+			$sql .= $joinType === AST\Join::JOIN_TYPE_LEFT || $joinType === AST\Join::JOIN_TYPE_LEFTOUTER ? ' LEFT JOIN ' : ' INNER JOIN ';
 
-				foreach ($relationColumns as $joinColumn) {
-					$quotedSourceColumn = $this->quoteStrategy->getJoinColumnName($joinColumn, $targetClass, $this->platform);
-					$quotedTargetColumn = $this->quoteStrategy->getReferencedJoinColumnName($joinColumn, $targetClass, $this->platform);
+			$conditions = [];
+			$relationColumns = $relation->isOwningSide()
+				? $assoc->joinTable->inverseJoinColumns
+				: $assoc->joinTable->joinColumns;
 
-					$conditions[] = $targetTableAlias . '.' . $quotedTargetColumn . ' = ' . $joinTableAlias . '.' . $quotedSourceColumn;
-				}
+			foreach ($relationColumns as $joinColumn) {
+				$quotedSourceColumn = $this->quoteStrategy->getJoinColumnName($joinColumn, $targetClass, $this->platform);
+				$quotedTargetColumn = $this->quoteStrategy->getReferencedJoinColumnName($joinColumn, $targetClass, $this->platform);
 
-				// Apply remaining inheritance restrictions
-				$discrSql = $this->generateDiscriminatorColumnConditionSQL([$joinedDqlAlias]);
+				$conditions[] = $targetTableAlias . '.' . $quotedTargetColumn . ' = ' . $joinTableAlias . '.' . $quotedSourceColumn;
+			}
 
-				if ($discrSql) {
-					$conditions[] = $discrSql;
-				}
+			// Apply remaining inheritance restrictions
+			$discrSql = $this->generateDiscriminatorColumnConditionSQL([$joinedDqlAlias]);
 
-				// Apply the filters
-				$filterExpr = $this->generateFilterConditionSQL($targetClass, $targetTableAlias);
+			if ($discrSql) {
+				$conditions[] = $discrSql;
+			}
 
-				if ($filterExpr) {
-					$conditions[] = $filterExpr;
-				}
+			// Apply the filters
+			$filterExpr = $this->generateFilterConditionSQL($targetClass, $targetTableAlias);
 
-				$targetTableJoin = [
-					'table' => $targetTableName . ' ' . $targetTableAlias,
-					'condition' => implode(' AND ', $conditions),
-				];
-				break;
+			if ($filterExpr) {
+				$conditions[] = $filterExpr;
+			}
 
-			default:
-				throw new BadMethodCallException('Type of association must be one of *_TO_ONE or MANY_TO_MANY');
+			$targetTableJoin = [
+				'table'     => $targetTableName . ' ' . $targetTableAlias,
+				'condition' => implode(' AND ', $conditions),
+			];
+			break;
+
+		default:
+			throw new BadMethodCallException('Type of association must be one of *_TO_ONE or MANY_TO_MANY');
 		}
 
 		// Handle WITH clause
@@ -1097,7 +1102,7 @@ class SqlWalker
 	{
 		$type = strtoupper($orderByItem->type);
 		$expr = $orderByItem->expression;
-		$sql  = $expr instanceof AST\Node
+		$sql = $expr instanceof AST\Node
 			? $expr->dispatch($this)
 			: $this->walkResultVariable($this->queryComponents[$expr]['token']->value);
 
@@ -1123,7 +1128,7 @@ class SqlWalker
 	 */
 	public function walkJoin(AST\Join $join): string
 	{
-		$joinType        = $join->joinType;
+		$joinType = $join->joinType;
 		$joinDeclaration = $join->joinAssociationDeclaration;
 
 		$sql = $joinType === AST\Join::JOIN_TYPE_LEFT || $joinType === AST\Join::JOIN_TYPE_LEFTOUTER
@@ -1131,46 +1136,46 @@ class SqlWalker
 			: ' INNER JOIN ';
 
 		switch (true) {
-			case $joinDeclaration instanceof AST\RangeVariableDeclaration:
-				$class      = $this->em->getClassMetadata($joinDeclaration->abstractSchemaName);
-				$dqlAlias   = $joinDeclaration->aliasIdentificationVariable;
-				$tableAlias = $this->getSQLTableAlias($class->table['name'], $dqlAlias);
-				$conditions = [];
+		case $joinDeclaration instanceof AST\RangeVariableDeclaration:
+			$class = $this->em->getClassMetadata($joinDeclaration->abstractSchemaName);
+			$dqlAlias = $joinDeclaration->aliasIdentificationVariable;
+			$tableAlias = $this->getSQLTableAlias($class->table['name'], $dqlAlias);
+			$conditions = [];
 
-				if ($join->conditionalExpression) {
-					$conditions[] = '(' . $this->walkConditionalExpression($join->conditionalExpression) . ')';
-				}
+			if ($join->conditionalExpression) {
+				$conditions[] = '(' . $this->walkConditionalExpression($join->conditionalExpression) . ')';
+			}
 
-				$isUnconditionalJoin = $conditions === [];
-				$condExprConjunction = $class->isInheritanceTypeJoined() && $joinType !== AST\Join::JOIN_TYPE_LEFT && $joinType !== AST\Join::JOIN_TYPE_LEFTOUTER && $isUnconditionalJoin
-					? ' AND '
-					: ' ON ';
+			$isUnconditionalJoin = $conditions === [];
+			$condExprConjunction = $class->isInheritanceTypeJoined() && $joinType !== AST\Join::JOIN_TYPE_LEFT && $joinType !== AST\Join::JOIN_TYPE_LEFTOUTER && $isUnconditionalJoin
+				? ' AND '
+				: ' ON ';
 
-				$sql .= $this->generateRangeVariableDeclarationSQL($joinDeclaration, ! $isUnconditionalJoin);
+			$sql .= $this->generateRangeVariableDeclarationSQL($joinDeclaration, !$isUnconditionalJoin);
 
-				// Apply remaining inheritance restrictions
-				$discrSql = $this->generateDiscriminatorColumnConditionSQL([$dqlAlias]);
+			// Apply remaining inheritance restrictions
+			$discrSql = $this->generateDiscriminatorColumnConditionSQL([$dqlAlias]);
 
-				if ($discrSql) {
-					$conditions[] = $discrSql;
-				}
+			if ($discrSql) {
+				$conditions[] = $discrSql;
+			}
 
-				// Apply the filters
-				$filterExpr = $this->generateFilterConditionSQL($class, $tableAlias);
+			// Apply the filters
+			$filterExpr = $this->generateFilterConditionSQL($class, $tableAlias);
 
-				if ($filterExpr) {
-					$conditions[] = $filterExpr;
-				}
+			if ($filterExpr) {
+				$conditions[] = $filterExpr;
+			}
 
-				if ($conditions) {
-					$sql .= $condExprConjunction . implode(' AND ', $conditions);
-				}
+			if ($conditions) {
+				$sql .= $condExprConjunction . implode(' AND ', $conditions);
+			}
 
-				break;
+			break;
 
-			case $joinDeclaration instanceof AST\JoinAssociationDeclaration:
-				$sql .= $this->walkJoinAssociationDeclaration($joinDeclaration, $joinType, $join->conditionalExpression);
-				break;
+		case $joinDeclaration instanceof AST\JoinAssociationDeclaration:
+			$sql .= $this->walkJoinAssociationDeclaration($joinDeclaration, $joinType, $join->conditionalExpression);
+			break;
 		}
 
 		return $sql;
@@ -1247,190 +1252,190 @@ class SqlWalker
 	 */
 	public function walkSelectExpression(AST\SelectExpression $selectExpression): string
 	{
-		$sql    = '';
-		$expr   = $selectExpression->expression;
+		$sql = '';
+		$expr = $selectExpression->expression;
 		$hidden = $selectExpression->hiddenAliasResultVariable;
 
 		switch (true) {
-			case $expr instanceof AST\PathExpression:
-				if ($expr->type !== AST\PathExpression::TYPE_STATE_FIELD) {
-					throw QueryException::invalidPathExpression($expr);
+		case $expr instanceof AST\PathExpression:
+			if ($expr->type !== AST\PathExpression::TYPE_STATE_FIELD) {
+				throw QueryException::invalidPathExpression($expr);
+			}
+
+			assert($expr->field !== null);
+			$fieldName = $expr->field;
+			$dqlAlias = $expr->identificationVariable;
+			$class = $this->getMetadataForDqlAlias($dqlAlias);
+
+			$resultAlias = $selectExpression->fieldIdentificationVariable ?: $fieldName;
+			$tableName = $class->isInheritanceTypeJoined()
+				? $this->em->getUnitOfWork()->getEntityPersister($class->name)->getOwningTable($fieldName)
+				: $class->getTableName();
+
+			$sqlTableAlias = $this->getSQLTableAlias($tableName, $dqlAlias);
+			$fieldMapping = $class->fieldMappings[$fieldName];
+			$columnName = $this->quoteStrategy->getColumnName($fieldName, $class, $this->platform);
+			$columnAlias = $this->getSQLColumnAlias($fieldMapping->columnName);
+			$col = $sqlTableAlias . '.' . $columnName;
+
+			$type = Type::getType($fieldMapping->type);
+			$col = $type->convertToPHPValueSQL($col, $this->conn->getDatabasePlatform());
+
+			$sql .= $col . ' AS ' . $columnAlias;
+
+			$this->scalarResultAliasMap[$resultAlias] = $columnAlias;
+
+			if (!$hidden) {
+				$this->rsm->addScalarResult($columnAlias, $resultAlias, $fieldMapping->type);
+				$this->scalarFields[$dqlAlias][$fieldName] = $columnAlias;
+
+				if (!empty($fieldMapping->enumType)) {
+					$this->rsm->addEnumResult($columnAlias, $fieldMapping->enumType);
+				}
+			}
+
+			break;
+
+		case $expr instanceof AST\AggregateExpression:
+		case $expr instanceof AST\Functions\FunctionNode:
+		case $expr instanceof AST\SimpleArithmeticExpression:
+		case $expr instanceof AST\ArithmeticTerm:
+		case $expr instanceof AST\ArithmeticFactor:
+		case $expr instanceof AST\ParenthesisExpression:
+		case $expr instanceof AST\Literal:
+		case $expr instanceof AST\NullIfExpression:
+		case $expr instanceof AST\CoalesceExpression:
+		case $expr instanceof AST\GeneralCaseExpression:
+		case $expr instanceof AST\SimpleCaseExpression:
+			$columnAlias = $this->getSQLColumnAlias('sclr');
+			$resultAlias = $selectExpression->fieldIdentificationVariable ?: $this->scalarResultCounter++;
+
+			$sql .= $expr->dispatch($this) . ' AS ' . $columnAlias;
+
+			$this->scalarResultAliasMap[$resultAlias] = $columnAlias;
+
+			if ($hidden) {
+				break;
+			}
+
+			if (! $expr instanceof Query\AST\TypedExpression) {
+				// Conceptually we could resolve field type here by traverse through AST to retrieve field type,
+				// but this is not a feasible solution; assume 'string'.
+				$this->rsm->addScalarResult($columnAlias, $resultAlias, 'string');
+
+				break;
+			}
+
+			$this->rsm->addScalarResult($columnAlias, $resultAlias, Type::getTypeRegistry()->lookupName($expr->getReturnType()));
+
+			break;
+
+		case $expr instanceof AST\Subselect:
+			$columnAlias = $this->getSQLColumnAlias('sclr');
+			$resultAlias = $selectExpression->fieldIdentificationVariable ?: $this->scalarResultCounter++;
+
+			$sql .= '(' . $this->walkSubselect($expr) . ') AS ' . $columnAlias;
+
+			$this->scalarResultAliasMap[$resultAlias] = $columnAlias;
+
+			if (!$hidden) {
+				// We cannot resolve field type here; assume 'string'.
+				$this->rsm->addScalarResult($columnAlias, $resultAlias, 'string');
+			}
+
+			break;
+
+		case $expr instanceof AST\NewObjectExpression:
+			$sql .= $this->walkNewObject($expr, $selectExpression->fieldIdentificationVariable);
+			break;
+
+		default:
+			// IdentificationVariable or PartialObjectExpression
+			if ($expr instanceof AST\PartialObjectExpression) {
+				$this->query->setHint(self::HINT_PARTIAL, true);
+
+				$dqlAlias = $expr->identificationVariable;
+				$partialFieldSet = $expr->partialFieldSet;
+			} else {
+				$dqlAlias = $expr;
+				$partialFieldSet = [];
+			}
+
+			$class = $this->getMetadataForDqlAlias($dqlAlias);
+			$resultAlias = $selectExpression->fieldIdentificationVariable ?: null;
+
+			if (!isset($this->selectedClasses[$dqlAlias])) {
+				$this->selectedClasses[$dqlAlias] = [
+					'class'       => $class,
+					'dqlAlias'    => $dqlAlias,
+					'resultAlias' => $resultAlias,
+				];
+			}
+
+			$sqlParts = [];
+
+			// Select all fields from the queried class
+			foreach ($class->fieldMappings as $fieldName => $mapping) {
+				if ($partialFieldSet && !in_array($fieldName, $partialFieldSet, true)) {
+					continue;
 				}
 
-				assert($expr->field !== null);
-				$fieldName = $expr->field;
-				$dqlAlias  = $expr->identificationVariable;
-				$class     = $this->getMetadataForDqlAlias($dqlAlias);
-
-				$resultAlias = $selectExpression->fieldIdentificationVariable ?: $fieldName;
-				$tableName   = $class->isInheritanceTypeJoined()
-					? $this->em->getUnitOfWork()->getEntityPersister($class->name)->getOwningTable($fieldName)
+				$tableName = isset($mapping->inherited)
+					? $this->em->getClassMetadata($mapping->inherited)->getTableName()
 					: $class->getTableName();
 
 				$sqlTableAlias = $this->getSQLTableAlias($tableName, $dqlAlias);
-				$fieldMapping  = $class->fieldMappings[$fieldName];
-				$columnName    = $this->quoteStrategy->getColumnName($fieldName, $class, $this->platform);
-				$columnAlias   = $this->getSQLColumnAlias($fieldMapping->columnName);
-				$col           = $sqlTableAlias . '.' . $columnName;
+				$columnAlias = $this->getSQLColumnAlias($mapping->columnName);
+				$quotedColumnName = $this->quoteStrategy->getColumnName($fieldName, $class, $this->platform);
 
-				$type = Type::getType($fieldMapping->type);
-				$col  = $type->convertToPHPValueSQL($col, $this->conn->getDatabasePlatform());
+				$col = $sqlTableAlias . '.' . $quotedColumnName;
 
-				$sql .= $col . ' AS ' . $columnAlias;
+				$type = Type::getType($mapping->type);
+				$col = $type->convertToPHPValueSQL($col, $this->platform);
 
-				$this->scalarResultAliasMap[$resultAlias] = $columnAlias;
+				$sqlParts[] = $col . ' AS ' . $columnAlias;
 
-				if (! $hidden) {
-					$this->rsm->addScalarResult($columnAlias, $resultAlias, $fieldMapping->type);
-					$this->scalarFields[$dqlAlias][$fieldName] = $columnAlias;
+				$this->scalarResultAliasMap[$resultAlias][] = $columnAlias;
 
-					if (! empty($fieldMapping->enumType)) {
-						$this->rsm->addEnumResult($columnAlias, $fieldMapping->enumType);
-					}
+				$this->rsm->addFieldResult($dqlAlias, $columnAlias, $fieldName, $class->name);
+
+				if (!empty($mapping->enumType)) {
+					$this->rsm->addEnumResult($columnAlias, $mapping->enumType);
 				}
+			}
 
-				break;
+			// Add any additional fields of subclasses (excluding inherited fields)
+			// 1) on Single Table Inheritance: always, since its marginal overhead
+			// 2) on Class Table Inheritance only if partial objects are disallowed,
+			//    since it requires outer joining subtables.
+			if ($class->isInheritanceTypeSingleTable() || !$this->query->getHint(Query::HINT_FORCE_PARTIAL_LOAD)) {
+				foreach ($class->subClasses as $subClassName) {
+					$subClass = $this->em->getClassMetadata($subClassName);
+					$sqlTableAlias = $this->getSQLTableAlias($subClass->getTableName(), $dqlAlias);
 
-			case $expr instanceof AST\AggregateExpression:
-			case $expr instanceof AST\Functions\FunctionNode:
-			case $expr instanceof AST\SimpleArithmeticExpression:
-			case $expr instanceof AST\ArithmeticTerm:
-			case $expr instanceof AST\ArithmeticFactor:
-			case $expr instanceof AST\ParenthesisExpression:
-			case $expr instanceof AST\Literal:
-			case $expr instanceof AST\NullIfExpression:
-			case $expr instanceof AST\CoalesceExpression:
-			case $expr instanceof AST\GeneralCaseExpression:
-			case $expr instanceof AST\SimpleCaseExpression:
-				$columnAlias = $this->getSQLColumnAlias('sclr');
-				$resultAlias = $selectExpression->fieldIdentificationVariable ?: $this->scalarResultCounter++;
-
-				$sql .= $expr->dispatch($this) . ' AS ' . $columnAlias;
-
-				$this->scalarResultAliasMap[$resultAlias] = $columnAlias;
-
-				if ($hidden) {
-					break;
-				}
-
-				if (! $expr instanceof Query\AST\TypedExpression) {
-					// Conceptually we could resolve field type here by traverse through AST to retrieve field type,
-					// but this is not a feasible solution; assume 'string'.
-					$this->rsm->addScalarResult($columnAlias, $resultAlias, 'string');
-
-					break;
-				}
-
-				$this->rsm->addScalarResult($columnAlias, $resultAlias, Type::getTypeRegistry()->lookupName($expr->getReturnType()));
-
-				break;
-
-			case $expr instanceof AST\Subselect:
-				$columnAlias = $this->getSQLColumnAlias('sclr');
-				$resultAlias = $selectExpression->fieldIdentificationVariable ?: $this->scalarResultCounter++;
-
-				$sql .= '(' . $this->walkSubselect($expr) . ') AS ' . $columnAlias;
-
-				$this->scalarResultAliasMap[$resultAlias] = $columnAlias;
-
-				if (! $hidden) {
-					// We cannot resolve field type here; assume 'string'.
-					$this->rsm->addScalarResult($columnAlias, $resultAlias, 'string');
-				}
-
-				break;
-
-			case $expr instanceof AST\NewObjectExpression:
-				$sql .= $this->walkNewObject($expr, $selectExpression->fieldIdentificationVariable);
-				break;
-
-			default:
-				// IdentificationVariable or PartialObjectExpression
-				if ($expr instanceof AST\PartialObjectExpression) {
-					$this->query->setHint(self::HINT_PARTIAL, true);
-
-					$dqlAlias        = $expr->identificationVariable;
-					$partialFieldSet = $expr->partialFieldSet;
-				} else {
-					$dqlAlias        = $expr;
-					$partialFieldSet = [];
-				}
-
-				$class       = $this->getMetadataForDqlAlias($dqlAlias);
-				$resultAlias = $selectExpression->fieldIdentificationVariable ?: null;
-
-				if (! isset($this->selectedClasses[$dqlAlias])) {
-					$this->selectedClasses[$dqlAlias] = [
-						'class'       => $class,
-						'dqlAlias'    => $dqlAlias,
-						'resultAlias' => $resultAlias,
-					];
-				}
-
-				$sqlParts = [];
-
-				// Select all fields from the queried class
-				foreach ($class->fieldMappings as $fieldName => $mapping) {
-					if ($partialFieldSet && ! in_array($fieldName, $partialFieldSet, true)) {
-						continue;
-					}
-
-					$tableName = isset($mapping->inherited)
-						? $this->em->getClassMetadata($mapping->inherited)->getTableName()
-						: $class->getTableName();
-
-					$sqlTableAlias    = $this->getSQLTableAlias($tableName, $dqlAlias);
-					$columnAlias      = $this->getSQLColumnAlias($mapping->columnName);
-					$quotedColumnName = $this->quoteStrategy->getColumnName($fieldName, $class, $this->platform);
-
-					$col = $sqlTableAlias . '.' . $quotedColumnName;
-
-					$type = Type::getType($mapping->type);
-					$col  = $type->convertToPHPValueSQL($col, $this->platform);
-
-					$sqlParts[] = $col . ' AS ' . $columnAlias;
-
-					$this->scalarResultAliasMap[$resultAlias][] = $columnAlias;
-
-					$this->rsm->addFieldResult($dqlAlias, $columnAlias, $fieldName, $class->name);
-
-					if (! empty($mapping->enumType)) {
-						$this->rsm->addEnumResult($columnAlias, $mapping->enumType);
-					}
-				}
-
-				// Add any additional fields of subclasses (excluding inherited fields)
-				// 1) on Single Table Inheritance: always, since its marginal overhead
-				// 2) on Class Table Inheritance only if partial objects are disallowed,
-				//    since it requires outer joining subtables.
-				if ($class->isInheritanceTypeSingleTable() || ! $this->query->getHint(Query::HINT_FORCE_PARTIAL_LOAD)) {
-					foreach ($class->subClasses as $subClassName) {
-						$subClass      = $this->em->getClassMetadata($subClassName);
-						$sqlTableAlias = $this->getSQLTableAlias($subClass->getTableName(), $dqlAlias);
-
-						foreach ($subClass->fieldMappings as $fieldName => $mapping) {
-							if (isset($mapping->inherited) || ($partialFieldSet && ! in_array($fieldName, $partialFieldSet, true))) {
-								continue;
-							}
-
-							$columnAlias      = $this->getSQLColumnAlias($mapping->columnName);
-							$quotedColumnName = $this->quoteStrategy->getColumnName($fieldName, $subClass, $this->platform);
-
-							$col = $sqlTableAlias . '.' . $quotedColumnName;
-
-							$type = Type::getType($mapping->type);
-							$col  = $type->convertToPHPValueSQL($col, $this->platform);
-
-							$sqlParts[] = $col . ' AS ' . $columnAlias;
-
-							$this->scalarResultAliasMap[$resultAlias][] = $columnAlias;
-
-							$this->rsm->addFieldResult($dqlAlias, $columnAlias, $fieldName, $subClassName);
+					foreach ($subClass->fieldMappings as $fieldName => $mapping) {
+						if (isset($mapping->inherited) || ($partialFieldSet && !in_array($fieldName, $partialFieldSet, true))) {
+							continue;
 						}
+
+						$columnAlias = $this->getSQLColumnAlias($mapping->columnName);
+						$quotedColumnName = $this->quoteStrategy->getColumnName($fieldName, $subClass, $this->platform);
+
+						$col = $sqlTableAlias . '.' . $quotedColumnName;
+
+						$type = Type::getType($mapping->type);
+						$col = $type->convertToPHPValueSQL($col, $this->platform);
+
+						$sqlParts[] = $col . ' AS ' . $columnAlias;
+
+						$this->scalarResultAliasMap[$resultAlias][] = $columnAlias;
+
+						$this->rsm->addFieldResult($dqlAlias, $columnAlias, $fieldName, $subClassName);
 					}
 				}
+			}
 
-				$sql .= implode(', ', $sqlParts);
+			$sql .= implode(', ', $sqlParts);
 		}
 
 		return $sql;
@@ -1446,13 +1451,13 @@ class SqlWalker
 	 */
 	public function walkSubselect(AST\Subselect $subselect): string
 	{
-		$useAliasesBefore  = $this->useSqlTableAliases;
+		$useAliasesBefore = $this->useSqlTableAliases;
 		$rootAliasesBefore = $this->rootAliases;
 
-		$this->rootAliases        = []; // reset the rootAliases for the subselect
+		$this->rootAliases = []; // reset the rootAliases for the subselect
 		$this->useSqlTableAliases = true;
 
-		$sql  = $this->walkSimpleSelectClause($subselect->simpleSelectClause);
+		$sql = $this->walkSimpleSelectClause($subselect->simpleSelectClause);
 		$sql .= $this->walkSubselectFromClause($subselect->subselectFromClause);
 		$sql .= $this->walkWhereClause($subselect->whereClause);
 
@@ -1460,7 +1465,7 @@ class SqlWalker
 		$sql .= $subselect->havingClause ? $this->walkHavingClause($subselect->havingClause) : '';
 		$sql .= $subselect->orderByClause ? $this->walkOrderByClause($subselect->orderByClause) : '';
 
-		$this->rootAliases        = $rootAliasesBefore; // put the main aliases back
+		$this->rootAliases = $rootAliasesBefore; // put the main aliases back
 		$this->useSqlTableAliases = $useAliasesBefore;
 
 		return $sql;
@@ -1472,7 +1477,7 @@ class SqlWalker
 	public function walkSubselectFromClause(AST\SubselectFromClause $subselectFromClause): string
 	{
 		$identificationVarDecls = $subselectFromClause->identificationVariableDeclarations;
-		$sqlParts               = [];
+		$sqlParts = [];
 
 		foreach ($identificationVarDecls as $subselectIdVarDecl) {
 			$sqlParts[] = $this->walkIdentificationVariableDeclaration($subselectIdVarDecl);
@@ -1498,68 +1503,68 @@ class SqlWalker
 	public function walkNewObject(AST\NewObjectExpression $newObjectExpression, string|null $newObjectResultAlias = null): string
 	{
 		$sqlSelectExpressions = [];
-		$objIndex             = $newObjectResultAlias ?: $this->newObjectCounter++;
+		$objIndex = $newObjectResultAlias ?: $this->newObjectCounter++;
 
 		foreach ($newObjectExpression->args as $argIndex => $e) {
 			$resultAlias = $this->scalarResultCounter++;
 			$columnAlias = $this->getSQLColumnAlias('sclr');
-			$fieldType   = 'string';
+			$fieldType = 'string';
 
 			switch (true) {
-				case $e instanceof AST\NewObjectExpression:
-					$sqlSelectExpressions[]                            = $e->dispatch($this, $columnAlias);
-					$this->rsm->nestedNewObjectArguments[$columnAlias] = ['ownerIndex' => $objIndex, 'argIndex' => $argIndex, 'argAlias' => $columnAlias];
+			case $e instanceof AST\NewObjectExpression:
+				$sqlSelectExpressions[] = $e->dispatch($this, $columnAlias);
+				$this->rsm->nestedNewObjectArguments[$columnAlias] = ['ownerIndex' => $objIndex, 'argIndex' => $argIndex, 'argAlias' => $columnAlias];
+				break;
+
+			case $e instanceof AST\Subselect:
+				$sqlSelectExpressions[] = '(' . $e->dispatch($this) . ') AS ' . $columnAlias;
+				break;
+
+			case $e instanceof AST\PathExpression:
+				assert($e->field !== null);
+				$dqlAlias = $e->identificationVariable;
+				$class = $this->getMetadataForDqlAlias($dqlAlias);
+				$fieldName = $e->field;
+				$fieldMapping = $class->fieldMappings[$fieldName];
+				$fieldType = $fieldMapping->type;
+				$col = trim($e->dispatch($this));
+
+				$type = Type::getType($fieldType);
+				$col = $type->convertToPHPValueSQL($col, $this->platform);
+
+				$sqlSelectExpressions[] = $col . ' AS ' . $columnAlias;
+
+				if (!empty($fieldMapping->enumType)) {
+					$this->rsm->addEnumResult($columnAlias, $fieldMapping->enumType);
+				}
+
+				break;
+
+			case $e instanceof AST\Literal:
+				switch ($e->type) {
+				case AST\Literal::BOOLEAN:
+					$fieldType = 'boolean';
 					break;
 
-				case $e instanceof AST\Subselect:
-					$sqlSelectExpressions[] = '(' . $e->dispatch($this) . ') AS ' . $columnAlias;
+				case AST\Literal::NUMERIC:
+					$fieldType = is_float($e->value) ? 'float' : 'integer';
 					break;
+				}
 
-				case $e instanceof AST\PathExpression:
-					assert($e->field !== null);
-					$dqlAlias     = $e->identificationVariable;
-					$class        = $this->getMetadataForDqlAlias($dqlAlias);
-					$fieldName    = $e->field;
-					$fieldMapping = $class->fieldMappings[$fieldName];
-					$fieldType    = $fieldMapping->type;
-					$col          = trim($e->dispatch($this));
+				$sqlSelectExpressions[] = trim($e->dispatch($this)) . ' AS ' . $columnAlias;
+				break;
 
-					$type = Type::getType($fieldType);
-					$col  = $type->convertToPHPValueSQL($col, $this->platform);
-
-					$sqlSelectExpressions[] = $col . ' AS ' . $columnAlias;
-
-					if (! empty($fieldMapping->enumType)) {
-						$this->rsm->addEnumResult($columnAlias, $fieldMapping->enumType);
-					}
-
-					break;
-
-				case $e instanceof AST\Literal:
-					switch ($e->type) {
-						case AST\Literal::BOOLEAN:
-							$fieldType = 'boolean';
-							break;
-
-						case AST\Literal::NUMERIC:
-							$fieldType = is_float($e->value) ? 'float' : 'integer';
-							break;
-					}
-
-					$sqlSelectExpressions[] = trim($e->dispatch($this)) . ' AS ' . $columnAlias;
-					break;
-
-				default:
-					$sqlSelectExpressions[] = trim($e->dispatch($this)) . ' AS ' . $columnAlias;
-					break;
+			default:
+				$sqlSelectExpressions[] = trim($e->dispatch($this)) . ' AS ' . $columnAlias;
+				break;
 			}
 
 			$this->scalarResultAliasMap[$resultAlias] = $columnAlias;
 			$this->rsm->addScalarResult($columnAlias, $resultAlias, $fieldType);
 
 			$this->rsm->newObjectMappings[$columnAlias] = [
-				'objIndex'  => $objIndex,
-				'argIndex'  => $argIndex,
+				'objIndex' => $objIndex,
+				'argIndex' => $argIndex,
 			];
 		}
 
@@ -1574,46 +1579,46 @@ class SqlWalker
 	public function walkSimpleSelectExpression(AST\SimpleSelectExpression $simpleSelectExpression): string
 	{
 		$expr = $simpleSelectExpression->expression;
-		$sql  = ' ';
+		$sql = ' ';
 
 		switch (true) {
-			case $expr instanceof AST\PathExpression:
-				$sql .= $this->walkPathExpression($expr);
-				break;
+		case $expr instanceof AST\PathExpression:
+			$sql .= $this->walkPathExpression($expr);
+			break;
 
-			case $expr instanceof AST\Subselect:
-				$alias = $simpleSelectExpression->fieldIdentificationVariable ?: $this->scalarResultCounter++;
+		case $expr instanceof AST\Subselect:
+			$alias = $simpleSelectExpression->fieldIdentificationVariable ?: $this->scalarResultCounter++;
 
-				$columnAlias                        = 'sclr' . $this->aliasCounter++;
-				$this->scalarResultAliasMap[$alias] = $columnAlias;
+			$columnAlias = 'sclr' . $this->aliasCounter++;
+			$this->scalarResultAliasMap[$alias] = $columnAlias;
 
-				$sql .= '(' . $this->walkSubselect($expr) . ') AS ' . $columnAlias;
-				break;
+			$sql .= '(' . $this->walkSubselect($expr) . ') AS ' . $columnAlias;
+			break;
 
-			case $expr instanceof AST\Functions\FunctionNode:
-			case $expr instanceof AST\SimpleArithmeticExpression:
-			case $expr instanceof AST\ArithmeticTerm:
-			case $expr instanceof AST\ArithmeticFactor:
-			case $expr instanceof AST\Literal:
-			case $expr instanceof AST\NullIfExpression:
-			case $expr instanceof AST\CoalesceExpression:
-			case $expr instanceof AST\GeneralCaseExpression:
-			case $expr instanceof AST\SimpleCaseExpression:
-				$alias = $simpleSelectExpression->fieldIdentificationVariable ?: $this->scalarResultCounter++;
+		case $expr instanceof AST\Functions\FunctionNode:
+		case $expr instanceof AST\SimpleArithmeticExpression:
+		case $expr instanceof AST\ArithmeticTerm:
+		case $expr instanceof AST\ArithmeticFactor:
+		case $expr instanceof AST\Literal:
+		case $expr instanceof AST\NullIfExpression:
+		case $expr instanceof AST\CoalesceExpression:
+		case $expr instanceof AST\GeneralCaseExpression:
+		case $expr instanceof AST\SimpleCaseExpression:
+			$alias = $simpleSelectExpression->fieldIdentificationVariable ?: $this->scalarResultCounter++;
 
-				$columnAlias                        = $this->getSQLColumnAlias('sclr');
-				$this->scalarResultAliasMap[$alias] = $columnAlias;
+			$columnAlias = $this->getSQLColumnAlias('sclr');
+			$this->scalarResultAliasMap[$alias] = $columnAlias;
 
-				$sql .= $expr->dispatch($this) . ' AS ' . $columnAlias;
-				break;
+			$sql .= $expr->dispatch($this) . ' AS ' . $columnAlias;
+			break;
 
-			case $expr instanceof AST\ParenthesisExpression:
-				$sql .= $this->walkParenthesisExpression($expr);
-				break;
+		case $expr instanceof AST\ParenthesisExpression:
+			$sql .= $this->walkParenthesisExpression($expr);
+			break;
 
-			default: // IdentificationVariable
-				$sql .= $this->walkEntityIdentificationVariable($expr);
-				break;
+		default: 			// IdentificationVariable
+			$sql .= $this->walkEntityIdentificationVariable($expr);
+			break;
 		}
 
 		return $sql;
@@ -1648,7 +1653,7 @@ class SqlWalker
 	public function walkGroupByItem(AST\PathExpression|string $groupByItem): string
 	{
 		// StateFieldPathExpression
-		if (! is_string($groupByItem)) {
+		if (!is_string($groupByItem)) {
 			return $this->walkPathExpression($groupByItem);
 		}
 
@@ -1671,7 +1676,7 @@ class SqlWalker
 		$sqlParts = [];
 
 		foreach ($this->getMetadataForDqlAlias($groupByItem)->fieldNames as $field) {
-			$item       = new AST\PathExpression(AST\PathExpression::TYPE_STATE_FIELD, $groupByItem, $field);
+			$item = new AST\PathExpression(AST\PathExpression::TYPE_STATE_FIELD, $groupByItem, $field);
 			$item->type = AST\PathExpression::TYPE_STATE_FIELD;
 
 			$sqlParts[] = $this->walkPathExpression($item);
@@ -1679,7 +1684,7 @@ class SqlWalker
 
 		foreach ($this->getMetadataForDqlAlias($groupByItem)->associationMappings as $mapping) {
 			if ($mapping->isToOneOwningSide()) {
-				$item       = new AST\PathExpression(AST\PathExpression::TYPE_SINGLE_VALUED_ASSOCIATION, $groupByItem, $mapping->fieldName);
+				$item = new AST\PathExpression(AST\PathExpression::TYPE_SINGLE_VALUED_ASSOCIATION, $groupByItem, $mapping->fieldName);
 				$item->type = AST\PathExpression::TYPE_SINGLE_VALUED_ASSOCIATION;
 
 				$sqlParts[] = $this->walkPathExpression($item);
@@ -1694,9 +1699,9 @@ class SqlWalker
 	 */
 	public function walkDeleteClause(AST\DeleteClause $deleteClause): string
 	{
-		$class     = $this->em->getClassMetadata($deleteClause->abstractSchemaName);
+		$class = $this->em->getClassMetadata($deleteClause->abstractSchemaName);
 		$tableName = $class->getTableName();
-		$sql       = 'DELETE FROM ' . $this->quoteStrategy->getTableName($class, $this->platform);
+		$sql = 'DELETE FROM ' . $this->quoteStrategy->getTableName($class, $this->platform);
 
 		$this->setSQLTableAlias($tableName, $tableName, $deleteClause->aliasIdentificationVariable);
 		$this->rootAliases[] = $deleteClause->aliasIdentificationVariable;
@@ -1709,9 +1714,9 @@ class SqlWalker
 	 */
 	public function walkUpdateClause(AST\UpdateClause $updateClause): string
 	{
-		$class     = $this->em->getClassMetadata($updateClause->abstractSchemaName);
+		$class = $this->em->getClassMetadata($updateClause->abstractSchemaName);
 		$tableName = $class->getTableName();
-		$sql       = 'UPDATE ' . $this->quoteStrategy->getTableName($class, $this->platform);
+		$sql = 'UPDATE ' . $this->quoteStrategy->getTableName($class, $this->platform);
 
 		$this->setSQLTableAlias($tableName, $tableName, $updateClause->aliasIdentificationVariable);
 		$this->rootAliases[] = $updateClause->aliasIdentificationVariable;
@@ -1724,15 +1729,15 @@ class SqlWalker
 	 */
 	public function walkUpdateItem(AST\UpdateItem $updateItem): string
 	{
-		$useTableAliasesBefore    = $this->useSqlTableAliases;
+		$useTableAliasesBefore = $this->useSqlTableAliases;
 		$this->useSqlTableAliases = false;
 
-		$sql      = $this->walkPathExpression($updateItem->pathExpression) . ' = ';
+		$sql = $this->walkPathExpression($updateItem->pathExpression) . ' = ';
 		$newValue = $updateItem->newValue;
 
 		$sql .= match (true) {
 			$newValue instanceof AST\Node => $newValue->dispatch($this),
-			$newValue === null => 'NULL',
+			$newValue === null            => 'NULL',
 		};
 
 		$this->useSqlTableAliases = $useTableAliasesBefore;
@@ -1747,13 +1752,13 @@ class SqlWalker
 	 */
 	public function walkWhereClause(AST\WhereClause|null $whereClause): string
 	{
-		$condSql  = $whereClause !== null ? $this->walkConditionalExpression($whereClause->conditionalExpression) : '';
+		$condSql = $whereClause !== null ? $this->walkConditionalExpression($whereClause->conditionalExpression) : '';
 		$discrSql = $this->generateDiscriminatorColumnConditionSQL($this->rootAliases);
 
 		if ($this->em->hasFilters()) {
 			$filterClauses = [];
 			foreach ($this->rootAliases as $dqlAlias) {
-				$class      = $this->getMetadataForDqlAlias($dqlAlias);
+				$class = $this->getMetadataForDqlAlias($dqlAlias);
 				$tableAlias = $this->getSQLTableAlias($class->table['name'], $dqlAlias);
 
 				$filterExpr = $this->generateFilterConditionSQL($class, $tableAlias);
@@ -1772,7 +1777,7 @@ class SqlWalker
 		}
 
 		if ($condSql) {
-			return ' WHERE ' . (! $discrSql ? $condSql : '(' . $condSql . ') AND ' . $discrSql);
+			return ' WHERE ' . (!$discrSql ? $condSql : '(' . $condSql . ') AND ' . $discrSql);
 		}
 
 		if ($discrSql) {
@@ -1787,10 +1792,11 @@ class SqlWalker
 	 */
 	public function walkConditionalExpression(
 		AST\ConditionalExpression|AST\Phase2OptimizableConditional $condExpr,
-	): string {
+	): string
+	{
 		// Phase 2 AST optimization: Skip processing of ConditionalExpression
 		// if only one ConditionalTerm is defined
-		if (! ($condExpr instanceof AST\ConditionalExpression)) {
+		if (!($condExpr instanceof AST\ConditionalExpression)) {
 			return $this->walkConditionalTerm($condExpr);
 		}
 
@@ -1802,10 +1808,11 @@ class SqlWalker
 	 */
 	public function walkConditionalTerm(
 		AST\ConditionalTerm|AST\ConditionalPrimary|AST\ConditionalFactor $condTerm,
-	): string {
+	): string
+	{
 		// Phase 2 AST optimization: Skip processing of ConditionalTerm
 		// if only one ConditionalFactor is defined
-		if (! ($condTerm instanceof AST\ConditionalTerm)) {
+		if (!($condTerm instanceof AST\ConditionalTerm)) {
 			return $this->walkConditionalFactor($condTerm);
 		}
 
@@ -1817,10 +1824,11 @@ class SqlWalker
 	 */
 	public function walkConditionalFactor(
 		AST\ConditionalFactor|AST\ConditionalPrimary $factor,
-	): string {
+	): string
+	{
 		// Phase 2 AST optimization: Skip processing of ConditionalFactor
 		// if only one ConditionalPrimary is defined
-		return ! ($factor instanceof AST\ConditionalFactor)
+		return !($factor instanceof AST\ConditionalFactor)
 			? $this->walkConditionalPrimary($factor)
 			: ($factor->not ? 'NOT ' : '') . $this->walkConditionalPrimary($factor->conditionalPrimary);
 	}
@@ -1860,38 +1868,38 @@ class SqlWalker
 	 */
 	public function walkCollectionMemberExpression(AST\CollectionMemberExpression $collMemberExpr): string
 	{
-		$sql  = $collMemberExpr->not ? 'NOT ' : '';
+		$sql = $collMemberExpr->not ? 'NOT ' : '';
 		$sql .= 'EXISTS (SELECT 1 FROM ';
 
-		$entityExpr   = $collMemberExpr->entityExpression;
+		$entityExpr = $collMemberExpr->entityExpression;
 		$collPathExpr = $collMemberExpr->collectionValuedPathExpression;
 		assert($collPathExpr->field !== null);
 
 		$fieldName = $collPathExpr->field;
-		$dqlAlias  = $collPathExpr->identificationVariable;
+		$dqlAlias = $collPathExpr->identificationVariable;
 
 		$class = $this->getMetadataForDqlAlias($dqlAlias);
 
 		switch (true) {
-			// InputParameter
-			case $entityExpr instanceof AST\InputParameter:
-				$dqlParamKey = $entityExpr->name;
-				$entitySql   = '?';
-				break;
+		// InputParameter
+		case $entityExpr instanceof AST\InputParameter:
+			$dqlParamKey = $entityExpr->name;
+			$entitySql = '?';
+			break;
 
 			// SingleValuedAssociationPathExpression | IdentificationVariable
-			case $entityExpr instanceof AST\PathExpression:
-				$entitySql = $this->walkPathExpression($entityExpr);
-				break;
+		case $entityExpr instanceof AST\PathExpression:
+			$entitySql = $this->walkPathExpression($entityExpr);
+			break;
 
-			default:
-				throw new BadMethodCallException('Not implemented');
+		default:
+			throw new BadMethodCallException('Not implemented');
 		}
 
 		$assoc = $class->associationMappings[$fieldName];
 
 		if ($assoc->isOneToMany()) {
-			$targetClass      = $this->em->getClassMetadata($assoc->targetEntity);
+			$targetClass = $this->em->getClassMetadata($assoc->targetEntity);
 			$targetTableAlias = $this->getSQLTableAlias($targetClass->getTableName());
 			$sourceTableAlias = $this->getSQLTableAlias($class->getTableName(), $dqlAlias);
 
@@ -1924,13 +1932,13 @@ class SqlWalker
 			$joinTable = $owningAssoc->joinTable;
 
 			// SQL table aliases
-			$joinTableAlias   = $this->getSQLTableAlias($joinTable->name);
+			$joinTableAlias = $this->getSQLTableAlias($joinTable->name);
 			$sourceTableAlias = $this->getSQLTableAlias($class->getTableName(), $dqlAlias);
 
 			$sql .= $this->quoteStrategy->getJoinTableName($owningAssoc, $targetClass, $this->platform) . ' ' . $joinTableAlias . ' WHERE ';
 
 			$joinColumns = $assoc->isOwningSide() ? $joinTable->joinColumns : $joinTable->inverseJoinColumns;
-			$sqlParts    = [];
+			$sqlParts = [];
 
 			foreach ($joinColumns as $joinColumn) {
 				$targetColumn = $this->quoteStrategy->getColumnName($class->fieldNames[$joinColumn->referencedColumnName], $class, $this->platform);
@@ -1959,7 +1967,7 @@ class SqlWalker
 	 */
 	public function walkEmptyCollectionComparisonExpression(AST\EmptyCollectionComparisonExpression $emptyCollCompExpr): string
 	{
-		$sizeFunc                           = new AST\Functions\SizeFunction('size');
+		$sizeFunc = new AST\Functions\SizeFunction('size');
 		$sizeFunc->collectionPathExpression = $emptyCollCompExpr->expression;
 
 		return $sizeFunc->getSql($this) . ($emptyCollCompExpr->not ? ' > 0' : ' = 0');
@@ -1983,7 +1991,7 @@ class SqlWalker
 			return $this->walkInputParameter($expression) . $comparison;
 		}
 
-		assert(! is_string($expression));
+		assert(!is_string($expression));
 
 		return $expression->dispatch($this) . $comparison;
 	}
@@ -2019,7 +2027,7 @@ class SqlWalker
 	{
 		$sql = '';
 
-		$dqlAlias   = $instanceOfExpr->identificationVariable;
+		$dqlAlias = $instanceOfExpr->identificationVariable;
 		$discrClass = $class = $this->getMetadataForDqlAlias($dqlAlias);
 
 		if ($class->discriminatorColumn) {
@@ -2049,10 +2057,10 @@ class SqlWalker
 	public function walkLiteral(AST\Literal $literal): string
 	{
 		return match ($literal->type) {
-			AST\Literal::STRING => $this->conn->quote($literal->value),
+			AST\Literal::STRING  => $this->conn->quote($literal->value),
 			AST\Literal::BOOLEAN => (string) $this->conn->getDatabasePlatform()->convertBooleans(strtolower($literal->value) === 'true'),
 			AST\Literal::NUMERIC => (string) $literal->value,
-			default => throw QueryException::invalidLiteral($literal),
+			default              => throw QueryException::invalidLiteral($literal),
 		};
 	}
 
@@ -2080,7 +2088,7 @@ class SqlWalker
 	{
 		$stringExpr = $likeExpr->stringExpression;
 		if (is_string($stringExpr)) {
-			if (! isset($this->queryComponents[$stringExpr]['resultVariable'])) {
+			if (!isset($this->queryComponents[$stringExpr]['resultVariable'])) {
 				throw new LogicException(sprintf('No result variable found for string expression "%s".', $stringExpr));
 			}
 
@@ -2121,9 +2129,9 @@ class SqlWalker
 	 */
 	public function walkComparisonExpression(AST\ComparisonExpression $compExpr): string
 	{
-		$leftExpr  = $compExpr->leftExpression;
+		$leftExpr = $compExpr->leftExpression;
 		$rightExpr = $compExpr->rightExpression;
-		$sql       = '';
+		$sql = '';
 
 		$sql .= $leftExpr instanceof AST\Node
 			? $leftExpr->dispatch($this)
@@ -2172,7 +2180,7 @@ class SqlWalker
 	 */
 	public function walkSimpleArithmeticExpression(AST\Node|string $simpleArithmeticExpr): string
 	{
-		if (! ($simpleArithmeticExpr instanceof AST\SimpleArithmeticExpression)) {
+		if (!($simpleArithmeticExpr instanceof AST\SimpleArithmeticExpression)) {
 			return $this->walkArithmeticTerm($simpleArithmeticExpr);
 		}
 
@@ -2192,7 +2200,7 @@ class SqlWalker
 
 		// Phase 2 AST optimization: Skip processing of ArithmeticTerm
 		// if only one ArithmeticFactor is defined
-		if (! ($term instanceof AST\ArithmeticTerm)) {
+		if (!($term instanceof AST\ArithmeticTerm)) {
 			return $this->walkArithmeticFactor($term);
 		}
 
@@ -2212,7 +2220,7 @@ class SqlWalker
 
 		// Phase 2 AST optimization: Skip processing of ArithmeticFactor
 		// if only one ArithmeticPrimary is defined
-		if (! ($factor instanceof AST\ArithmeticFactor)) {
+		if (!($factor instanceof AST\ArithmeticFactor)) {
 			return $this->walkArithmeticPrimary($factor);
 		}
 
@@ -2252,7 +2260,7 @@ class SqlWalker
 	 */
 	public function walkResultVariable(string $resultVariable): string
 	{
-		if (! isset($this->scalarResultAliasMap[$resultVariable])) {
+		if (!isset($this->scalarResultAliasMap[$resultVariable])) {
 			throw new InvalidArgumentException(sprintf('Unknown result variable: %s', $resultVariable));
 		}
 
@@ -2273,19 +2281,20 @@ class SqlWalker
 	private function getChildDiscriminatorsFromClassMetadata(
 		ClassMetadata $rootClass,
 		AST\InstanceOfExpression $instanceOfExpr,
-	): string {
+	): string
+	{
 		$sqlParameterList = [];
-		$discriminators   = [];
+		$discriminators = [];
 		foreach ($instanceOfExpr->value as $parameter) {
 			if ($parameter instanceof AST\InputParameter) {
 				$this->rsm->discriminatorParameters[$parameter->name] = $parameter->name;
-				$sqlParameterList[]                                   = $this->walkInParameter($parameter);
+				$sqlParameterList[] = $this->walkInParameter($parameter);
 				continue;
 			}
 
 			$metadata = $this->em->getClassMetadata($parameter);
 
-			if ($metadata->getName() !== $rootClass->name && ! $metadata->getReflectionClass()->isSubclassOf($rootClass->name)) {
+			if ($metadata->getName() !== $rootClass->name && !$metadata->getReflectionClass()->isSubclassOf($rootClass->name)) {
 				throw QueryException::instanceOfUnrelatedClass($parameter, $rootClass->name);
 			}
 

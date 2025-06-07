@@ -20,7 +20,7 @@ use function implode;
  * Executes the SQL statements for bulk DQL DELETE statements on classes in
  * Class Table Inheritance (JOINED).
  *
- * @link        http://www.doctrine-project.org
+ * @link http://www.doctrine-project.org
  */
 class MultiTableDeleteExecutor extends AbstractSqlExecutor
 {
@@ -39,30 +39,30 @@ class MultiTableDeleteExecutor extends AbstractSqlExecutor
 	 */
 	public function __construct(AST\Node $AST, SqlWalker $sqlWalker)
 	{
-		$em            = $sqlWalker->getEntityManager();
-		$conn          = $em->getConnection();
-		$platform      = $conn->getDatabasePlatform();
+		$em = $sqlWalker->getEntityManager();
+		$conn = $em->getConnection();
+		$platform = $conn->getDatabasePlatform();
 		$quoteStrategy = $em->getConfiguration()->getQuoteStrategy();
 
 		if ($conn instanceof PrimaryReadReplicaConnection) {
 			$conn->ensureConnectedToPrimary();
 		}
 
-		$primaryClass    = $em->getClassMetadata($AST->deleteClause->abstractSchemaName);
+		$primaryClass = $em->getClassMetadata($AST->deleteClause->abstractSchemaName);
 		$primaryDqlAlias = $AST->deleteClause->aliasIdentificationVariable;
-		$rootClass       = $em->getClassMetadata($primaryClass->rootEntityName);
+		$rootClass = $em->getClassMetadata($primaryClass->rootEntityName);
 
-		$tempTable     = $platform->getTemporaryTableName($rootClass->getTemporaryIdTableName());
+		$tempTable = $platform->getTemporaryTableName($rootClass->getTemporaryIdTableName());
 		$idColumnNames = $rootClass->getIdentifierColumnNames();
-		$idColumnList  = implode(', ', $idColumnNames);
+		$idColumnList = implode(', ', $idColumnNames);
 
 		// 1. Create an INSERT INTO temptable ... SELECT identifiers WHERE $AST->getWhereClause()
 		$sqlWalker->setSQLTableAlias($primaryClass->getTableName(), 't0', $primaryDqlAlias);
 
 		$insertSql = 'INSERT INTO ' . $tempTable . ' (' . $idColumnList . ')'
-				. ' SELECT t0.' . implode(', t0.', $idColumnNames);
+			. ' SELECT t0.' . implode(', t0.', $idColumnNames);
 
-		$rangeDecl  = new AST\RangeVariableDeclaration($primaryClass->name, $primaryDqlAlias);
+		$rangeDecl = new AST\RangeVariableDeclaration($primaryClass->name, $primaryDqlAlias);
 		$fromClause = new AST\FromClause([new AST\IdentificationVariableDeclaration($rangeDecl, null, [])]);
 		$insertSql .= $sqlWalker->walkFromClause($fromClause);
 
@@ -79,9 +79,9 @@ class MultiTableDeleteExecutor extends AbstractSqlExecutor
 		// 3. Create and store DELETE statements
 		$classNames = [...$primaryClass->parentClasses, ...[$primaryClass->name], ...$primaryClass->subClasses];
 		foreach (array_reverse($classNames) as $className) {
-			$tableName             = $quoteStrategy->getTableName($em->getClassMetadata($className), $platform);
+			$tableName = $quoteStrategy->getTableName($em->getClassMetadata($className), $platform);
 			$this->sqlStatements[] = 'DELETE FROM ' . $tableName
-					. ' WHERE (' . $idColumnList . ') IN (' . $idSubselect . ')';
+				. ' WHERE (' . $idColumnList . ') IN (' . $idSubselect . ')';
 		}
 
 		// 4. Store DDL for temporary identifier table.
@@ -95,8 +95,8 @@ class MultiTableDeleteExecutor extends AbstractSqlExecutor
 		}
 
 		$this->createTempTableSql = $platform->getCreateTemporaryTableSnippetSQL() . ' ' . $tempTable . ' ('
-				. $platform->getColumnDeclarationListSQL($columnDefinitions) . ', PRIMARY KEY(' . implode(',', $idColumnNames) . '))';
-		$this->dropTempTableSql   = $platform->getDropTemporaryTableSQL($tempTable);
+			. $platform->getColumnDeclarationListSQL($columnDefinitions) . ', PRIMARY KEY(' . implode(',', $idColumnNames) . '))';
+		$this->dropTempTableSql = $platform->getDropTemporaryTableSQL($tempTable);
 	}
 
 	/**

@@ -23,12 +23,12 @@ final class AssociationOverrides implements MappingAttribute
 	/** @param array<AssociationOverride>|AssociationOverride $overrides */
 	public function __construct(array|AssociationOverride $overrides)
 	{
-		if (! is_array($overrides)) {
+		if (!is_array($overrides)) {
 			$overrides = [$overrides];
 		}
 
 		foreach ($overrides as $override) {
-			if (! ($override instanceof AssociationOverride)) {
+			if (!($override instanceof AssociationOverride)) {
 				throw MappingException::invalidOverrideType('AssociationOverride', $override);
 			}
 		}

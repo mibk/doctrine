@@ -17,7 +17,8 @@ class QueryCacheEntry implements CacheEntry
 	public function __construct(
 		public readonly array $result,
 		float|null $time = null,
-	) {
+	)
+	{
 		$this->time = $time ?: microtime(true);
 	}
 

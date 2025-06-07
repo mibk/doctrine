@@ -560,9 +560,9 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	 */
 	public function __construct(public string $name, NamingStrategy|null $namingStrategy = null, TypedFieldMapper|null $typedFieldMapper = null)
 	{
-		$this->rootEntityName   = $name;
-		$this->namingStrategy   = $namingStrategy ?? new DefaultNamingStrategy();
-		$this->instantiator     = new Instantiator();
+		$this->rootEntityName = $name;
+		$this->namingStrategy = $namingStrategy ?? new DefaultNamingStrategy();
+		$this->instantiator = new Instantiator();
 		$this->typedFieldMapper = $typedFieldMapper ?? new DefaultTypedFieldMapper();
 	}
 
@@ -623,7 +623,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 			return $id;
 		}
 
-		$id    = $this->identifier[0];
+		$id = $this->identifier[0];
 		$value = $this->reflFields[$id]->getValue($entity);
 
 		if ($value === null) {
@@ -793,7 +793,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	public function wakeupReflection(ReflectionService $reflService): void
 	{
 		// Restore ReflectionClass and properties
-		$this->reflClass    = $reflService->getClass($this->name);
+		$this->reflClass = $reflService->getClass($this->name);
 		$this->instantiator = $this->instantiator ?: new Instantiator();
 
 		$parentReflFields = [];
@@ -897,7 +897,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 		}
 
 		// Verify & complete identifier mapping
-		if (! $this->identifier) {
+		if (!$this->identifier) {
 			throw MappingException::identifierRequired($this->name);
 		}
 
@@ -915,9 +915,9 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	{
 		foreach ($this->associationMappings as $mapping) {
 			if (
-				! class_exists($mapping->targetEntity)
-				&& ! interface_exists($mapping->targetEntity)
-				&& ! trait_exists($mapping->targetEntity)
+				!class_exists($mapping->targetEntity)
+					&& !interface_exists($mapping->targetEntity)
+					&& !trait_exists($mapping->targetEntity)
 			) {
 				throw MappingException::invalidTargetEntityClass($mapping->targetEntity, $this->name, $mapping->fieldName);
 			}
@@ -933,7 +933,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	{
 		foreach ($this->lifecycleCallbacks as $callbacks) {
 			foreach ($callbacks as $callbackFuncName) {
-				if (! $reflService->hasPublicMethod($this->name, $callbackFuncName)) {
+				if (!$reflService->hasPublicMethod($this->name, $callbackFuncName)) {
 					throw MappingException::lifecycleCallbackMethodNotFound($this->name, $callbackFuncName);
 				}
 			}
@@ -943,11 +943,11 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	/** @phpstan-param array{usage?: mixed, region?: mixed} $cache */
 	public function enableCache(array $cache): void
 	{
-		if (! isset($cache['usage'])) {
+		if (!isset($cache['usage'])) {
 			$cache['usage'] = self::CACHE_USAGE_READ_ONLY;
 		}
 
-		if (! isset($cache['region'])) {
+		if (!isset($cache['region'])) {
 			$cache['region'] = strtolower(str_replace('\\', '_', $this->rootEntityName));
 		}
 
@@ -968,11 +968,11 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	 */
 	public function getAssociationCacheDefaults(string $fieldName, array $cache): array
 	{
-		if (! isset($cache['usage'])) {
+		if (!isset($cache['usage'])) {
 			$cache['usage'] = $this->cache['usage'] ?? self::CACHE_USAGE_READ_ONLY;
 		}
 
-		if (! isset($cache['region'])) {
+		if (!isset($cache['region'])) {
 			$cache['region'] = strtolower(str_replace('\\', '_', $this->rootEntityName)) . '__' . $fieldName;
 		}
 
@@ -1008,11 +1008,11 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	 */
 	public function isIdentifier(string $fieldName): bool
 	{
-		if (! $this->identifier) {
+		if (!$this->identifier) {
 			return false;
 		}
 
-		if (! $this->isIdentifierComposite) {
+		if (!$this->isIdentifierComposite) {
 			return $fieldName === $this->identifier[0];
 		}
 
@@ -1052,7 +1052,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	 */
 	public function getFieldMapping(string $fieldName): FieldMapping
 	{
-		if (! isset($this->fieldMappings[$fieldName])) {
+		if (!isset($this->fieldMappings[$fieldName])) {
 			throw MappingException::mappingNotFound($this->name, $fieldName);
 		}
 
@@ -1071,7 +1071,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	 */
 	public function getAssociationMapping(string $fieldName): AssociationMapping
 	{
-		if (! isset($this->associationMappings[$fieldName])) {
+		if (!isset($this->associationMappings[$fieldName])) {
 			throw MappingException::mappingNotFound($this->name, $fieldName);
 		}
 
@@ -1105,8 +1105,8 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	private function isTypedProperty(string $name): bool
 	{
 		return isset($this->reflClass)
-			   && $this->reflClass->hasProperty($name)
-			   && $this->reflClass->getProperty($name)->hasType();
+			&& $this->reflClass->hasProperty($name)
+			&& $this->reflClass->getProperty($name)->hasType();
 	}
 
 	/**
@@ -1138,7 +1138,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 			return $mapping;
 		}
 
-		if (! isset($mapping['targetEntity']) && $type instanceof ReflectionNamedType) {
+		if (!isset($mapping['targetEntity']) && $type instanceof ReflectionNamedType) {
 			$mapping['targetEntity'] = $type->getName();
 		}
 
@@ -1163,7 +1163,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	protected function validateAndCompleteFieldMapping(array $mapping): FieldMapping
 	{
 		// Check mandatory fields
-		if (! isset($mapping['fieldName']) || ! $mapping['fieldName']) {
+		if (!isset($mapping['fieldName']) || !$mapping['fieldName']) {
 			throw MappingException::missingFieldName($this->name);
 		}
 
@@ -1171,13 +1171,13 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 			$mapping = $this->validateAndCompleteTypedFieldMapping($mapping);
 		}
 
-		if (! isset($mapping['type'])) {
+		if (!isset($mapping['type'])) {
 			// Default to string
 			$mapping['type'] = 'string';
 		}
 
 		// Complete fieldName and columnName mapping
-		if (! isset($mapping['columnName'])) {
+		if (!isset($mapping['columnName'])) {
 			$mapping['columnName'] = $this->namingStrategy->propertyToColumnName($mapping['fieldName'], $this->name);
 		}
 
@@ -1185,7 +1185,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 
 		if ($mapping->columnName[0] === '`') {
 			$mapping->columnName = trim($mapping->columnName, '`');
-			$mapping->quoted     = true;
+			$mapping->quoted = true;
 		}
 
 		// @phpstan-ignore property.deprecated
@@ -1203,18 +1203,18 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 				throw MappingException::cannotVersionIdField($this->name, $mapping->fieldName);
 			}
 
-			if (! in_array($mapping->fieldName, $this->identifier, true)) {
+			if (!in_array($mapping->fieldName, $this->identifier, true)) {
 				$this->identifier[] = $mapping->fieldName;
 			}
 
 			// Check for composite key
-			if (! $this->isIdentifierComposite && count($this->identifier) > 1) {
+			if (!$this->isIdentifierComposite && count($this->identifier) > 1) {
 				$this->isIdentifierComposite = true;
 			}
 		}
 
 		if (isset($mapping->generated)) {
-			if (! in_array($mapping->generated, [self::GENERATED_NEVER, self::GENERATED_INSERT, self::GENERATED_ALWAYS])) {
+			if (!in_array($mapping->generated, [self::GENERATED_NEVER, self::GENERATED_INSERT, self::GENERATED_ALWAYS])) {
 				throw MappingException::invalidGeneratedMode($mapping->generated);
 			}
 
@@ -1224,18 +1224,18 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 		}
 
 		if (isset($mapping->enumType)) {
-			if (! enum_exists($mapping->enumType)) {
+			if (!enum_exists($mapping->enumType)) {
 				throw MappingException::nonEnumTypeMapped($this->name, $mapping->fieldName, $mapping->enumType);
 			}
 
-			if (! empty($mapping->id)) {
+			if (!empty($mapping->id)) {
 				$this->containsEnumIdentifier = true;
 			}
 
 			if (
 				defined('Doctrine\DBAL\Types\Types::ENUM')
-				&& $mapping->type === Types::ENUM
-				&& ! isset($mapping->options['values'])
+					&& $mapping->type === Types::ENUM
+					&& !isset($mapping->options['values'])
 			) {
 				$mapping->options['values'] = array_column($mapping->enumType::cases(), 'value');
 			}
@@ -1297,7 +1297,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 				throw MappingException::illegalOrphanRemovalOnIdentifierAssociation($this->name, $mapping['fieldName']);
 			}
 
-			if (! in_array($mapping['fieldName'], $this->identifier, true)) {
+			if (!in_array($mapping['fieldName'], $this->identifier, true)) {
 				if (isset($mapping['joinColumns']) && count($mapping['joinColumns']) >= 2) {
 					throw MappingException::cannotMapCompositePrimaryKeyEntitiesAsForeignId(
 						$mapping['targetEntity'],
@@ -1307,16 +1307,16 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 				}
 
 				assert(is_string($mapping['fieldName']));
-				$this->identifier[]              = $mapping['fieldName'];
+				$this->identifier[] = $mapping['fieldName'];
 				$this->containsForeignIdentifier = true;
 			}
 
 			// Check for composite key
-			if (! $this->isIdentifierComposite && count($this->identifier) > 1) {
+			if (!$this->isIdentifierComposite && count($this->identifier) > 1) {
 				$this->isIdentifierComposite = true;
 			}
 
-			if ($this->cache && ! isset($mapping['cache'])) {
+			if ($this->cache && !isset($mapping['cache'])) {
 				throw NonCacheableEntityAssociation::fromEntityAndField(
 					$this->name,
 					$mapping['fieldName'],
@@ -1326,19 +1326,19 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 
 		// Mandatory attributes for both sides
 		// Mandatory: fieldName, targetEntity
-		if (! isset($mapping['fieldName']) || ! $mapping['fieldName']) {
+		if (!isset($mapping['fieldName']) || !$mapping['fieldName']) {
 			throw MappingException::missingFieldName($this->name);
 		}
 
-		if (! isset($mapping['targetEntity'])) {
+		if (!isset($mapping['targetEntity'])) {
 			throw MappingException::missingTargetEntity($mapping['fieldName']);
 		}
 
 		// Mandatory and optional attributes for either side
-		if (! isset($mapping['mappedBy'])) {
+		if (!isset($mapping['mappedBy'])) {
 			if (isset($mapping['joinTable'])) {
 				if (isset($mapping['joinTable']['name']) && $mapping['joinTable']['name'][0] === '`') {
-					$mapping['joinTable']['name']   = trim($mapping['joinTable']['name'], '`');
+					$mapping['joinTable']['name'] = trim($mapping['joinTable']['name'], '`');
 					$mapping['joinTable']['quoted'] = true;
 				}
 			}
@@ -1346,12 +1346,12 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 			$mapping['isOwningSide'] = false;
 		}
 
-		if (isset($mapping['id']) && $mapping['id'] === true && $mapping['type'] & self::TO_MANY) {
+		if (isset($mapping['id']) && $mapping['id']===true && $mapping['type'] & self::TO_MANY) {
 			throw MappingException::illegalToManyIdentifierAssociation($this->name, $mapping['fieldName']);
 		}
 
 		// Fetch mode. Default fetch mode to LAZY, if not set.
-		if (! isset($mapping['fetch'])) {
+		if (!isset($mapping['fetch'])) {
 			$mapping['fetch'] = self::FETCH_LAZY;
 		}
 
@@ -1372,51 +1372,51 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 		$mapping['cascade'] = $cascades;
 
 		switch ($mapping['type']) {
-			case self::ONE_TO_ONE:
-				if (isset($mapping['joinColumns']) && $mapping['joinColumns'] && ! $mapping['isOwningSide']) {
-					throw MappingException::joinColumnNotAllowedOnOneToOneInverseSide(
-						$this->name,
-						$mapping['fieldName'],
-					);
-				}
+		case self::ONE_TO_ONE:
+			if (isset($mapping['joinColumns']) && $mapping['joinColumns'] && !$mapping['isOwningSide']) {
+				throw MappingException::joinColumnNotAllowedOnOneToOneInverseSide(
+					$this->name,
+					$mapping['fieldName'],
+				);
+			}
 
-				return $mapping['isOwningSide'] ?
-					OneToOneOwningSideMapping::fromMappingArrayAndName(
-						$mapping,
-						$this->namingStrategy,
-						$this->name,
-						$this->table ?? null,
-						$this->isInheritanceTypeSingleTable(),
-					) :
-					OneToOneInverseSideMapping::fromMappingArrayAndName($mapping, $this->name);
-
-			case self::MANY_TO_ONE:
-				return ManyToOneAssociationMapping::fromMappingArrayAndName(
+			return $mapping['isOwningSide'] ?
+				OneToOneOwningSideMapping::fromMappingArrayAndName(
 					$mapping,
 					$this->namingStrategy,
 					$this->name,
 					$this->table ?? null,
 					$this->isInheritanceTypeSingleTable(),
-				);
+				) :
+				OneToOneInverseSideMapping::fromMappingArrayAndName($mapping, $this->name);
 
-			case self::ONE_TO_MANY:
-				return OneToManyAssociationMapping::fromMappingArrayAndName($mapping, $this->name);
+		case self::MANY_TO_ONE:
+			return ManyToOneAssociationMapping::fromMappingArrayAndName(
+				$mapping,
+				$this->namingStrategy,
+				$this->name,
+				$this->table ?? null,
+				$this->isInheritanceTypeSingleTable(),
+			);
 
-			case self::MANY_TO_MANY:
-				if (isset($mapping['joinColumns'])) {
-					unset($mapping['joinColumns']);
-				}
+		case self::ONE_TO_MANY:
+			return OneToManyAssociationMapping::fromMappingArrayAndName($mapping, $this->name);
 
-				return $mapping['isOwningSide'] ?
-					ManyToManyOwningSideMapping::fromMappingArrayAndNamingStrategy($mapping, $this->namingStrategy) :
-					ManyToManyInverseSideMapping::fromMappingArray($mapping);
+		case self::MANY_TO_MANY:
+			if (isset($mapping['joinColumns'])) {
+				unset($mapping['joinColumns']);
+			}
 
-			default:
-				throw MappingException::invalidAssociationType(
-					$this->name,
-					$mapping['fieldName'],
-					$mapping['type'],
-				);
+			return $mapping['isOwningSide'] ?
+				ManyToManyOwningSideMapping::fromMappingArrayAndNamingStrategy($mapping, $this->namingStrategy) :
+				ManyToManyInverseSideMapping::fromMappingArray($mapping);
+
+		default:
+			throw MappingException::invalidAssociationType(
+				$this->name,
+				$mapping['fieldName'],
+				$mapping['type'],
+			);
 		}
 	}
 
@@ -1440,7 +1440,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 			throw MappingException::singleIdNotAllowedOnCompositePrimaryKey($this->name);
 		}
 
-		if (! isset($this->identifier[0])) {
+		if (!isset($this->identifier[0])) {
 			throw MappingException::noIdDefined($this->name);
 		}
 
@@ -1467,7 +1467,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	 */
 	public function setIdentifier(array $identifier): void
 	{
-		$this->identifier            = $identifier;
+		$this->identifier = $identifier;
 		$this->isIdentifierComposite = (count($this->identifier) > 1);
 	}
 
@@ -1519,8 +1519,8 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 
 			// Association defined as Id field
 			assert($this->associationMappings[$idProperty]->isToOneOwningSide());
-			$joinColumns      = $this->associationMappings[$idProperty]->joinColumns;
-			$assocColumnNames = array_map(static fn (JoinColumnMapping $joinColumn): string => $joinColumn->name, $joinColumns);
+			$joinColumns = $this->associationMappings[$idProperty]->joinColumns;
+			$assocColumnNames = array_map(static fn(JoinColumnMapping $joinColumn): string => $joinColumn->name, $joinColumns);
 
 			$columnNames = array_merge($columnNames, $assocColumnNames);
 		}
@@ -1675,7 +1675,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	 */
 	public function setInheritanceType(int $type): void
 	{
-		if (! $this->isInheritanceType($type)) {
+		if (!$this->isInheritanceType($type)) {
 			throw MappingException::invalidInheritanceType($this->name, $type);
 		}
 
@@ -1691,7 +1691,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	 */
 	public function setAssociationOverride(string $fieldName, array $overrideMapping): void
 	{
-		if (! isset($this->associationMappings[$fieldName])) {
+		if (!isset($this->associationMappings[$fieldName])) {
 			throw MappingException::invalidOverrideFieldName($this->name, $fieldName);
 		}
 
@@ -1726,15 +1726,15 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 		}
 
 		switch ($mapping['type']) {
-			case self::ONE_TO_ONE:
-			case self::MANY_TO_ONE:
-				$mapping['joinColumnFieldNames']     = [];
-				$mapping['sourceToTargetKeyColumns'] = [];
-				break;
-			case self::MANY_TO_MANY:
-				$mapping['relationToSourceKeyColumns'] = [];
-				$mapping['relationToTargetKeyColumns'] = [];
-				break;
+		case self::ONE_TO_ONE:
+		case self::MANY_TO_ONE:
+			$mapping['joinColumnFieldNames'] = [];
+			$mapping['sourceToTargetKeyColumns'] = [];
+			break;
+		case self::MANY_TO_MANY:
+			$mapping['relationToSourceKeyColumns'] = [];
+			$mapping['relationToTargetKeyColumns'] = [];
+			break;
 		}
 
 		$this->associationMappings[$fieldName] = $this->_validateAndCompleteAssociationMapping($mapping);
@@ -1749,7 +1749,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	 */
 	public function setAttributeOverride(string $fieldName, array $overrideMapping): void
 	{
-		if (! isset($this->fieldMappings[$fieldName])) {
+		if (!isset($this->fieldMappings[$fieldName])) {
 			throw MappingException::invalidOverrideFieldName($this->name, $fieldName);
 		}
 
@@ -1767,11 +1767,11 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 			$overrideMapping['declared'] = $mapping->declared;
 		}
 
-		if (! isset($overrideMapping['type'])) {
+		if (!isset($overrideMapping['type'])) {
 			$overrideMapping['type'] = $mapping->type;
 		}
 
-		if (! isset($overrideMapping['fieldName'])) {
+		if (!isset($overrideMapping['fieldName'])) {
 			$overrideMapping['fieldName'] = $mapping->fieldName;
 		}
 
@@ -1849,7 +1849,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 			}
 
 			if ($table['name'][0] === '`') {
-				$table['name']         = trim($table['name'], '`');
+				$table['name'] = trim($table['name'], '`');
 				$this->table['quoted'] = true;
 			}
 
@@ -1883,8 +1883,8 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	private function isInheritanceType(int $type): bool
 	{
 		return $type === self::INHERITANCE_TYPE_NONE ||
-				$type === self::INHERITANCE_TYPE_SINGLE_TABLE ||
-				$type === self::INHERITANCE_TYPE_JOINED;
+			$type === self::INHERITANCE_TYPE_SINGLE_TABLE ||
+			$type === self::INHERITANCE_TYPE_JOINED;
 	}
 
 	/**
@@ -1915,7 +1915,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	 *
 	 * @throws MappingException
 	 */
-	public function addInheritedAssociationMapping(AssociationMapping $mapping/*, $owningClassName = null*/): void
+	public function addInheritedAssociationMapping(AssociationMapping $mapping /*, $owningClassName = null*/): void
 	{
 		if (isset($this->associationMappings[$mapping->fieldName])) {
 			throw MappingException::duplicateAssociationMapping($this->name, $mapping->fieldName);
@@ -2109,11 +2109,11 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 			'method' => $method,
 		];
 
-		if (! class_exists($class)) {
+		if (!class_exists($class)) {
 			throw MappingException::entityListenerClassNotFound($class, $this->name);
 		}
 
-		if (! method_exists($class, $method)) {
+		if (!method_exists($class, $method)) {
 			throw MappingException::entityListenerMethodNotFound($class, $method, $this->name);
 		}
 
@@ -2151,7 +2151,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 		}
 
 		if ($columnDef !== null) {
-			if (! isset($columnDef['name'])) {
+			if (!isset($columnDef['name'])) {
 				throw MappingException::nameIsMandatoryForDiscriminatorColumns($this->name);
 			}
 
@@ -2160,8 +2160,8 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 			}
 
 			$columnDef['fieldName'] ??= $columnDef['name'];
-			$columnDef['type']      ??= 'string';
-			$columnDef['options']   ??= [];
+			$columnDef['type'] ??= 'string';
+			$columnDef['options'] ??= [];
 
 			if (in_array($columnDef['type'], ['boolean', 'array', 'object', 'datetime', 'time', 'date'], true)) {
 				throw MappingException::invalidDiscriminatorColumnType($this->name, $columnDef['type']);
@@ -2198,7 +2198,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 				for the following discriminator values: %s.
 				DEPRECATION,
 				$this->name,
-				implode(', ', array_keys(array_filter(array_count_values($map), static function (int $value): bool {
+				implode(', ', array_keys(array_filter(array_count_values($map), static function(int $value): bool {
 					return $value > 1;
 				}))),
 			);
@@ -2227,7 +2227,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 			return;
 		}
 
-		if (! (class_exists($className) || interface_exists($className))) {
+		if (!(class_exists($className) || interface_exists($className))) {
 			throw MappingException::invalidClassInDiscriminatorMap($className, $this->name);
 		}
 
@@ -2247,7 +2247,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 		// By ignoring classes that are not subclasses of the current class, we simplify inheriting
 		// the subclass list from a parent class at the beginning of \Doctrine\ORM\Mapping\ClassMetadataFactory::doLoadMetadata.
 
-		if (is_subclass_of($className, $this->name) && ! in_array($className, $this->subClasses, true)) {
+		if (is_subclass_of($className, $this->name) && !in_array($className, $this->subClasses, true)) {
 			$this->subClasses[] = $className;
 		}
 	}
@@ -2266,7 +2266,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	public function isCollectionValuedAssociation(string $fieldName): bool
 	{
 		return isset($this->associationMappings[$fieldName])
-			&& ! $this->associationMappings[$fieldName]->isToOne();
+			&& !$this->associationMappings[$fieldName]->isToOne();
 	}
 
 	/**
@@ -2276,7 +2276,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	{
 		return isset($this->associationMappings[$fieldName])
 			&& isset($this->associationMappings[$fieldName]->joinColumns[0])
-			&& ! isset($this->associationMappings[$fieldName]->joinColumns[1]);
+			&& !isset($this->associationMappings[$fieldName]->joinColumns[1]);
 	}
 
 	/**
@@ -2286,7 +2286,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	 */
 	public function getSingleAssociationJoinColumnName(string $fieldName): string
 	{
-		if (! $this->isAssociationWithSingleJoinColumn($fieldName)) {
+		if (!$this->isAssociationWithSingleJoinColumn($fieldName)) {
 			throw MappingException::noSingleAssociationJoinColumnFound($this->name, $fieldName);
 		}
 
@@ -2304,7 +2304,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	 */
 	public function getSingleAssociationReferencedJoinColumnName(string $fieldName): string
 	{
-		if (! $this->isAssociationWithSingleJoinColumn($fieldName)) {
+		if (!$this->isAssociationWithSingleJoinColumn($fieldName)) {
 			throw MappingException::noSingleAssociationJoinColumnFound($this->name, $fieldName);
 		}
 
@@ -2331,8 +2331,8 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 		foreach ($this->associationMappings as $assocName => $mapping) {
 			if (
 				$this->isAssociationWithSingleJoinColumn($assocName) &&
-				assert($this->associationMappings[$assocName]->isToOneOwningSide()) &&
-				$this->associationMappings[$assocName]->joinColumns[0]->name === $columnName
+					assert($this->associationMappings[$assocName]->isToOneOwningSide()) &&
+					$this->associationMappings[$assocName]->joinColumns[0]->name === $columnName
 			) {
 				return $assocName;
 			}
@@ -2378,25 +2378,25 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	 */
 	public function setSequenceGeneratorDefinition(array $definition): void
 	{
-		if (! isset($definition['sequenceName']) || trim($definition['sequenceName']) === '') {
+		if (!isset($definition['sequenceName']) || trim($definition['sequenceName']) === '') {
 			throw MappingException::missingSequenceName($this->name);
 		}
 
 		if ($definition['sequenceName'][0] === '`') {
 			$definition['sequenceName'] = trim($definition['sequenceName'], '`');
-			$definition['quoted']       = true;
+			$definition['quoted'] = true;
 		}
 
-		if (! isset($definition['allocationSize']) || trim((string) $definition['allocationSize']) === '') {
+		if (!isset($definition['allocationSize']) || trim((string) $definition['allocationSize']) === '') {
 			$definition['allocationSize'] = '1';
 		}
 
-		if (! isset($definition['initialValue']) || trim((string) $definition['initialValue']) === '') {
+		if (!isset($definition['initialValue']) || trim((string) $definition['initialValue']) === '') {
 			$definition['initialValue'] = '1';
 		}
 
 		$definition['allocationSize'] = (string) $definition['allocationSize'];
-		$definition['initialValue']   = (string) $definition['initialValue'];
+		$definition['initialValue'] = (string) $definition['initialValue'];
 
 		$this->sequenceGeneratorDefinition = $definition;
 	}
@@ -2411,11 +2411,11 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	 */
 	public function setVersionMapping(array &$mapping): void
 	{
-		$this->isVersioned              = true;
-		$this->versionField             = $mapping['fieldName'];
+		$this->isVersioned = true;
+		$this->versionField = $mapping['fieldName'];
 		$this->requiresFetchAfterChange = true;
 
-		if (! isset($mapping['default'])) {
+		if (!isset($mapping['default'])) {
 			if (in_array($mapping['type'], ['integer', 'bigint', 'smallint'], true)) {
 				$mapping['default'] = 1;
 			} elseif ($mapping['type'] === 'datetime') {
@@ -2492,7 +2492,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	public function isAssociationInverseSide(string $assocName): bool
 	{
 		return isset($this->associationMappings[$assocName])
-			&& ! $this->associationMappings[$assocName]->isOwningSide();
+			&& !$this->associationMappings[$assocName]->isOwningSide();
 	}
 
 	public function getAssociationMappedByTargetField(string $assocName): string
@@ -2536,7 +2536,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 			return null;
 		}
 
-		if (! str_contains($className, '\\') && $this->namespace) {
+		if (!str_contains($className, '\\') && $this->namespace) {
 			return $this->namespace . '\\' . $className;
 		}
 
@@ -2565,20 +2565,20 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	{
 		$this->assertFieldNotMapped($mapping['fieldName']);
 
-		if (! isset($mapping['class']) && $this->isTypedProperty($mapping['fieldName'])) {
+		if (!isset($mapping['class']) && $this->isTypedProperty($mapping['fieldName'])) {
 			$type = $this->reflClass->getProperty($mapping['fieldName'])->getType();
 			if ($type instanceof ReflectionNamedType) {
 				$mapping['class'] = $type->getName();
 			}
 		}
 
-		if (! (isset($mapping['class']) && $mapping['class'])) {
+		if (!(isset($mapping['class']) && $mapping['class'])) {
 			throw MappingException::missingEmbeddedClass($mapping['fieldName']);
 		}
 
 		$this->embeddedClasses[$mapping['fieldName']] = EmbeddedClassMapping::fromMappingArray([
-			'class' => $this->fullyQualifiedClassName($mapping['class']),
-			'columnPrefix' => $mapping['columnPrefix'] ?? null,
+			'class'         => $this->fullyQualifiedClassName($mapping['class']),
+			'columnPrefix'  => $mapping['columnPrefix'] ?? null,
 			'declaredField' => $mapping['declaredField'] ?? null,
 			'originalField' => $mapping['originalField'] ?? null,
 		]);
@@ -2590,15 +2590,15 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	public function inlineEmbeddable(string $property, ClassMetadata $embeddable): void
 	{
 		foreach ($embeddable->fieldMappings as $originalFieldMapping) {
-			$fieldMapping                    = (array) $originalFieldMapping;
+			$fieldMapping = (array) $originalFieldMapping;
 			$fieldMapping['originalClass'] ??= $embeddable->name;
-			$fieldMapping['declaredField']   = isset($fieldMapping['declaredField'])
+			$fieldMapping['declaredField'] = isset($fieldMapping['declaredField'])
 				? $property . '.' . $fieldMapping['declaredField']
 				: $property;
 			$fieldMapping['originalField'] ??= $fieldMapping['fieldName'];
-			$fieldMapping['fieldName']       = $property . '.' . $fieldMapping['fieldName'];
+			$fieldMapping['fieldName'] = $property . '.' . $fieldMapping['fieldName'];
 
-			if (! empty($this->embeddedClasses[$property]->columnPrefix)) {
+			if (!empty($this->embeddedClasses[$property]->columnPrefix)) {
 				$fieldMapping['columnName'] = $this->embeddedClasses[$property]->columnPrefix . $fieldMapping['columnName'];
 			} elseif ($this->embeddedClasses[$property]->columnPrefix !== false) {
 				assert($this->reflClass !== null);
@@ -2621,8 +2621,8 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	{
 		if (
 			isset($this->fieldMappings[$fieldName]) ||
-			isset($this->associationMappings[$fieldName]) ||
-			isset($this->embeddedClasses[$fieldName])
+				isset($this->associationMappings[$fieldName]) ||
+				isset($this->embeddedClasses[$fieldName])
 		) {
 			throw MappingException::duplicateFieldMapping($this->name, $fieldName);
 		}
@@ -2636,7 +2636,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	public function getSequenceName(AbstractPlatform $platform): string
 	{
 		$sequencePrefix = $this->getSequencePrefix($platform);
-		$columnName     = $this->getSingleIdentifierColumnName();
+		$columnName = $this->getSingleIdentifierColumnName();
 
 		return $sequencePrefix . '_' . $columnName . '_seq';
 	}
@@ -2648,7 +2648,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	 */
 	public function getSequencePrefix(AbstractPlatform $platform): string
 	{
-		$tableName      = $this->getTableName();
+		$tableName = $this->getTableName();
 		$sequencePrefix = $tableName;
 
 		// Prepend the schema name to the table name if there is one
@@ -2676,7 +2676,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 		}
 
 		if (PHP_VERSION_ID >= 80400 && $reflectionProperty !== null && count($reflectionProperty->getHooks()) > 0) {
-			   throw new LogicException('Doctrine ORM does not support property hooks in this version. Check https://github.com/doctrine/orm/issues/11624 for details of versions that support property hooks.');
+			throw new LogicException('Doctrine ORM does not support property hooks in this version. Check https://github.com/doctrine/orm/issues/11624 for details of versions that support property hooks.');
 		}
 
 		return $reflectionProperty;

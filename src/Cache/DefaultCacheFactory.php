@@ -67,7 +67,7 @@ class DefaultCacheFactory implements CacheFactory
 	{
 		assert($metadata->cache !== null);
 		$region = $this->getRegion($metadata->cache);
-		$usage  = $metadata->cache['usage'];
+		$usage = $metadata->cache['usage'];
 
 		if ($usage === ClassMetadata::CACHE_USAGE_READ_ONLY) {
 			return new ReadOnlyCachedEntityPersister($persister, $region, $em, $metadata);
@@ -92,9 +92,10 @@ class DefaultCacheFactory implements CacheFactory
 		EntityManagerInterface $em,
 		CollectionPersister $persister,
 		AssociationMapping $mapping,
-	): CachedCollectionPersister {
+	): CachedCollectionPersister
+	{
 		assert(isset($mapping->cache));
-		$usage  = $mapping->cache['usage'];
+		$usage = $mapping->cache['usage'];
 		$region = $this->getRegion($mapping->cache);
 
 		if ($usage === ClassMetadata::CACHE_USAGE_READ_ONLY) {
@@ -148,23 +149,23 @@ class DefaultCacheFactory implements CacheFactory
 			return $this->regions[$cache['region']];
 		}
 
-		$name     = $cache['region'];
+		$name = $cache['region'];
 		$lifetime = $this->regionsConfig->getLifetime($cache['region']);
-		$region   = new DefaultRegion($name, $this->cacheItemPool, $lifetime);
+		$region = new DefaultRegion($name, $this->cacheItemPool, $lifetime);
 
 		if ($cache['usage'] === ClassMetadata::CACHE_USAGE_READ_WRITE) {
 			if (
 				$this->fileLockRegionDirectory === '' ||
-				$this->fileLockRegionDirectory === null
+					$this->fileLockRegionDirectory === null
 			) {
 				throw new LogicException(
 					'If you want to use a "READ_WRITE" cache an implementation of "Doctrine\ORM\Cache\ConcurrentRegion" is required, ' .
-					'The default implementation provided by doctrine is "Doctrine\ORM\Cache\Region\FileLockRegion" if you want to use it please provide a valid directory, DefaultCacheFactory#setFileLockRegionDirectory(). ',
+						'The default implementation provided by doctrine is "Doctrine\ORM\Cache\Region\FileLockRegion" if you want to use it please provide a valid directory, DefaultCacheFactory#setFileLockRegionDirectory(). ',
 				);
 			}
 
 			$directory = $this->fileLockRegionDirectory . DIRECTORY_SEPARATOR . $cache['region'];
-			$region    = new FileLockRegion($region, $directory, (string) $this->regionsConfig->getLockLifetime($cache['region']));
+			$region = new FileLockRegion($region, $directory, (string) $this->regionsConfig->getLockLifetime($cache['region']));
 		}
 
 		return $this->regions[$cache['region']] = $region;
@@ -173,7 +174,7 @@ class DefaultCacheFactory implements CacheFactory
 	public function getTimestampRegion(): TimestampRegion
 	{
 		if ($this->timestampRegion === null) {
-			$name     = Cache::DEFAULT_TIMESTAMP_REGION_NAME;
+			$name = Cache::DEFAULT_TIMESTAMP_REGION_NAME;
 			$lifetime = $this->regionsConfig->getLifetime($name);
 
 			$this->timestampRegion = new UpdateTimestampCache($name, $this->cacheItemPool, $lifetime);

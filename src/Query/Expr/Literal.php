@@ -7,7 +7,7 @@ namespace Doctrine\ORM\Query\Expr;
 /**
  * Expression class for generating DQL functions.
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class Literal extends Base
 {

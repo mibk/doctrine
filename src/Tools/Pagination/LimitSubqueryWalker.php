@@ -35,8 +35,8 @@ class LimitSubqueryWalker extends TreeWalkerAdapter
 	public function walkSelectStatement(SelectStatement $selectStatement): void
 	{
 		// Get the root entity and alias from the AST fromClause
-		$from      = $selectStatement->fromClause->identificationVariableDeclarations;
-		$fromRoot  = reset($from);
+		$from = $selectStatement->fromClause->identificationVariableDeclarations;
+		$fromRoot = reset($from);
 		$rootAlias = $fromRoot->rangeVariableDeclaration->aliasIdentificationVariable;
 		$rootClass = $this->getMetadataForDqlAlias($rootAlias);
 
@@ -65,9 +65,9 @@ class LimitSubqueryWalker extends TreeWalkerAdapter
 		$pathExpression->type = PathExpression::TYPE_STATE_FIELD;
 
 		$selectStatement->selectClause->selectExpressions = [new SelectExpression($pathExpression, '_dctrn_id')];
-		$selectStatement->selectClause->isDistinct        = ($query->getHints()[Paginator::HINT_ENABLE_DISTINCT] ?? true) === true;
+		$selectStatement->selectClause->isDistinct = ($query->getHints()[Paginator::HINT_ENABLE_DISTINCT] ?? true) === true;
 
-		if (! isset($selectStatement->orderByClause)) {
+		if (!isset($selectStatement->orderByClause)) {
 			return;
 		}
 
@@ -104,15 +104,15 @@ class LimitSubqueryWalker extends TreeWalkerAdapter
 		// a limit, a fetched to-many join, and an order by condition that
 		// references a column from the fetch joined table.
 		$queryComponents = $this->getQueryComponents();
-		$query           = $this->_getQuery();
-		$from            = $AST->fromClause->identificationVariableDeclarations;
-		$fromRoot        = reset($from);
+		$query = $this->_getQuery();
+		$from = $AST->fromClause->identificationVariableDeclarations;
+		$fromRoot = reset($from);
 
 		if (
 			$query instanceof Query
-			&& $query->getMaxResults() !== null
-			&& $AST->orderByClause
-			&& count($fromRoot->joins)
+				&& $query->getMaxResults() !== null
+				&& $AST->orderByClause
+				&& count($fromRoot->joins)
 		) {
 			// Check each orderby item.
 			// TODO: check complex orderby items too...
@@ -120,13 +120,13 @@ class LimitSubqueryWalker extends TreeWalkerAdapter
 				$expression = $orderByItem->expression;
 				if (
 					$orderByItem->expression instanceof PathExpression
-					&& isset($queryComponents[$expression->identificationVariable])
+						&& isset($queryComponents[$expression->identificationVariable])
 				) {
 					$queryComponent = $queryComponents[$expression->identificationVariable];
 					if (
 						isset($queryComponent['parent'])
-						&& isset($queryComponent['relation'])
-						&& $queryComponent['relation']->isToMany()
+							&& isset($queryComponent['relation'])
+							&& $queryComponent['relation']->isToMany()
 					) {
 						throw new RuntimeException('Cannot select distinct identifiers from query with LIMIT and ORDER BY on a column from a fetch joined to-many association. Use output walkers.');
 					}

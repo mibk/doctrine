@@ -7,7 +7,7 @@ namespace Doctrine\ORM\Mapping\Builder;
 /**
  * OneToMany Association Builder
  *
- * @link        www.doctrine-project.com
+ * @link www.doctrine-project.com
  */
 class OneToManyAssociationBuilder extends AssociationBuilder
 {

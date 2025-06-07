@@ -12,7 +12,8 @@ class InSubselectExpression extends Node
 		public ArithmeticExpression $expression,
 		public Subselect $subselect,
 		public bool $not = false,
-	) {
+	)
+	{
 	}
 
 	public function dispatch(SqlWalker $walker): string

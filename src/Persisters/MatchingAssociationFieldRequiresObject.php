@@ -14,7 +14,7 @@ final class MatchingAssociationFieldRequiresObject extends PersisterException
 	{
 		return new self(sprintf(
 			'Cannot match on %s::%s with a non-object value. Matching objects by id is ' .
-			'not compatible with matching on an in-memory collection, which compares objects by reference.',
+				'not compatible with matching on an in-memory collection, which compares objects by reference.',
 			$class,
 			$associationName,
 		));

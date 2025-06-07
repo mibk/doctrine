@@ -9,14 +9,15 @@ use Doctrine\ORM\Query\SqlWalker;
 /**
  * ArithmeticFactor ::= [("+" | "-")] ArithmeticPrimary
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class ArithmeticFactor extends Node
 {
 	public function __construct(
 		public mixed $arithmeticPrimary,
 		public bool|null $sign = null,
-	) {
+	)
+	{
 	}
 
 	public function isPositiveSigned(): bool

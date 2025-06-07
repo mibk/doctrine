@@ -30,7 +30,8 @@ class CollectionCacheKey extends CacheKey
 		public readonly string $association,
 		array $ownerIdentifier,
 		string $filterHash = '',
-	) {
+	)
+	{
 		ksort($ownerIdentifier);
 
 		$this->ownerIdentifier = $ownerIdentifier;

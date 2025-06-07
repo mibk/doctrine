@@ -73,7 +73,7 @@ interface EntityManagerInterface extends ObjectManager
 	 *
 	 * @phpstan-param callable(self): T $func The function to execute transactionally.
 	 *
-	 * @return mixed The value returned from the closure.
+	 * @return         mixed The value returned from the closure.
 	 * @phpstan-return T
 	 *
 	 * @template T
@@ -110,17 +110,17 @@ interface EntityManagerInterface extends ObjectManager
 	/**
 	 * Finds an Entity by its identifier.
 	 *
-	 * @param string            $className   The class name of the entity to find.
-	 * @param mixed             $id          The identity of the entity to find.
-	 * @param LockMode|int|null $lockMode    One of the \Doctrine\DBAL\LockMode::* constants
+	 * @param string            $className The class name of the entity to find.
+	 * @param mixed             $id        The identity of the entity to find.
+	 * @param LockMode|int|null $lockMode  One of the \Doctrine\DBAL\LockMode::* constants
 	 *                                       or NULL if no specific lock mode should be used
 	 *                                       during the search.
-	 * @param int|null          $lockVersion The version of the entity to find when using
+	 * @param int|null $lockVersion The version of the entity to find when using
 	 *                                       optimistic locking.
 	 * @phpstan-param class-string<T> $className
 	 * @phpstan-param LockMode::*|null $lockMode
 	 *
-	 * @return object|null The entity instance or NULL if the entity can not be found.
+	 * @return         object|null The entity instance or NULL if the entity can not be found.
 	 * @phpstan-return T|null
 	 *
 	 * @throws OptimisticLockException

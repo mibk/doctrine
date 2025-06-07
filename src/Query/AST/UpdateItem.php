@@ -11,7 +11,7 @@ use Doctrine\ORM\Query\SqlWalker;
  * NewValue ::= SimpleArithmeticExpression | StringPrimary | DatetimePrimary | BooleanPrimary |
  *              EnumPrimary | SimpleEntityExpression | "NULL"
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class UpdateItem extends Node
 {

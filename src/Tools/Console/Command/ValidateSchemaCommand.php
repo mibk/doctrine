@@ -16,28 +16,28 @@ use function sprintf;
 /**
  * Command to validate that the current mapping is valid.
  *
- * @link        www.doctrine-project.com
+ * @link www.doctrine-project.com
  */
 class ValidateSchemaCommand extends AbstractEntityManagerCommand
 {
 	protected function configure(): void
 	{
 		$this->setName('orm:validate-schema')
-			 ->setDescription('Validate the mapping files')
-			 ->addOption('em', null, InputOption::VALUE_REQUIRED, 'Name of the entity manager to operate on')
-			 ->addOption('skip-mapping', null, InputOption::VALUE_NONE, 'Skip the mapping validation check')
-			 ->addOption('skip-sync', null, InputOption::VALUE_NONE, 'Skip checking if the mapping is in sync with the database')
-			 ->addOption('skip-property-types', null, InputOption::VALUE_NONE, 'Skip checking if property types match the Doctrine types')
-			 ->setHelp('Validate that the mapping files are correct and in sync with the database.');
+			->setDescription('Validate the mapping files')
+			->addOption('em', null, InputOption::VALUE_REQUIRED, 'Name of the entity manager to operate on')
+			->addOption('skip-mapping', null, InputOption::VALUE_NONE, 'Skip the mapping validation check')
+			->addOption('skip-sync', null, InputOption::VALUE_NONE, 'Skip checking if the mapping is in sync with the database')
+			->addOption('skip-property-types', null, InputOption::VALUE_NONE, 'Skip checking if property types match the Doctrine types')
+			->setHelp('Validate that the mapping files are correct and in sync with the database.');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
 		$ui = (new SymfonyStyle($input, $output))->getErrorStyle();
 
-		$em        = $this->getEntityManager($input);
-		$validator = new SchemaValidator($em, ! $input->getOption('skip-property-types'));
-		$exit      = 0;
+		$em = $this->getEntityManager($input);
+		$validator = new SchemaValidator($em, !$input->getOption('skip-property-types'));
+		$exit = 0;
 
 		$ui->section('Mapping');
 
@@ -68,7 +68,7 @@ class ValidateSchemaCommand extends AbstractEntityManagerCommand
 
 		if ($input->getOption('skip-sync')) {
 			$ui->text('<comment>[SKIPPED] The database was not checked for synchronicity.</comment>');
-		} elseif (! $validator->schemaInSyncWithMetadata()) {
+		} elseif (!$validator->schemaInSyncWithMetadata()) {
 			$ui->error('The database schema is not in sync with the current mapping file.');
 
 			if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {

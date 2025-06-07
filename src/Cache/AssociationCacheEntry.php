@@ -13,7 +13,8 @@ class AssociationCacheEntry implements CacheEntry
 	public function __construct(
 		public readonly string $class,
 		public readonly array $identifier,
-	) {
+	)
+	{
 	}
 
 	/**

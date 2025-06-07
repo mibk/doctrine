@@ -11,6 +11,7 @@ final class CustomIdGenerator implements MappingAttribute
 {
 	public function __construct(
 		public readonly string|null $class = null,
-	) {
+	)
+	{
 	}
 }

@@ -32,7 +32,8 @@ final class ORMSetup
 		bool $isDevMode = false,
 		string|null $proxyDir = null,
 		CacheItemPoolInterface|null $cache = null,
-	): Configuration {
+	): Configuration
+	{
 		$config = self::createConfiguration($isDevMode, $proxyDir, $cache);
 		$config->setMetadataDriverImpl(new AttributeDriver($paths));
 
@@ -50,7 +51,8 @@ final class ORMSetup
 		string|null $proxyDir = null,
 		CacheItemPoolInterface|null $cache = null,
 		bool $isXsdValidationEnabled = true,
-	): Configuration {
+	): Configuration
+	{
 		$config = self::createConfiguration($isDevMode, $proxyDir, $cache);
 		$config->setMetadataDriverImpl(new XmlDriver($paths, XmlDriver::DEFAULT_FILE_EXTENSION, $isXsdValidationEnabled));
 
@@ -64,7 +66,8 @@ final class ORMSetup
 		bool $isDevMode = false,
 		string|null $proxyDir = null,
 		CacheItemPoolInterface|null $cache = null,
-	): Configuration {
+	): Configuration
+	{
 		$proxyDir = $proxyDir ?: sys_get_temp_dir();
 
 		$cache = self::createCacheInstance($isDevMode, $proxyDir, $cache);
@@ -85,15 +88,16 @@ final class ORMSetup
 		bool $isDevMode,
 		string $proxyDir,
 		CacheItemPoolInterface|null $cache,
-	): CacheItemPoolInterface {
+	): CacheItemPoolInterface
+	{
 		if ($cache !== null) {
 			return $cache;
 		}
 
-		if (! class_exists(ArrayAdapter::class)) {
+		if (!class_exists(ArrayAdapter::class)) {
 			throw new RuntimeException(
 				'The Doctrine setup tool cannot configure caches without symfony/cache.'
-				. ' Please add symfony/cache as explicit dependency or pass your own cache implementation.',
+					. ' Please add symfony/cache as explicit dependency or pass your own cache implementation.',
 			);
 		}
 

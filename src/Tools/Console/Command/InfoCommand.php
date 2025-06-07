@@ -16,16 +16,16 @@ use function sprintf;
 /**
  * Show information about mapped entities.
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class InfoCommand extends AbstractEntityManagerCommand
 {
 	protected function configure(): void
 	{
 		$this->setName('orm:info')
-			 ->setDescription('Show basic information about all mapped entities')
-			 ->addOption('em', null, InputOption::VALUE_REQUIRED, 'Name of the entity manager to operate on')
-			 ->setHelp(<<<'EOT'
+			->setDescription('Show basic information about all mapped entities')
+			->addOption('em', null, InputOption::VALUE_REQUIRED, 'Name of the entity manager to operate on')
+			->setHelp(<<<'EOT'
 The <info>%command.name%</info> shows basic information about which
 entities exist and possibly if their mapping information contains errors or
 not.
@@ -39,10 +39,10 @@ EOT);
 		$entityManager = $this->getEntityManager($input);
 
 		$entityClassNames = $entityManager->getConfiguration()
-										  ->getMetadataDriverImpl()
-										  ->getAllClassNames();
+			->getMetadataDriverImpl()
+			->getAllClassNames();
 
-		if (! $entityClassNames) {
+		if (!$entityClassNames) {
 			$ui->caution(
 				[
 					'You do not have any mapped Doctrine ORM entities according to the current configuration.',

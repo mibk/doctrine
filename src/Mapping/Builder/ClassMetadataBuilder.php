@@ -10,13 +10,14 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 /**
  * Builder Object for ClassMetadata
  *
- * @link        www.doctrine-project.com
+ * @link www.doctrine-project.com
  */
 class ClassMetadataBuilder
 {
 	public function __construct(
 		private readonly ClassMetadata $cm,
-	) {
+	)
+	{
 	}
 
 	public function getClassMetadata(): ClassMetadata
@@ -32,7 +33,7 @@ class ClassMetadataBuilder
 	public function setMappedSuperClass(): static
 	{
 		$this->cm->isMappedSuperclass = true;
-		$this->cm->isEmbeddedClass    = false;
+		$this->cm->isEmbeddedClass = false;
 
 		return $this;
 	}
@@ -44,7 +45,7 @@ class ClassMetadataBuilder
 	 */
 	public function setEmbeddable(): static
 	{
-		$this->cm->isEmbeddedClass    = true;
+		$this->cm->isEmbeddedClass = true;
 		$this->cm->isMappedSuperclass = false;
 
 		return $this;
@@ -115,7 +116,7 @@ class ClassMetadataBuilder
 	 */
 	public function addIndex(array $columns, string $name): static
 	{
-		if (! isset($this->cm->table['indexes'])) {
+		if (!isset($this->cm->table['indexes'])) {
 			$this->cm->table['indexes'] = [];
 		}
 
@@ -133,7 +134,7 @@ class ClassMetadataBuilder
 	 */
 	public function addUniqueConstraint(array $columns, string $name): static
 	{
-		if (! isset($this->cm->table['uniqueConstraints'])) {
+		if (!isset($this->cm->table['uniqueConstraints'])) {
 			$this->cm->table['uniqueConstraints'] = [];
 		}
 
@@ -181,15 +182,16 @@ class ClassMetadataBuilder
 		string|null $columnDefinition = null,
 		string|null $enumType = null,
 		array $options = [],
-	): static {
+	): static
+	{
 		$this->cm->setDiscriminatorColumn(
 			[
-				'name' => $name,
-				'type' => $type,
-				'length' => $length,
+				'name'             => $name,
+				'type'             => $type,
+				'length'           => $length,
 				'columnDefinition' => $columnDefinition,
-				'enumType' => $enumType,
-				'options' => $options,
+				'enumType'         => $enumType,
+				'options'          => $options,
 			],
 		);
 
@@ -242,7 +244,7 @@ class ClassMetadataBuilder
 	public function addField(string $name, string $type, array $mapping = []): static
 	{
 		$mapping['fieldName'] = $name;
-		$mapping['type']      = $type;
+		$mapping['type'] = $type;
 
 		$this->cm->mapField($mapping);
 
@@ -285,7 +287,8 @@ class ClassMetadataBuilder
 		string $name,
 		string $targetEntity,
 		string|null $inversedBy = null,
-	): ClassMetadataBuilder {
+	): ClassMetadataBuilder
+	{
 		$builder = $this->createManyToOne($name, $targetEntity);
 
 		if ($inversedBy !== null) {
@@ -345,7 +348,8 @@ class ClassMetadataBuilder
 		string $name,
 		string $targetEntity,
 		string|null $inversedBy = null,
-	): ClassMetadataBuilder {
+	): ClassMetadataBuilder
+	{
 		$builder = $this->createOneToOne($name, $targetEntity);
 
 		if ($inversedBy !== null) {
@@ -377,7 +381,8 @@ class ClassMetadataBuilder
 		string $name,
 		string $targetEntity,
 		string|null $inversedBy = null,
-	): ClassMetadataBuilder {
+	): ClassMetadataBuilder
+	{
 		$builder = $this->createManyToMany($name, $targetEntity);
 
 		if ($inversedBy !== null) {

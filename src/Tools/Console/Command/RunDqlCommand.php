@@ -23,22 +23,22 @@ use function strtoupper;
 /**
  * Command to execute DQL queries in a given EntityManager.
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class RunDqlCommand extends AbstractEntityManagerCommand
 {
 	protected function configure(): void
 	{
 		$this->setName('orm:run-dql')
-			 ->setDescription('Executes arbitrary DQL directly from the command line')
-			 ->addArgument('dql', InputArgument::REQUIRED, 'The DQL to execute.')
-			 ->addOption('em', null, InputOption::VALUE_REQUIRED, 'Name of the entity manager to operate on')
-			 ->addOption('hydrate', null, InputOption::VALUE_REQUIRED, 'Hydration mode of result set. Should be either: object, array, scalar or single-scalar.', 'object')
-			 ->addOption('first-result', null, InputOption::VALUE_REQUIRED, 'The first result in the result set.')
-			 ->addOption('max-result', null, InputOption::VALUE_REQUIRED, 'The maximum number of results in the result set.')
-			 ->addOption('depth', null, InputOption::VALUE_REQUIRED, 'Dumping depth of Entity graph.', 7)
-			 ->addOption('show-sql', null, InputOption::VALUE_NONE, 'Dump generated SQL instead of executing query')
-			 ->setHelp(<<<'EOT'
+			->setDescription('Executes arbitrary DQL directly from the command line')
+			->addArgument('dql', InputArgument::REQUIRED, 'The DQL to execute.')
+			->addOption('em', null, InputOption::VALUE_REQUIRED, 'Name of the entity manager to operate on')
+			->addOption('hydrate', null, InputOption::VALUE_REQUIRED, 'Hydration mode of result set. Should be either: object, array, scalar or single-scalar.', 'object')
+			->addOption('first-result', null, InputOption::VALUE_REQUIRED, 'The first result in the result set.')
+			->addOption('max-result', null, InputOption::VALUE_REQUIRED, 'The maximum number of results in the result set.')
+			->addOption('depth', null, InputOption::VALUE_REQUIRED, 'Dumping depth of Entity graph.', 7)
+			->addOption('show-sql', null, InputOption::VALUE_NONE, 'Dump generated SQL instead of executing query')
+			->setHelp(<<<'EOT'
 				The <info>%command.name%</info> command executes the given DQL query and
 				outputs the results:
 
@@ -69,14 +69,14 @@ class RunDqlCommand extends AbstractEntityManagerCommand
 
 		$depth = $input->getOption('depth');
 
-		if (! is_numeric($depth)) {
+		if (!is_numeric($depth)) {
 			throw new LogicException("Option 'depth' must contain an integer value");
 		}
 
 		$hydrationModeName = (string) $input->getOption('hydrate');
-		$hydrationMode     = 'Doctrine\ORM\Query::HYDRATE_' . strtoupper(str_replace('-', '_', $hydrationModeName));
+		$hydrationMode = 'Doctrine\ORM\Query::HYDRATE_' . strtoupper(str_replace('-', '_', $hydrationModeName));
 
-		if (! defined($hydrationMode)) {
+		if (!defined($hydrationMode)) {
 			throw new RuntimeException(sprintf(
 				"Hydration mode '%s' does not exist. It should be either: object. array, scalar or single-scalar.",
 				$hydrationModeName,
@@ -87,7 +87,7 @@ class RunDqlCommand extends AbstractEntityManagerCommand
 
 		$firstResult = $input->getOption('first-result');
 		if ($firstResult !== null) {
-			if (! is_numeric($firstResult)) {
+			if (!is_numeric($firstResult)) {
 				throw new LogicException("Option 'first-result' must contain an integer value");
 			}
 
@@ -96,7 +96,7 @@ class RunDqlCommand extends AbstractEntityManagerCommand
 
 		$maxResult = $input->getOption('max-result');
 		if ($maxResult !== null) {
-			if (! is_numeric($maxResult)) {
+			if (!is_numeric($maxResult)) {
 				throw new LogicException("Option 'max-result' must contain an integer value");
 			}
 

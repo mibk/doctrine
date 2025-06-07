@@ -18,7 +18,7 @@ final class DefaultRepositoryFactory implements RepositoryFactory
 	/**
 	 * The list of EntityRepository instances.
 	 *
-	 * @var ObjectRepository[]
+	 * @var         ObjectRepository[]
 	 * @phpstan-var array<string, EntityRepository>
 	 */
 	private array $repositoryList = [];
@@ -39,8 +39,9 @@ final class DefaultRepositoryFactory implements RepositoryFactory
 	private function createRepository(
 		EntityManagerInterface $entityManager,
 		string $entityName,
-	): EntityRepository {
-		$metadata            = $entityManager->getClassMetadata($entityName);
+	): EntityRepository
+	{
+		$metadata = $entityManager->getClassMetadata($entityName);
 		$repositoryClassName = $metadata->customRepositoryClassName
 			?: $entityManager->getConfiguration()->getDefaultRepositoryClassName();
 

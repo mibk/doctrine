@@ -16,7 +16,8 @@ class Literal extends Node
 	public function __construct(
 		public int $type,
 		public mixed $value,
-	) {
+	)
+	{
 	}
 
 	public function dispatch(SqlWalker $walker): string

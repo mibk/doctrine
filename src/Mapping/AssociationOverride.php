@@ -22,11 +22,11 @@ final class AssociationOverride implements MappingAttribute
 	public readonly array|null $inverseJoinColumns;
 
 	/**
-	 * @param string                       $name               The name of the relationship property whose mapping is being overridden.
-	 * @param JoinColumn|array<JoinColumn> $joinColumns
-	 * @param JoinColumn|array<JoinColumn> $inverseJoinColumns
-	 * @param JoinTable|null               $joinTable          The join table that maps the relationship.
-	 * @param string|null                  $inversedBy         The name of the association-field on the inverse-side.
+	 * @param         string                       $name The name of the relationship property whose mapping is being overridden.
+	 * @param         JoinColumn|array<JoinColumn> $joinColumns
+	 * @param         JoinColumn|array<JoinColumn> $inverseJoinColumns
+	 * @param         JoinTable|null               $joinTable  The join table that maps the relationship.
+	 * @param         string|null                  $inversedBy The name of the association-field on the inverse-side.
 	 * @phpstan-param 'LAZY'|'EAGER'|'EXTRA_LAZY'|null $fetch
 	 */
 	public function __construct(
@@ -36,7 +36,8 @@ final class AssociationOverride implements MappingAttribute
 		public readonly JoinTable|null $joinTable = null,
 		public readonly string|null $inversedBy = null,
 		public readonly string|null $fetch = null,
-	) {
+	)
+	{
 		if ($joinColumns instanceof JoinColumn) {
 			$joinColumns = [$joinColumns];
 		}
@@ -45,7 +46,7 @@ final class AssociationOverride implements MappingAttribute
 			$inverseJoinColumns = [$inverseJoinColumns];
 		}
 
-		$this->joinColumns        = $joinColumns;
+		$this->joinColumns = $joinColumns;
 		$this->inverseJoinColumns = $inverseJoinColumns;
 	}
 }

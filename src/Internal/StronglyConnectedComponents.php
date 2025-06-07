@@ -84,10 +84,10 @@ final class StronglyConnectedComponents
 
 	public function addNode(object $node): void
 	{
-		$id                = spl_object_id($node);
-		$this->nodes[$id]  = $node;
+		$id = spl_object_id($node);
+		$this->nodes[$id] = $node;
 		$this->states[$id] = self::NOT_VISITED;
-		$this->edges[$id]  = [];
+		$this->edges[$id] = [];
 	}
 
 	public function hasNode(object $node): bool
@@ -101,7 +101,7 @@ final class StronglyConnectedComponents
 	public function addEdge(object $from, object $to): void
 	{
 		$fromId = spl_object_id($from);
-		$toId   = spl_object_id($to);
+		$toId = spl_object_id($to);
 
 		$this->edges[$fromId][$toId] = true;
 	}
@@ -117,7 +117,7 @@ final class StronglyConnectedComponents
 
 	private function tarjan(int $oid): void
 	{
-		$this->dfs[$oid]    = $this->lowlink[$oid] = $this->maxdfs++;
+		$this->dfs[$oid] = $this->lowlink[$oid] = $this->maxdfs++;
 		$this->states[$oid] = self::IN_PROGRESS;
 		array_push($this->stack, $oid);
 
@@ -136,12 +136,12 @@ final class StronglyConnectedComponents
 			do {
 				$unwindOid = array_pop($this->stack);
 
-				if (! $representingNode) {
+				if (!$representingNode) {
 					$representingNode = $this->nodes[$unwindOid];
 				}
 
 				$this->representingNodes[$unwindOid] = $representingNode;
-				$this->states[$unwindOid]            = self::VISITED;
+				$this->states[$unwindOid] = self::VISITED;
 			} while ($unwindOid !== $oid);
 		}
 	}
@@ -150,7 +150,7 @@ final class StronglyConnectedComponents
 	{
 		$oid = spl_object_id($node);
 
-		if (! isset($this->representingNodes[$oid])) {
+		if (!isset($this->representingNodes[$oid])) {
 			throw new InvalidArgumentException('unknown node');
 		}
 

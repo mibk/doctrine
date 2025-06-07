@@ -9,14 +9,15 @@ use Doctrine\ORM\Query\SqlWalker;
 /**
  * SimpleWhenClause ::= "WHEN" ScalarExpression "THEN" ScalarExpression
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class SimpleWhenClause extends Node
 {
 	public function __construct(
 		public mixed $caseScalarExpression = null,
 		public mixed $thenScalarExpression = null,
-	) {
+	)
+	{
 	}
 
 	public function dispatch(SqlWalker $walker): string

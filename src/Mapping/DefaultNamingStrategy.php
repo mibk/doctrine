@@ -12,7 +12,7 @@ use function substr;
 /**
  * The default NamingStrategy
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class DefaultNamingStrategy implements NamingStrategy
 {
@@ -35,7 +35,8 @@ class DefaultNamingStrategy implements NamingStrategy
 		string $embeddedColumnName,
 		string $className,
 		string $embeddedClassName,
-	): string {
+	): string
+	{
 		return $propertyName . '_' . $embeddedColumnName;
 	}
 
@@ -53,7 +54,8 @@ class DefaultNamingStrategy implements NamingStrategy
 		string $sourceEntity,
 		string $targetEntity,
 		string $propertyName,
-	): string {
+	): string
+	{
 		return strtolower($this->classToTableName($sourceEntity) . '_' .
 			$this->classToTableName($targetEntity));
 	}
@@ -61,7 +63,8 @@ class DefaultNamingStrategy implements NamingStrategy
 	public function joinKeyColumnName(
 		string $entityName,
 		string|null $referencedColumnName,
-	): string {
+	): string
+	{
 		return strtolower($this->classToTableName($entityName) . '_' .
 			($referencedColumnName ?: $this->referenceColumnName()));
 	}

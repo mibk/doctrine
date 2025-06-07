@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping\MappingAttribute;
 
 /**
  * @template-extends ArrayObject<int, T>
- * @template T of MappingAttribute
+ * @template         T of MappingAttribute
  */
 final class RepeatableAttributeCollection extends ArrayObject
 {

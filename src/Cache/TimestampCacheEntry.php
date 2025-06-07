@@ -20,7 +20,7 @@ class TimestampCacheEntry implements CacheEntry
 	 *
 	 * This method allow Doctrine\Common\Cache\PhpFileCache compatibility
 	 *
-	 * @param array<string,float> $values array containing property values
+	 * @param array<string, float> $values array containing property values
 	 */
 	public static function __set_state(array $values): TimestampCacheEntry
 	{

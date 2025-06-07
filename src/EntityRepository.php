@@ -29,7 +29,7 @@ use function substr;
  * This class is designed for inheritance and users can subclass this class to
  * write their own repositories with business-specific methods to locate entities.
  *
- * @template T of object
+ * @template            T of object
  * @template-implements Selectable<int,T>
  * @template-implements ObjectRepository<T>
  */
@@ -43,7 +43,8 @@ class EntityRepository implements ObjectRepository, Selectable
 	public function __construct(
 		private readonly EntityManagerInterface $em,
 		private readonly ClassMetadata $class,
-	) {
+	)
+	{
 		$this->entityName = $class->name;
 	}
 
@@ -78,7 +79,7 @@ class EntityRepository implements ObjectRepository, Selectable
 	 *                                    during the search.
 	 * @phpstan-param LockMode::*|null $lockMode
 	 *
-	 * @return object|null The entity instance or NULL if the entity can not be found.
+	 * @return         object|null The entity instance or NULL if the entity can not be found.
 	 * @phpstan-return ?T
 	 */
 	public function find(mixed $id, LockMode|int|null $lockMode = null, int|null $lockVersion = null): object|null
@@ -130,7 +131,7 @@ class EntityRepository implements ObjectRepository, Selectable
 	 *
 	 * @phpstan-param array<string, mixed> $criteria
 	 *
-	 * @return int The cardinality of the objects that match the given criteria.
+	 * @return         int The cardinality of the objects that match the given criteria.
 	 * @phpstan-return 0|positive-int
 	 *
 	 * @todo Add this method to `ObjectRepository` interface in the next major release
@@ -143,7 +144,7 @@ class EntityRepository implements ObjectRepository, Selectable
 	/**
 	 * Adds support for magic method calls.
 	 *
-	 * @param mixed[] $arguments
+	 * @param         mixed[] $arguments
 	 * @phpstan-param list<mixed> $arguments
 	 *
 	 * @throws BadMethodCallException If the method called is invalid.
@@ -164,7 +165,7 @@ class EntityRepository implements ObjectRepository, Selectable
 
 		throw new BadMethodCallException(sprintf(
 			'Undefined method "%s". The method name must start with ' .
-			'either findBy, findOneBy or countBy!',
+				'either findBy, findOneBy or countBy!',
 			$method,
 		));
 	}
@@ -207,8 +208,8 @@ class EntityRepository implements ObjectRepository, Selectable
 	/**
 	 * Resolves a magic method call to the proper existent method at `EntityRepository`.
 	 *
-	 * @param string $method The method to call
-	 * @param string $by     The property name used as condition
+	 * @param         string $method The method to call
+	 * @param         string $by     The property name used as condition
 	 * @phpstan-param list<mixed> $arguments The arguments to pass at method call
 	 *
 	 * @throws InvalidMagicMethodCall If the method called is invalid or the
@@ -216,7 +217,7 @@ class EntityRepository implements ObjectRepository, Selectable
 	 */
 	private function resolveMagicCall(string $method, string $by, array $arguments): mixed
 	{
-		if (! $arguments) {
+		if (!$arguments) {
 			throw InvalidMagicMethodCall::onMissingParameter($method . $by);
 		}
 
@@ -224,7 +225,7 @@ class EntityRepository implements ObjectRepository, Selectable
 
 		$fieldName = lcfirst(self::$inflector->classify($by));
 
-		if (! ($this->class->hasField($fieldName) || $this->class->hasAssociation($fieldName))) {
+		if (!($this->class->hasField($fieldName) || $this->class->hasAssociation($fieldName))) {
 			throw InvalidMagicMethodCall::becauseFieldNotFoundIn(
 				$this->entityName,
 				$fieldName,

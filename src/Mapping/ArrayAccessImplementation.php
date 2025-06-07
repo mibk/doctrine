@@ -35,7 +35,7 @@ trait ArrayAccessImplementation
 			static::class,
 		);
 
-		if (! property_exists($this, $offset)) {
+		if (!property_exists($this, $offset)) {
 			throw new InvalidArgumentException('Undefined property: ' . $offset);
 		}
 

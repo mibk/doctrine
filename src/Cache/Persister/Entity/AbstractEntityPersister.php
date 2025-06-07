@@ -61,20 +61,21 @@ abstract class AbstractEntityPersister implements CachedEntityPersister
 		protected Region $region,
 		EntityManagerInterface $em,
 		protected ClassMetadata $class,
-	) {
+	)
+	{
 		$configuration = $em->getConfiguration();
-		$cacheConfig   = $configuration->getSecondLevelCacheConfiguration();
-		$cacheFactory  = $cacheConfig->getCacheFactory();
+		$cacheConfig = $configuration->getSecondLevelCacheConfiguration();
+		$cacheFactory = $cacheConfig->getCacheFactory();
 
-		$this->cache           = $em->getCache();
-		$this->filters         = $em->getFilters();
-		$this->regionName      = $region->getName();
-		$this->uow             = $em->getUnitOfWork();
+		$this->cache = $em->getCache();
+		$this->filters = $em->getFilters();
+		$this->regionName = $region->getName();
+		$this->uow = $em->getUnitOfWork();
 		$this->metadataFactory = $em->getMetadataFactory();
-		$this->cacheLogger     = $cacheConfig->getCacheLogger();
+		$this->cacheLogger = $cacheConfig->getCacheLogger();
 		$this->timestampRegion = $cacheFactory->getTimestampRegion();
-		$this->hydrator        = $cacheFactory->buildEntityHydrator($em, $class);
-		$this->timestampKey    = new TimestampCacheKey($this->class->rootEntityName);
+		$this->hydrator = $cacheFactory->buildEntityHydrator($em, $class);
+		$this->timestampKey = new TimestampCacheKey($this->class->rootEntityName);
 	}
 
 	public function addInsert(object $entity): void
@@ -97,7 +98,8 @@ abstract class AbstractEntityPersister implements CachedEntityPersister
 		int|null $limit = null,
 		int|null $offset = null,
 		array|null $orderBy = null,
-	): string {
+	): string
+	{
 		return $this->persister->getSelectSQL($criteria, $assoc, $lockMode, $limit, $offset, $orderBy);
 	}
 
@@ -121,7 +123,8 @@ abstract class AbstractEntityPersister implements CachedEntityPersister
 		mixed $value,
 		AssociationMapping|null $assoc = null,
 		string|null $comparison = null,
-	): string {
+	): string
+	{
 		return $this->persister->getSelectConditionStatementSQL($field, $value, $assoc, $comparison);
 	}
 
@@ -150,14 +153,14 @@ abstract class AbstractEntityPersister implements CachedEntityPersister
 
 	public function storeEntityCache(object $entity, EntityCacheKey $key): bool
 	{
-		$class     = $this->class;
+		$class = $this->class;
 		$className = DefaultProxyClassNameResolver::getClass($entity);
 
 		if ($className !== $this->class->name) {
 			$class = $this->metadataFactory->getMetadataFor($className);
 		}
 
-		$entry  = $this->hydrator->buildCacheEntry($class, $key, $entity);
+		$entry = $this->hydrator->buildCacheEntry($class, $key, $entity);
 		$cached = $this->region->put($key, $entry);
 
 		if ($cached) {
@@ -175,8 +178,8 @@ abstract class AbstractEntityPersister implements CachedEntityPersister
 			foreach ($this->class->associationMappings as $name => $assoc) {
 				if (
 					isset($assoc->cache) &&
-					($assoc->isToOne()) &&
-					($assoc->fetch === ClassMetadata::FETCH_EAGER || ! $assoc->isOwningSide())
+						($assoc->isToOne()) &&
+						($assoc->fetch === ClassMetadata::FETCH_EAGER || !$assoc->isOwningSide())
 				) {
 					$associations[] = $name;
 				}
@@ -186,16 +189,16 @@ abstract class AbstractEntityPersister implements CachedEntityPersister
 		}
 
 		foreach ($this->joinedAssociations as $name) {
-			$assoc       = $this->class->associationMappings[$name];
+			$assoc = $this->class->associationMappings[$name];
 			$assocEntity = $this->class->getFieldValue($entity, $name);
 
 			if ($assocEntity === null) {
 				continue;
 			}
 
-			$assocId        = $this->uow->getEntityIdentifier($assocEntity);
-			$assocMetadata  = $this->metadataFactory->getMetadataFor($assoc->targetEntity);
-			$assocKey       = new EntityCacheKey($assocMetadata->rootEntityName, $assocId);
+			$assocId = $this->uow->getEntityIdentifier($assocEntity);
+			$assocMetadata = $this->metadataFactory->getMetadataFor($assoc->targetEntity);
+			$assocKey = new EntityCacheKey($assocMetadata->rootEntityName, $assocId);
 			$assocPersister = $this->uow->getEntityPersister($assoc->targetEntity);
 
 			$assocPersister->storeEntityCache($assocEntity, $assocKey);
@@ -214,7 +217,8 @@ abstract class AbstractEntityPersister implements CachedEntityPersister
 		array|null $orderBy = null,
 		int|null $limit = null,
 		int|null $offset = null,
-	): string {
+	): string
+	{
 		[$params] = $criteria instanceof Criteria
 			? $this->persister->expandCriteriaParameters($criteria)
 			: $this->persister->expandParameters($criteria);
@@ -251,7 +255,8 @@ abstract class AbstractEntityPersister implements CachedEntityPersister
 		object $sourceEntity,
 		int|null $offset = null,
 		int|null $limit = null,
-	): array {
+	): array
+	{
 		return $this->persister->getManyToManyCollection($assoc, $sourceEntity, $offset, $limit);
 	}
 
@@ -263,7 +268,8 @@ abstract class AbstractEntityPersister implements CachedEntityPersister
 		object $sourceEntity,
 		int|null $offset = null,
 		int|null $limit = null,
-	): array {
+	): array
+	{
 		return $this->persister->getOneToManyCollection($assoc, $sourceEntity, $offset, $limit);
 	}
 
@@ -296,18 +302,19 @@ abstract class AbstractEntityPersister implements CachedEntityPersister
 		LockMode|int|null $lockMode = null,
 		int|null $limit = null,
 		array|null $orderBy = null,
-	): object|null {
+	): object|null
+	{
 		if ($entity !== null || $assoc !== null || $hints !== [] || $lockMode !== null) {
 			return $this->persister->load($criteria, $entity, $assoc, $hints, $lockMode, $limit, $orderBy);
 		}
 
 		//handle only EntityRepository#findOneBy
-		$query      = $this->persister->getSelectSQL($criteria, null, null, $limit, null, $orderBy);
-		$hash       = $this->getHash($query, $criteria);
-		$rsm        = $this->getResultSetMapping();
-		$queryKey   = new QueryCacheKey($hash, 0, Cache::MODE_NORMAL, $this->timestampKey);
+		$query = $this->persister->getSelectSQL($criteria, null, null, $limit, null, $orderBy);
+		$hash = $this->getHash($query, $criteria);
+		$rsm = $this->getResultSetMapping();
+		$queryKey = new QueryCacheKey($hash, 0, Cache::MODE_NORMAL, $this->timestampKey);
 		$queryCache = $this->cache->getQueryCache($this->regionName);
-		$result     = $queryCache->get($queryKey, $rsm);
+		$result = $queryCache->get($queryKey, $rsm);
 
 		if ($result !== null) {
 			$this->cacheLogger?->queryCacheHit($this->regionName, $queryKey);
@@ -340,13 +347,14 @@ abstract class AbstractEntityPersister implements CachedEntityPersister
 		array|null $orderBy = null,
 		int|null $limit = null,
 		int|null $offset = null,
-	): array {
-		$query      = $this->persister->getSelectSQL($criteria, null, null, $limit, $offset, $orderBy);
-		$hash       = $this->getHash($query, $criteria);
-		$rsm        = $this->getResultSetMapping();
-		$queryKey   = new QueryCacheKey($hash, 0, Cache::MODE_NORMAL, $this->timestampKey);
+	): array
+	{
+		$query = $this->persister->getSelectSQL($criteria, null, null, $limit, $offset, $orderBy);
+		$hash = $this->getHash($query, $criteria);
+		$rsm = $this->getResultSetMapping();
+		$queryKey = new QueryCacheKey($hash, 0, Cache::MODE_NORMAL, $this->timestampKey);
 		$queryCache = $this->cache->getQueryCache($this->regionName);
-		$result     = $queryCache->get($queryKey, $rsm);
+		$result = $queryCache->get($queryKey, $rsm);
 
 		if ($result !== null) {
 			$this->cacheLogger?->queryCacheHit($this->regionName, $queryKey);
@@ -373,9 +381,9 @@ abstract class AbstractEntityPersister implements CachedEntityPersister
 	 */
 	public function loadById(array $identifier, object|null $entity = null): object|null
 	{
-		$cacheKey   = new EntityCacheKey($this->class->rootEntityName, $identifier);
+		$cacheKey = new EntityCacheKey($this->class->rootEntityName, $identifier);
 		$cacheEntry = $this->region->get($cacheKey);
-		$class      = $this->class;
+		$class = $this->class;
 
 		if ($cacheEntry !== null) {
 			if ($cacheEntry->class !== $this->class->name) {
@@ -397,7 +405,7 @@ abstract class AbstractEntityPersister implements CachedEntityPersister
 			return null;
 		}
 
-		$class     = $this->class;
+		$class = $this->class;
 		$className = DefaultProxyClassNameResolver::getClass($entity);
 
 		if ($className !== $this->class->name) {
@@ -405,7 +413,7 @@ abstract class AbstractEntityPersister implements CachedEntityPersister
 		}
 
 		$cacheEntry = $this->hydrator->buildCacheEntry($class, $cacheKey, $entity);
-		$cached     = $this->region->put($cacheKey, $cacheEntry);
+		$cached = $this->region->put($cacheKey, $cacheEntry);
 
 		if ($cached && ($this->joinedAssociations === null || $this->joinedAssociations)) {
 			$this->storeJoinedAssociations($entity);
@@ -430,14 +438,14 @@ abstract class AbstractEntityPersister implements CachedEntityPersister
 	 */
 	public function loadCriteria(Criteria $criteria): array
 	{
-		$orderBy     = $criteria->orderings();
-		$limit       = $criteria->getMaxResults();
-		$offset      = $criteria->getFirstResult();
-		$query       = $this->persister->getSelectSQL($criteria);
-		$hash        = $this->getHash($query, $criteria, $orderBy, $limit, $offset);
-		$rsm         = $this->getResultSetMapping();
-		$queryKey    = new QueryCacheKey($hash, 0, Cache::MODE_NORMAL, $this->timestampKey);
-		$queryCache  = $this->cache->getQueryCache($this->regionName);
+		$orderBy = $criteria->orderings();
+		$limit = $criteria->getMaxResults();
+		$offset = $criteria->getFirstResult();
+		$query = $this->persister->getSelectSQL($criteria);
+		$hash = $this->getHash($query, $criteria, $orderBy, $limit, $offset);
+		$rsm = $this->getResultSetMapping();
+		$queryKey = new QueryCacheKey($hash, 0, Cache::MODE_NORMAL, $this->timestampKey);
+		$queryCache = $this->cache->getQueryCache($this->regionName);
 		$cacheResult = $queryCache->get($queryKey, $rsm);
 
 		if ($cacheResult !== null) {
@@ -467,17 +475,18 @@ abstract class AbstractEntityPersister implements CachedEntityPersister
 		AssociationMapping $assoc,
 		object $sourceEntity,
 		PersistentCollection $collection,
-	): array {
+	): array
+	{
 		$persister = $this->uow->getCollectionPersister($assoc);
-		$hasCache  = ($persister instanceof CachedPersister);
+		$hasCache = ($persister instanceof CachedPersister);
 
-		if (! $hasCache) {
+		if (!$hasCache) {
 			return $this->persister->loadManyToManyCollection($assoc, $sourceEntity, $collection);
 		}
 
 		$ownerId = $this->uow->getEntityIdentifier($collection->getOwner());
-		$key     = $this->buildCollectionCacheKey($assoc, $ownerId, $this->filters->getHash());
-		$list    = $persister->loadCollectionCache($collection, $key);
+		$key = $this->buildCollectionCacheKey($assoc, $ownerId, $this->filters->getHash());
+		$list = $persister->loadCollectionCache($collection, $key);
 
 		if ($list !== null) {
 			$this->cacheLogger?->collectionCacheHit($persister->getCacheRegion()->getName(), $key);
@@ -498,17 +507,18 @@ abstract class AbstractEntityPersister implements CachedEntityPersister
 		AssociationMapping $assoc,
 		object $sourceEntity,
 		PersistentCollection $collection,
-	): mixed {
+	): mixed
+	{
 		$persister = $this->uow->getCollectionPersister($assoc);
-		$hasCache  = ($persister instanceof CachedPersister);
+		$hasCache = ($persister instanceof CachedPersister);
 
-		if (! $hasCache) {
+		if (!$hasCache) {
 			return $this->persister->loadOneToManyCollection($assoc, $sourceEntity, $collection);
 		}
 
 		$ownerId = $this->uow->getEntityIdentifier($collection->getOwner());
-		$key     = $this->buildCollectionCacheKey($assoc, $ownerId, $this->filters->getHash());
-		$list    = $persister->loadCollectionCache($collection, $key);
+		$key = $this->buildCollectionCacheKey($assoc, $ownerId, $this->filters->getHash());
+		$list = $persister->loadCollectionCache($collection, $key);
 
 		if ($list !== null) {
 			$this->cacheLogger?->collectionCacheHit($persister->getCacheRegion()->getName(), $key);

@@ -40,12 +40,12 @@ class EntityListenerBuilder
 	{
 		$class = $metadata->fullyQualifiedClassName($className);
 
-		if (! class_exists($class)) {
+		if (!class_exists($class)) {
 			throw MappingException::entityListenerClassNotFound($class, $className);
 		}
 
 		foreach (get_class_methods($class) as $method) {
-			if (! isset(self::EVENTS[$method])) {
+			if (!isset(self::EVENTS[$method])) {
 				continue;
 			}
 

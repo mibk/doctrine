@@ -46,12 +46,13 @@ class FileLockRegion implements ConcurrentRegion
 		private readonly Region $region,
 		private readonly string $directory,
 		private readonly string|int $lockLifetime,
-	) {
-		if (! is_dir($directory) && ! @mkdir($directory, 0775, true)) {
+	)
+	{
+		if (!is_dir($directory) && !@mkdir($directory, 0775, true)) {
 			throw new InvalidArgumentException(sprintf('The directory "%s" does not exist and could not be created.', $directory));
 		}
 
-		if (! is_writable($directory)) {
+		if (!is_writable($directory)) {
 			throw new InvalidArgumentException(sprintf('The directory "%s" is not writable.', $directory));
 		}
 	}
@@ -60,11 +61,11 @@ class FileLockRegion implements ConcurrentRegion
 	{
 		$filename = $this->getLockFileName($key);
 
-		if (! is_file($filename)) {
+		if (!is_file($filename)) {
 			return false;
 		}
 
-		$time    = $this->getLockTime($filename);
+		$time = $this->getLockTime($filename);
 		$content = $this->getLockContent($filename);
 
 		if ($content === false || $time === false) {
@@ -171,7 +172,7 @@ class FileLockRegion implements ConcurrentRegion
 			return null;
 		}
 
-		$lock     = Lock::createLockRead();
+		$lock = Lock::createLockRead();
 		$filename = $this->getLockFileName($key);
 
 		if (@file_put_contents($filename, $lock->value, LOCK_EX) === false) {

@@ -190,10 +190,10 @@ class ResultSetMapping
 	/**
 	 * Adds an entity result to this ResultSetMapping.
 	 *
-	 * @param class-string $class       The class name of the entity.
-	 * @param string       $alias       The alias for the class. The alias must be unique among all entity
+	 * @param class-string $class The class name of the entity.
+	 * @param string       $alias The alias for the class. The alias must be unique among all entity
 	 *                                  results or joined entity results within this ResultSetMapping.
-	 * @param string|null  $resultAlias The result alias with which the entity result should be
+	 * @param string|null $resultAlias The result alias with which the entity result should be
 	 *                                  placed in the result structure.
 	 *
 	 * @return $this
@@ -202,7 +202,7 @@ class ResultSetMapping
 	 */
 	public function addEntityResult(string $class, string $alias, string|null $resultAlias = null): static
 	{
-		$this->aliasMap[$alias]       = $class;
+		$this->aliasMap[$alias] = $class;
 		$this->entityMappings[$alias] = $resultAlias;
 
 		if ($resultAlias !== null) {
@@ -217,7 +217,7 @@ class ResultSetMapping
 	 * The discriminator column will be used to determine the concrete class name to
 	 * instantiate.
 	 *
-	 * @param string $alias       The alias of the entity result or joined entity result the discriminator
+	 * @param string $alias The alias of the entity result or joined entity result the discriminator
 	 *                            column should be used for.
 	 * @param string $discrColumn The name of the discriminator column in the SQL result set.
 	 *
@@ -246,7 +246,7 @@ class ResultSetMapping
 		$found = false;
 
 		foreach ([...$this->metaMappings, ...$this->fieldMappings] as $columnName => $columnFieldName) {
-			if (! ($columnFieldName === $fieldName && $this->columnOwnerMap[$columnName] === $alias)) {
+			if (!($columnFieldName === $fieldName && $this->columnOwnerMap[$columnName] === $alias)) {
 				continue;
 			}
 
@@ -342,12 +342,12 @@ class ResultSetMapping
 		// column name => alias of owner
 		$this->columnOwnerMap[$columnName] = $alias;
 		// field name => class name of declaring class
-		$declaringClass                      = $declaringClass ?: $this->aliasMap[$alias];
+		$declaringClass = $declaringClass ?: $this->aliasMap[$alias];
 		$this->declaringClasses[$columnName] = $declaringClass;
 
 		$this->columnAliasMappings[$declaringClass][$alias][$fieldName] = $columnName;
 
-		if (! $this->isMixed && $this->scalarMappings) {
+		if (!$this->isMixed && $this->scalarMappings) {
 			$this->isMixed = true;
 		}
 
@@ -383,9 +383,9 @@ class ResultSetMapping
 	 */
 	public function addJoinedEntityResult(string $class, string $alias, string $parentAlias, string $relation): static
 	{
-		$this->aliasMap[$alias]       = $class;
+		$this->aliasMap[$alias] = $class;
 		$this->parentAliasMap[$alias] = $parentAlias;
-		$this->relationMap[$alias]    = $relation;
+		$this->relationMap[$alias] = $relation;
 
 		return $this;
 	}
@@ -404,9 +404,9 @@ class ResultSetMapping
 	public function addScalarResult(string $columnName, string|int $alias, string $type = 'string'): static
 	{
 		$this->scalarMappings[$columnName] = $alias;
-		$this->typeMappings[$columnName]   = $type;
+		$this->typeMappings[$columnName] = $type;
 
-		if (! $this->isMixed && $this->fieldMappings) {
+		if (!$this->isMixed && $this->fieldMappings) {
 			$this->isMixed = true;
 		}
 
@@ -565,8 +565,9 @@ class ResultSetMapping
 		string $fieldName,
 		bool $isIdentifierColumn = false,
 		string|null $type = null,
-	): static {
-		$this->metaMappings[$columnName]   = $fieldName;
+	): static
+	{
+		$this->metaMappings[$columnName] = $fieldName;
 		$this->columnOwnerMap[$columnName] = $alias;
 
 		if ($isIdentifierColumn) {

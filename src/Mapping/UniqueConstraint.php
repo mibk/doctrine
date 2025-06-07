@@ -10,15 +10,16 @@ use Attribute;
 final class UniqueConstraint implements MappingAttribute
 {
 	/**
-	 * @param array<string>|null       $columns
-	 * @param array<string>|null       $fields
-	 * @param array<string,mixed>|null $options
+	 * @param array<string>|null        $columns
+	 * @param array<string>|null        $fields
+	 * @param array<string, mixed>|null $options
 	 */
 	public function __construct(
 		public readonly string|null $name = null,
 		public readonly array|null $columns = null,
 		public readonly array|null $fields = null,
 		public readonly array|null $options = null,
-	) {
+	)
+	{
 	}
 }

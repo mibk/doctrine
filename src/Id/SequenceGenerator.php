@@ -29,7 +29,8 @@ class SequenceGenerator extends AbstractIdGenerator implements Serializable
 	public function __construct(
 		private string $sequenceName,
 		private int $allocationSize,
-	) {
+	)
+	{
 	}
 
 	public function generateId(EntityManagerInterface $em, object|null $entity): int
@@ -37,14 +38,14 @@ class SequenceGenerator extends AbstractIdGenerator implements Serializable
 		if ($this->maxValue === null || $this->nextValue === $this->maxValue) {
 			// Allocate new values
 			$connection = $em->getConnection();
-			$sql        = $connection->getDatabasePlatform()->getSequenceNextValSQL($this->sequenceName);
+			$sql = $connection->getDatabasePlatform()->getSequenceNextValSQL($this->sequenceName);
 
 			if ($connection instanceof PrimaryReadReplicaConnection) {
 				$connection->ensureConnectedToPrimary();
 			}
 
 			$this->nextValue = (int) $connection->fetchOne($sql);
-			$this->maxValue  = $this->nextValue + $this->allocationSize;
+			$this->maxValue = $this->nextValue + $this->allocationSize;
 		}
 
 		return $this->nextValue++;
@@ -85,7 +86,7 @@ class SequenceGenerator extends AbstractIdGenerator implements Serializable
 	{
 		return [
 			'allocationSize' => $this->allocationSize,
-			'sequenceName' => $this->sequenceName,
+			'sequenceName'   => $this->sequenceName,
 		];
 	}
 
@@ -106,7 +107,7 @@ class SequenceGenerator extends AbstractIdGenerator implements Serializable
 	/** @param array<string, mixed> $data */
 	public function __unserialize(array $data): void
 	{
-		$this->sequenceName   = $data['sequenceName'];
+		$this->sequenceName = $data['sequenceName'];
 		$this->allocationSize = $data['allocationSize'];
 	}
 }

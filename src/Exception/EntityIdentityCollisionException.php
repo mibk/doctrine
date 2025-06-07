@@ -29,7 +29,7 @@ entity.
 
 Otherwise, it might be an ORM-internal inconsistency, please report it.
 EXCEPTION
-				,
+					,
 				$newEntity::class,
 				$idHash,
 				$existingEntity::class,

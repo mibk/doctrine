@@ -21,7 +21,7 @@ class HydrationException extends Exception implements ORMException
 	{
 		return new self(sprintf(
 			"The parent object of entity result with alias '%s' was not found."
-			. " The parent alias is '%s'.",
+				. " The parent alias is '%s'.",
 			$alias,
 			$parentAlias,
 		));

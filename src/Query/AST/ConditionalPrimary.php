@@ -9,7 +9,7 @@ use Doctrine\ORM\Query\SqlWalker;
 /**
  * ConditionalPrimary ::= SimpleConditionalExpression | "(" ConditionalExpression ")"
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class ConditionalPrimary extends Node implements Phase2OptimizableConditional
 {

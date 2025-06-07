@@ -141,21 +141,22 @@ EOPHP;
 		private readonly string $proxyDir,
 		private readonly string $proxyNs,
 		bool|int $autoGenerate = self::AUTOGENERATE_NEVER,
-	) {
-		if (! $proxyDir) {
+	)
+	{
+		if (!$proxyDir) {
 			throw ORMInvalidArgumentException::proxyDirectoryRequired();
 		}
 
-		if (! $proxyNs) {
+		if (!$proxyNs) {
 			throw ORMInvalidArgumentException::proxyNamespaceRequired();
 		}
 
-		if (is_int($autoGenerate) ? $autoGenerate < 0 || $autoGenerate > 4 : ! is_bool($autoGenerate)) {
+		if (is_int($autoGenerate) ? $autoGenerate < 0 || $autoGenerate > 4 : !is_bool($autoGenerate)) {
 			throw ORMInvalidArgumentException::invalidAutoGenerateMode($autoGenerate);
 		}
 
-		$this->uow                 = $em->getUnitOfWork();
-		$this->autoGenerate        = (int) $autoGenerate;
+		$this->uow = $em->getUnitOfWork();
+		$this->autoGenerate = (int) $autoGenerate;
 		$this->identifierFlattener = new IdentifierFlattener($this->uow, $em->getMetadataFactory());
 	}
 
@@ -189,7 +190,7 @@ EOPHP;
 				continue;
 			}
 
-			$proxyFileName  = $this->getProxyFileName($class->getName(), $proxyDir ?: $this->proxyDir);
+			$proxyFileName = $this->getProxyFileName($class->getName(), $proxyDir ?: $this->proxyDir);
 			$proxyClassName = self::generateProxyClassName($class->getName(), $this->proxyNs);
 
 			$this->generateProxyClass($class, $proxyFileName, $proxyClassName);
@@ -210,13 +211,13 @@ EOPHP;
 	/**
 	 * Creates a closure capable of initializing a proxy
 	 *
-	 * @return Closure(InternalProxy, array):void
+	 * @return Closure (InternalProxy, array):void
 	 *
 	 * @throws EntityNotFoundException
 	 */
 	private function createLazyInitializer(ClassMetadata $classMetadata, EntityPersister $entityPersister, IdentifierFlattener $identifierFlattener): Closure
 	{
-		return static function (InternalProxy $proxy, array $identifier) use ($entityPersister, $classMetadata, $identifierFlattener): void {
+		return static function(InternalProxy $proxy, array $identifier) use ($entityPersister, $classMetadata, $identifierFlattener): void {
 			$original = $entityPersister->loadById($identifier);
 
 			if ($original === null) {
@@ -233,7 +234,7 @@ EOPHP;
 			$class = $entityPersister->getClassMetadata();
 
 			foreach ($class->getReflectionProperties() as $property) {
-				if (! $property || isset($identifier[$property->getName()])) {
+				if (!$property || isset($identifier[$property->getName()])) {
 					continue;
 				}
 
@@ -253,16 +254,16 @@ EOPHP;
 	private function getProxyFactory(string $className): Closure
 	{
 		$skippedProperties = [];
-		$class             = $this->em->getClassMetadata($className);
-		$identifiers       = array_flip($class->getIdentifierFieldNames());
-		$filter            = ReflectionProperty::IS_PUBLIC | ReflectionProperty::IS_PROTECTED | ReflectionProperty::IS_PRIVATE;
-		$reflector         = $class->getReflectionClass();
+		$class = $this->em->getClassMetadata($className);
+		$identifiers = array_flip($class->getIdentifierFieldNames());
+		$filter = ReflectionProperty::IS_PUBLIC | ReflectionProperty::IS_PROTECTED | ReflectionProperty::IS_PRIVATE;
+		$reflector = $class->getReflectionClass();
 
 		while ($reflector) {
 			foreach ($reflector->getProperties($filter) as $property) {
 				$name = $property->name;
 
-				if ($property->isStatic() || ! isset($identifiers[$name])) {
+				if ($property->isStatic() || !isset($identifiers[$name])) {
 					continue;
 				}
 
@@ -271,23 +272,23 @@ EOPHP;
 				$skippedProperties[$prefix . $name] = true;
 			}
 
-			$filter    = ReflectionProperty::IS_PRIVATE;
+			$filter = ReflectionProperty::IS_PRIVATE;
 			$reflector = $reflector->getParentClass();
 		}
 
-		$className        = $class->getName(); // aliases and case sensitivity
-		$entityPersister  = $this->uow->getEntityPersister($className);
-		$initializer      = $this->createLazyInitializer($class, $entityPersister, $this->identifierFlattener);
-		$proxyClassName   = $this->loadProxyClass($class);
+		$className = $class->getName(); // aliases and case sensitivity
+		$entityPersister = $this->uow->getEntityPersister($className);
+		$initializer = $this->createLazyInitializer($class, $entityPersister, $this->identifierFlattener);
+		$proxyClassName = $this->loadProxyClass($class);
 		$identifierFields = array_intersect_key($class->getReflectionProperties(), $identifiers);
 
-		$proxyFactory = Closure::bind(static function (array $identifier) use ($initializer, $skippedProperties, $identifierFields, $className): InternalProxy {
-			$proxy = self::createLazyGhost(static function (InternalProxy $object) use ($initializer, $identifier): void {
+		$proxyFactory = Closure::bind(static function(array $identifier) use ($initializer, $skippedProperties, $identifierFields, $className): InternalProxy {
+			$proxy = self::createLazyGhost(static function(InternalProxy $object) use ($initializer, $identifier): void {
 				$initializer($object, $identifier);
 			}, $skippedProperties);
 
 			foreach ($identifierFields as $idField => $reflector) {
-				if (! isset($identifier[$idField])) {
+				if (!isset($identifier[$idField])) {
 					throw ORMInvalidArgumentException::missingPrimaryKeyValue($className, $idField);
 				}
 
@@ -318,19 +319,19 @@ EOPHP;
 		$fileName = $this->getProxyFileName($class->getName(), $this->proxyDir);
 
 		switch ($this->autoGenerate) {
-			case self::AUTOGENERATE_FILE_NOT_EXISTS_OR_CHANGED:
-				if (file_exists($fileName) && filemtime($fileName) >= filemtime($class->getReflectionClass()->getFileName())) {
-					break;
-				}
-				// no break
-			case self::AUTOGENERATE_FILE_NOT_EXISTS:
-				if (file_exists($fileName)) {
-					break;
-				}
-				// no break
-			case self::AUTOGENERATE_ALWAYS:
-				$this->generateProxyClass($class, $fileName, $proxyClassName);
+		case self::AUTOGENERATE_FILE_NOT_EXISTS_OR_CHANGED:
+			if (file_exists($fileName) && filemtime($fileName) >= filemtime($class->getReflectionClass()->getFileName())) {
 				break;
+			}
+			// no break
+		case self::AUTOGENERATE_FILE_NOT_EXISTS:
+			if (file_exists($fileName)) {
+				break;
+			}
+			// no break
+		case self::AUTOGENERATE_ALWAYS:
+			$this->generateProxyClass($class, $fileName, $proxyClassName);
+			break;
 		}
 
 		require $fileName;
@@ -340,12 +341,12 @@ EOPHP;
 
 	private function generateProxyClass(ClassMetadata $class, string|null $fileName, string $proxyClassName): void
 	{
-		$i            = strrpos($proxyClassName, '\\');
+		$i = strrpos($proxyClassName, '\\');
 		$placeholders = [
-			'<className>' => $class->getName(),
-			'<namespace>' => substr($proxyClassName, 0, $i),
+			'<className>'           => $class->getName(),
+			'<namespace>'           => substr($proxyClassName, 0, $i),
 			'<proxyShortClassName>' => substr($proxyClassName, 1 + $i),
-			'<baseProxyInterface>' => InternalProxy::class,
+			'<baseProxyInterface>'  => InternalProxy::class,
 		];
 
 		preg_match_all('(<([a-zA-Z]+)>)', self::PROXY_CLASS_TEMPLATE, $placeholderMatches);
@@ -356,8 +357,8 @@ EOPHP;
 
 		$proxyCode = strtr(self::PROXY_CLASS_TEMPLATE, $placeholders);
 
-		if (! $fileName) {
-			if (! class_exists($proxyClassName)) {
+		if (!$fileName) {
+			if (!class_exists($proxyClassName)) {
 				eval(substr($proxyCode, 5));
 			}
 
@@ -366,11 +367,11 @@ EOPHP;
 
 		$parentDirectory = dirname($fileName);
 
-		if (! is_dir($parentDirectory) && ! @mkdir($parentDirectory, 0775, true)) {
+		if (!is_dir($parentDirectory) && !@mkdir($parentDirectory, 0775, true)) {
 			throw ORMInvalidArgumentException::proxyDirectoryNotWritable($this->proxyDir);
 		}
 
-		if (! is_writable($parentDirectory)) {
+		if (!is_writable($parentDirectory)) {
 			throw ORMInvalidArgumentException::proxyDirectoryNotWritable($this->proxyDir);
 		}
 
@@ -385,7 +386,7 @@ EOPHP;
 	{
 		// @phpstan-ignore staticMethod.deprecated (Because we support Symfony < 7.3)
 		$code = ProxyHelper::generateLazyGhost($class->getReflectionClass());
-		$code = substr($code, 7 + (int) strpos($code, "\n{"));
+		$code = substr($code, 7 + (int)strpos($code, "\n{"));
 		$code = substr($code, 0, (int) strpos($code, "\n}"));
 		$code = str_replace('LazyGhostTrait;', str_replace("\n    ", "\n", 'LazyGhostTrait {
 			initializeLazyObject as private;
@@ -406,7 +407,7 @@ EOPHP;
 
 	private function generateSerializeImpl(ClassMetadata $class): string
 	{
-		$reflector  = $class->getReflectionClass();
+		$reflector = $class->getReflectionClass();
 		$properties = $reflector->hasMethod('__serialize') ? 'parent::__serialize()' : '(array) $this';
 
 		$code = '$properties = ' . $properties . ';
@@ -414,7 +415,7 @@ EOPHP;
 
 		';
 
-		if ($reflector->hasMethod('__serialize') || ! $reflector->hasMethod('__sleep')) {
+		if ($reflector->hasMethod('__serialize') || !$reflector->hasMethod('__sleep')) {
 			return $code . 'return $properties;';
 		}
 

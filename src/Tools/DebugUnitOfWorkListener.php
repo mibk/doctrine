@@ -32,7 +32,8 @@ class DebugUnitOfWorkListener
 	public function __construct(
 		private readonly string $file = 'php://output',
 		private readonly string $context = '',
-	) {
+	)
+	{
 	}
 
 	public function onFlush(OnFlushEventArgs $args): void
@@ -45,7 +46,7 @@ class DebugUnitOfWorkListener
 	 */
 	public function dumpIdentityMap(EntityManagerInterface $em): void
 	{
-		$uow         = $em->getUnitOfWork();
+		$uow = $em->getUnitOfWork();
 		$identityMap = $uow->getIdentityMap();
 
 		$fh = fopen($this->file, 'xb+');
@@ -80,7 +81,7 @@ class DebugUnitOfWorkListener
 							fwrite($fh, $this->getIdString($value, $uow) . ' ' . spl_object_id($value) . "\n");
 						}
 					} else {
-						$initialized = ! ($value instanceof PersistentCollection) || $value->isInitialized();
+						$initialized = !($value instanceof PersistentCollection) || $value->isInitialized();
 						if ($value === null) {
 							fwrite($fh, " NULL\n");
 						} elseif ($initialized) {
@@ -117,7 +118,7 @@ class DebugUnitOfWorkListener
 	private function getIdString(object $entity, UnitOfWork $uow): string
 	{
 		if ($uow->isInIdentityMap($entity)) {
-			$ids      = $uow->getEntityIdentifier($entity);
+			$ids = $uow->getEntityIdentifier($entity);
 			$idstring = '';
 
 			foreach ($ids as $k => $v) {

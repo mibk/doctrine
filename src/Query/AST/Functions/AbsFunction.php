@@ -12,7 +12,7 @@ use Doctrine\ORM\Query\TokenType;
 /**
  * "ABS" "(" SimpleArithmeticExpression ")"
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class AbsFunction extends FunctionNode
 {

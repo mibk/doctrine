@@ -42,10 +42,10 @@ class MultiTableUpdateExecutor extends AbstractSqlExecutor
 	 */
 	public function __construct(AST\Node $AST, SqlWalker $sqlWalker)
 	{
-		$em                  = $sqlWalker->getEntityManager();
-		$conn                = $em->getConnection();
-		$platform            = $conn->getDatabasePlatform();
-		$quoteStrategy       = $em->getConfiguration()->getQuoteStrategy();
+		$em = $sqlWalker->getEntityManager();
+		$conn = $em->getConnection();
+		$platform = $conn->getDatabasePlatform();
+		$quoteStrategy = $em->getConfiguration()->getQuoteStrategy();
 		$this->sqlStatements = [];
 
 		if ($conn instanceof PrimaryReadReplicaConnection) {
@@ -54,21 +54,21 @@ class MultiTableUpdateExecutor extends AbstractSqlExecutor
 
 		$updateClause = $AST->updateClause;
 		$primaryClass = $sqlWalker->getEntityManager()->getClassMetadata($updateClause->abstractSchemaName);
-		$rootClass    = $em->getClassMetadata($primaryClass->rootEntityName);
+		$rootClass = $em->getClassMetadata($primaryClass->rootEntityName);
 
 		$updateItems = $updateClause->updateItems;
 
-		$tempTable     = $platform->getTemporaryTableName($rootClass->getTemporaryIdTableName());
+		$tempTable = $platform->getTemporaryTableName($rootClass->getTemporaryIdTableName());
 		$idColumnNames = $rootClass->getIdentifierColumnNames();
-		$idColumnList  = implode(', ', $idColumnNames);
+		$idColumnList = implode(', ', $idColumnNames);
 
 		// 1. Create an INSERT INTO temptable ... SELECT identifiers WHERE $AST->getWhereClause()
 		$sqlWalker->setSQLTableAlias($primaryClass->getTableName(), 't0', $updateClause->aliasIdentificationVariable);
 
 		$insertSql = 'INSERT INTO ' . $tempTable . ' (' . $idColumnList . ')'
-				. ' SELECT t0.' . implode(', t0.', $idColumnNames);
+			. ' SELECT t0.' . implode(', t0.', $idColumnNames);
 
-		$rangeDecl  = new AST\RangeVariableDeclaration($primaryClass->name, $updateClause->aliasIdentificationVariable);
+		$rangeDecl = new AST\RangeVariableDeclaration($primaryClass->name, $updateClause->aliasIdentificationVariable);
 		$fromClause = new AST\FromClause([new AST\IdentificationVariableDeclaration($rangeDecl, null, [])]);
 
 		$insertSql .= $sqlWalker->walkFromClause($fromClause);
@@ -80,8 +80,8 @@ class MultiTableUpdateExecutor extends AbstractSqlExecutor
 		$classNames = [...$primaryClass->parentClasses, ...[$primaryClass->name], ...$primaryClass->subClasses];
 
 		foreach (array_reverse($classNames) as $className) {
-			$affected  = false;
-			$class     = $em->getClassMetadata($className);
+			$affected = false;
+			$class = $em->getClassMetadata($className);
 			$updateSql = 'UPDATE ' . $quoteStrategy->getTableName($class, $platform) . ' SET ';
 
 			$sqlParameters = [];
@@ -89,12 +89,12 @@ class MultiTableUpdateExecutor extends AbstractSqlExecutor
 				$field = $updateItem->pathExpression->field;
 
 				if (
-					(isset($class->fieldMappings[$field]) && ! isset($class->fieldMappings[$field]->inherited)) ||
-					(isset($class->associationMappings[$field]) && ! isset($class->associationMappings[$field]->inherited))
+					(isset($class->fieldMappings[$field]) && !isset($class->fieldMappings[$field]->inherited)) ||
+						(isset($class->associationMappings[$field]) && !isset($class->associationMappings[$field]->inherited))
 				) {
 					$newValue = $updateItem->newValue;
 
-					if (! $affected) {
+					if (!$affected) {
 						$affected = true;
 					} else {
 						$updateSql .= ', ';
@@ -135,7 +135,7 @@ class MultiTableUpdateExecutor extends AbstractSqlExecutor
 		}
 
 		$this->createTempTableSql = $platform->getCreateTemporaryTableSnippetSQL() . ' ' . $tempTable . ' ('
-				. $platform->getColumnDeclarationListSQL($columnDefinitions) . ', PRIMARY KEY(' . implode(',', $idColumnNames) . '))';
+			. $platform->getColumnDeclarationListSQL($columnDefinitions) . ', PRIMARY KEY(' . implode(',', $idColumnNames) . '))';
 
 		$this->dropTempTableSql = $platform->getDropTemporaryTableSQL($tempTable);
 	}
@@ -159,12 +159,12 @@ class MultiTableUpdateExecutor extends AbstractSqlExecutor
 			// Execute UPDATE statements
 			foreach ($this->sqlStatements as $key => $statement) {
 				$paramValues = [];
-				$paramTypes  = [];
+				$paramTypes = [];
 
 				if (isset($this->sqlParameters[$key])) {
 					foreach ($this->sqlParameters[$key] as $parameterKey => $parameterName) {
 						$paramValues[] = $params[$parameterKey];
-						$paramTypes[]  = $types[$parameterKey] ?? ParameterTypeInferer::inferType($params[$parameterKey]);
+						$paramTypes[] = $types[$parameterKey] ?? ParameterTypeInferer::inferType($params[$parameterKey]);
 					}
 				}
 

@@ -11,7 +11,7 @@ use function implode;
 /**
  * Expression class for generating DQL functions.
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class Func implements Stringable
 {
@@ -26,7 +26,8 @@ class Func implements Stringable
 	public function __construct(
 		protected string $name,
 		mixed $arguments,
-	) {
+	)
+	{
 		$this->arguments = (array) $arguments;
 	}
 

@@ -9,7 +9,7 @@ use Doctrine\ORM\Query\SqlWalker;
 /**
  * UpdateClause ::= "UPDATE" AbstractSchemaName [["AS"] AliasIdentificationVariable] "SET" UpdateItem {"," UpdateItem}*
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class UpdateClause extends Node
 {
@@ -19,7 +19,8 @@ class UpdateClause extends Node
 	public function __construct(
 		public string $abstractSchemaName,
 		public array $updateItems,
-	) {
+	)
+	{
 	}
 
 	public function dispatch(SqlWalker $walker): string

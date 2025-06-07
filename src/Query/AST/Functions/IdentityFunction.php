@@ -17,7 +17,7 @@ use function sprintf;
 /**
  * "IDENTITY" "(" SingleValuedAssociationPathExpression {"," string} ")"
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class IdentityFunction extends FunctionNode
 {
@@ -29,22 +29,22 @@ class IdentityFunction extends FunctionNode
 	{
 		assert($this->pathExpression->field !== null);
 		$entityManager = $sqlWalker->getEntityManager();
-		$platform      = $entityManager->getConnection()->getDatabasePlatform();
+		$platform = $entityManager->getConnection()->getDatabasePlatform();
 		$quoteStrategy = $entityManager->getConfiguration()->getQuoteStrategy();
-		$dqlAlias      = $this->pathExpression->identificationVariable;
-		$assocField    = $this->pathExpression->field;
-		$assoc         = $sqlWalker->getMetadataForDqlAlias($dqlAlias)->associationMappings[$assocField];
-		$targetEntity  = $entityManager->getClassMetadata($assoc->targetEntity);
+		$dqlAlias = $this->pathExpression->identificationVariable;
+		$assocField = $this->pathExpression->field;
+		$assoc = $sqlWalker->getMetadataForDqlAlias($dqlAlias)->associationMappings[$assocField];
+		$targetEntity = $entityManager->getClassMetadata($assoc->targetEntity);
 
 		assert($assoc->isToOneOwningSide());
 		$joinColumn = reset($assoc->joinColumns);
 
 		if ($this->fieldMapping !== null) {
-			if (! isset($targetEntity->fieldMappings[$this->fieldMapping])) {
+			if (!isset($targetEntity->fieldMappings[$this->fieldMapping])) {
 				throw new QueryException(sprintf('Undefined reference field mapping "%s"', $this->fieldMapping));
 			}
 
-			$field      = $targetEntity->fieldMappings[$this->fieldMapping];
+			$field = $targetEntity->fieldMappings[$this->fieldMapping];
 			$joinColumn = null;
 
 			foreach ($assoc->joinColumns as $mapping) {

@@ -13,7 +13,8 @@ class InListExpression extends Node
 		public ArithmeticExpression $expression,
 		public array $literals,
 		public bool $not = false,
-	) {
+	)
+	{
 	}
 
 	public function dispatch(SqlWalker $walker): string

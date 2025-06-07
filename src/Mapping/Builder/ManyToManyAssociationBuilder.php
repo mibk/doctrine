@@ -7,7 +7,7 @@ namespace Doctrine\ORM\Mapping\Builder;
 /**
  * ManyToMany Association Builder
  *
- * @link        www.doctrine-project.com
+ * @link www.doctrine-project.com
  */
 class ManyToManyAssociationBuilder extends OneToManyAssociationBuilder
 {
@@ -36,14 +36,15 @@ class ManyToManyAssociationBuilder extends OneToManyAssociationBuilder
 		bool $unique = false,
 		string|null $onDelete = null,
 		string|null $columnDef = null,
-	): static {
+	): static
+	{
 		$this->inverseJoinColumns[] = [
-			'name' => $columnName,
+			'name'                 => $columnName,
 			'referencedColumnName' => $referencedColumnName,
-			'nullable' => $nullable,
-			'unique' => $unique,
-			'onDelete' => $onDelete,
-			'columnDefinition' => $columnDef,
+			'nullable'             => $nullable,
+			'unique'               => $unique,
+			'onDelete'             => $onDelete,
+			'columnDefinition'     => $columnDef,
 		];
 
 		return $this;
@@ -51,7 +52,7 @@ class ManyToManyAssociationBuilder extends OneToManyAssociationBuilder
 
 	public function build(): ClassMetadataBuilder
 	{
-		$mapping              = $this->mapping;
+		$mapping = $this->mapping;
 		$mapping['joinTable'] = [];
 		if ($this->joinColumns) {
 			$mapping['joinTable']['joinColumns'] = $this->joinColumns;

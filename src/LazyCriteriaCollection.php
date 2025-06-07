@@ -19,9 +19,9 @@ use function assert;
  * is cached and returned on subsequent calls until collection gets loaded,
  * then returning the number of loaded results.
  *
- * @template TKey of array-key
- * @template TValue of object
- * @extends AbstractLazyCollection<TKey, TValue>
+ * @template   TKey of array-key
+ * @template   TValue of object
+ * @extends    AbstractLazyCollection<TKey, TValue>
  * @implements Selectable<TKey, TValue>
  */
 class LazyCriteriaCollection extends AbstractLazyCollection implements Selectable
@@ -31,7 +31,8 @@ class LazyCriteriaCollection extends AbstractLazyCollection implements Selectabl
 	public function __construct(
 		protected EntityPersister $entityPersister,
 		protected Criteria $criteria,
-	) {
+	)
+	{
 	}
 
 	/**
@@ -60,7 +61,7 @@ class LazyCriteriaCollection extends AbstractLazyCollection implements Selectabl
 			return $this->collection->isEmpty();
 		}
 
-		return ! $this->count();
+		return !$this->count();
 	}
 
 	/**
@@ -90,7 +91,7 @@ class LazyCriteriaCollection extends AbstractLazyCollection implements Selectabl
 
 	protected function doInitialize(): void
 	{
-		$elements         = $this->entityPersister->loadCriteria($this->criteria);
+		$elements = $this->entityPersister->loadCriteria($this->criteria);
 		$this->collection = new ArrayCollection($elements);
 	}
 }

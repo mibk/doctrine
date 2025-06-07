@@ -15,7 +15,8 @@ final class UnexpectedAssociationValue extends CacheException
 		string $association,
 		string $given,
 		string $expected,
-	): self {
+	): self
+	{
 		return new self(sprintf(
 			'Found entity of type %s on association %s#%s, but expecting %s',
 			$given,

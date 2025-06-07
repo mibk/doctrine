@@ -12,7 +12,7 @@ use Doctrine\ORM\Query\TokenType;
 /**
  * "MOD" "(" SimpleArithmeticExpression "," SimpleArithmeticExpression ")"
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class ModFunction extends FunctionNode
 {

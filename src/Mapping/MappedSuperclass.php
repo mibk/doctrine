@@ -13,6 +13,7 @@ final class MappedSuperclass implements MappingAttribute
 	/** @param class-string<EntityRepository>|null $repositoryClass */
 	public function __construct(
 		public readonly string|null $repositoryClass = null,
-	) {
+	)
+	{
 	}
 }

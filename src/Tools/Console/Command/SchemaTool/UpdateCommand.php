@@ -18,7 +18,7 @@ use function sprintf;
  * Command to generate the SQL needed to update the database schema to match
  * the current mapping information.
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class UpdateCommand extends AbstractCommand
 {
@@ -27,12 +27,12 @@ class UpdateCommand extends AbstractCommand
 	protected function configure(): void
 	{
 		$this->setName($this->name)
-			 ->setDescription('Executes (or dumps) the SQL needed to update the database schema to match the current mapping metadata')
-			 ->addOption('em', null, InputOption::VALUE_REQUIRED, 'Name of the entity manager to operate on')
-			 ->addOption('complete', null, InputOption::VALUE_NONE, 'This option is a no-op, is deprecated and will be removed in 4.0')
-			 ->addOption('dump-sql', null, InputOption::VALUE_NONE, 'Dumps the generated SQL statements to the screen (does not execute them).')
-			 ->addOption('force', 'f', InputOption::VALUE_NONE, 'Causes the generated SQL statements to be physically executed against your database.')
-			 ->setHelp(<<<'EOT'
+			->setDescription('Executes (or dumps) the SQL needed to update the database schema to match the current mapping metadata')
+			->addOption('em', null, InputOption::VALUE_REQUIRED, 'Name of the entity manager to operate on')
+			->addOption('complete', null, InputOption::VALUE_NONE, 'This option is a no-op, is deprecated and will be removed in 4.0')
+			->addOption('dump-sql', null, InputOption::VALUE_NONE, 'Dumps the generated SQL statements to the screen (does not execute them).')
+			->addOption('force', 'f', InputOption::VALUE_NONE, 'Causes the generated SQL statements to be physically executed against your database.')
+			->setHelp(<<<'EOT'
 The <info>%command.name%</info> command generates the SQL needed to
 synchronize the database schema with the current mapping metadata of the
 default entity manager.
@@ -94,7 +94,7 @@ EOT);
 		}
 
 		$dumpSql = $input->getOption('dump-sql') === true;
-		$force   = $input->getOption('force') === true;
+		$force = $input->getOption('force') === true;
 
 		if ($dumpSql) {
 			foreach ($sqls as $sql) {

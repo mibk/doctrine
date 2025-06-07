@@ -13,6 +13,7 @@ final class SequenceGenerator implements MappingAttribute
 		public readonly string|null $sequenceName = null,
 		public readonly int $allocationSize = 1,
 		public readonly int $initialValue = 1,
-	) {
+	)
+	{
 	}
 }

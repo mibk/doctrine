@@ -10,8 +10,8 @@ use Attribute;
 final class ManyToOne implements MappingAttribute
 {
 	/**
-	 * @param class-string|null $targetEntity
-	 * @param string[]|null     $cascade
+	 * @param         class-string|null $targetEntity
+	 * @param         string[]|null     $cascade
 	 * @phpstan-param 'LAZY'|'EAGER'|'EXTRA_LAZY' $fetch
 	 */
 	public function __construct(
@@ -19,6 +19,7 @@ final class ManyToOne implements MappingAttribute
 		public readonly array|null $cascade = null,
 		public readonly string $fetch = 'LAZY',
 		public readonly string|null $inversedBy = null,
-	) {
+	)
+	{
 	}
 }

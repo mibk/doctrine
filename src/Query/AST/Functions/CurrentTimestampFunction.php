@@ -11,7 +11,7 @@ use Doctrine\ORM\Query\TokenType;
 /**
  * "CURRENT_TIMESTAMP"
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class CurrentTimestampFunction extends FunctionNode
 {

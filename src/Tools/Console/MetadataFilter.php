@@ -19,7 +19,7 @@ use function sprintf;
 /**
  * Used by CLI Tools to restrict entity-based commands to given patterns.
  *
- * @link        www.doctrine-project.com
+ * @link www.doctrine-project.com
  */
 class MetadataFilter extends FilterIterator implements Countable
 {
@@ -55,7 +55,7 @@ class MetadataFilter extends FilterIterator implements Countable
 			return true;
 		}
 
-		$it       = $this->getInnerIterator();
+		$it = $this->getInnerIterator();
 		$metadata = $it->current();
 
 		foreach ($this->filter as $filter) {

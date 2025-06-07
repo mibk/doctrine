@@ -19,7 +19,8 @@ class OptimisticLockException extends Exception implements ORMException
 		string $msg,
 		private readonly object|string|null $entity,
 		Throwable|null $previous = null,
-	) {
+	)
+	{
 		parent::__construct($msg, 0, $previous);
 	}
 
@@ -41,9 +42,10 @@ class OptimisticLockException extends Exception implements ORMException
 		object $entity,
 		int|string|DateTimeInterface $expectedLockVersion,
 		int|string|DateTimeInterface $actualLockVersion,
-	): self {
+	): self
+	{
 		$expectedLockVersion = $expectedLockVersion instanceof DateTimeInterface ? $expectedLockVersion->getTimestamp() : $expectedLockVersion;
-		$actualLockVersion   = $actualLockVersion instanceof DateTimeInterface ? $actualLockVersion->getTimestamp() : $actualLockVersion;
+		$actualLockVersion = $actualLockVersion instanceof DateTimeInterface ? $actualLockVersion->getTimestamp() : $actualLockVersion;
 
 		return new self('The optimistic lock failed, version ' . $expectedLockVersion . ' was expected, but is actually ' . $actualLockVersion, $entity);
 	}

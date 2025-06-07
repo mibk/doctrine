@@ -23,12 +23,12 @@ class QueryRegionCommand extends AbstractEntityManagerCommand
 	protected function configure(): void
 	{
 		$this->setName('orm:clear-cache:region:query')
-			 ->setDescription('Clear a second-level cache query region')
-			 ->addArgument('region-name', InputArgument::OPTIONAL, 'The query region to clear.')
-			 ->addOption('em', null, InputOption::VALUE_REQUIRED, 'Name of the entity manager to operate on')
-			 ->addOption('all', null, InputOption::VALUE_NONE, 'If defined, all query regions will be deleted/invalidated.')
-			 ->addOption('flush', null, InputOption::VALUE_NONE, 'If defined, all cache entries will be flushed.')
-			 ->setHelp(<<<'EOT'
+			->setDescription('Clear a second-level cache query region')
+			->addArgument('region-name', InputArgument::OPTIONAL, 'The query region to clear.')
+			->addOption('em', null, InputOption::VALUE_REQUIRED, 'Name of the entity manager to operate on')
+			->addOption('all', null, InputOption::VALUE_NONE, 'If defined, all query regions will be deleted/invalidated.')
+			->addOption('flush', null, InputOption::VALUE_NONE, 'If defined, all cache entries will be flushed.')
+			->setHelp(<<<'EOT'
 The <info>%command.name%</info> command is meant to clear a second-level cache query region for an associated Entity Manager.
 It is possible to delete/invalidate all query region, a specific query region or flushes the cache provider.
 
@@ -58,8 +58,8 @@ EOT);
 	{
 		$ui = (new SymfonyStyle($input, $output))->getErrorStyle();
 
-		$em    = $this->getEntityManager($input);
-		$name  = $input->getArgument('region-name');
+		$em = $this->getEntityManager($input);
+		$name = $input->getArgument('region-name');
 		$cache = $em->getCache();
 
 		if ($name === null) {

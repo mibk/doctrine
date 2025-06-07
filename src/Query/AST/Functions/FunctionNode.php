@@ -11,7 +11,7 @@ use Doctrine\ORM\Query\SqlWalker;
 /**
  * Abstract Function Node.
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  *
  * @phpstan-consistent-constructor
  */

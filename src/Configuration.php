@@ -190,7 +190,7 @@ class Configuration extends \Doctrine\DBAL\Configuration
 	 *
 	 * DQL function names are case-insensitive.
 	 *
-	 * @param class-string|callable $className Class name or a callable that returns the function.
+	 * @param         class-string|callable $className Class name or a callable that returns the function.
 	 * @phpstan-param class-string<FunctionNode>|callable(string):FunctionNode $className
 	 */
 	public function addCustomStringFunction(string $name, string|callable $className): void
@@ -235,7 +235,7 @@ class Configuration extends \Doctrine\DBAL\Configuration
 	 *
 	 * DQL function names are case-insensitive.
 	 *
-	 * @param class-string|callable $className Class name or a callable that returns the function.
+	 * @param         class-string|callable $className Class name or a callable that returns the function.
 	 * @phpstan-param class-string<FunctionNode>|callable(string):FunctionNode $className
 	 */
 	public function addCustomNumericFunction(string $name, string|callable $className): void
@@ -280,7 +280,7 @@ class Configuration extends \Doctrine\DBAL\Configuration
 	 *
 	 * DQL function names are case-insensitive.
 	 *
-	 * @param string|callable $className Class name or a callable that returns the function.
+	 * @param         string|callable $className Class name or a callable that returns the function.
 	 * @phpstan-param class-string<FunctionNode>|callable(string):FunctionNode $className
 	 */
 	public function addCustomDatetimeFunction(string $name, string|callable $className): void
@@ -308,7 +308,7 @@ class Configuration extends \Doctrine\DBAL\Configuration
 	 *
 	 * Any previously added date/time functions are discarded.
 	 *
-	 * @param array $functions The map of custom DQL date/time functions.
+	 * @param         array $functions The map of custom DQL date/time functions.
 	 * @phpstan-param array<string, class-string<FunctionNode>|callable(string):FunctionNode> $functions
 	 */
 	public function setCustomDatetimeFunctions(array $functions): void
@@ -381,7 +381,7 @@ class Configuration extends \Doctrine\DBAL\Configuration
 	/** @return class-string */
 	public function getClassMetadataFactoryName(): string
 	{
-		if (! isset($this->attributes['classMetadataFactoryName'])) {
+		if (!isset($this->attributes['classMetadataFactoryName'])) {
 			$this->attributes['classMetadataFactoryName'] = ClassMetadataFactory::class;
 		}
 
@@ -418,7 +418,7 @@ class Configuration extends \Doctrine\DBAL\Configuration
 	 */
 	public function setDefaultRepositoryClassName(string $className): void
 	{
-		if (! class_exists($className) || ! is_a($className, EntityRepository::class, true)) {
+		if (!class_exists($className) || !is_a($className, EntityRepository::class, true)) {
 			throw InvalidEntityRepository::fromClassName($className);
 		}
 
@@ -448,7 +448,7 @@ class Configuration extends \Doctrine\DBAL\Configuration
 	 */
 	public function getNamingStrategy(): NamingStrategy
 	{
-		if (! isset($this->attributes['namingStrategy'])) {
+		if (!isset($this->attributes['namingStrategy'])) {
 			$this->attributes['namingStrategy'] = new DefaultNamingStrategy();
 		}
 
@@ -468,7 +468,7 @@ class Configuration extends \Doctrine\DBAL\Configuration
 	 */
 	public function getQuoteStrategy(): QuoteStrategy
 	{
-		if (! isset($this->attributes['quoteStrategy'])) {
+		if (!isset($this->attributes['quoteStrategy'])) {
 			$this->attributes['quoteStrategy'] = new DefaultQuoteStrategy();
 		}
 
@@ -488,7 +488,7 @@ class Configuration extends \Doctrine\DBAL\Configuration
 	 */
 	public function getEntityListenerResolver(): EntityListenerResolver
 	{
-		if (! isset($this->attributes['entityListenerResolver'])) {
+		if (!isset($this->attributes['entityListenerResolver'])) {
 			$this->attributes['entityListenerResolver'] = new DefaultEntityListenerResolver();
 		}
 
@@ -528,7 +528,7 @@ class Configuration extends \Doctrine\DBAL\Configuration
 
 	public function getSecondLevelCacheConfiguration(): CacheConfiguration|null
 	{
-		if (! isset($this->attributes['secondLevelCacheConfiguration']) && $this->isSecondLevelCacheEnabled()) {
+		if (!isset($this->attributes['secondLevelCacheConfiguration']) && $this->isSecondLevelCacheEnabled()) {
 			$this->attributes['secondLevelCacheConfiguration'] = new CacheConfiguration();
 		}
 
@@ -606,7 +606,7 @@ class Configuration extends \Doctrine\DBAL\Configuration
 	/** To be deprecated in 3.1.0 */
 	public function setLazyGhostObjectEnabled(bool $flag): void
 	{
-		if (! $flag) {
+		if (!$flag) {
 			throw new LogicException(<<<'EXCEPTION'
 			The lazy ghost object feature cannot be disabled anymore.
 			Please remove the call to setLazyGhostObjectEnabled(false).
@@ -617,7 +617,7 @@ class Configuration extends \Doctrine\DBAL\Configuration
 	/** To be deprecated in 3.1.0 */
 	public function setRejectIdCollisionInIdentityMap(bool $flag): void
 	{
-		if (! $flag) {
+		if (!$flag) {
 			throw new LogicException(<<<'EXCEPTION'
 				Rejecting ID collisions in the identity map cannot be disabled anymore.
 				Please remove the call to setRejectIdCollisionInIdentityMap(false).

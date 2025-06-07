@@ -71,13 +71,13 @@ class SimpleObjectHydrator extends AbstractHydrator
 	protected function hydrateRowData(array $row, array &$result): void
 	{
 		assert($this->class !== null);
-		$entityName       = $this->class->name;
-		$data             = [];
+		$entityName = $this->class->name;
+		$data = [];
 		$discrColumnValue = null;
 
 		// We need to find the correct entity class name if we have inheritance in resultset
 		if ($this->class->inheritanceType !== ClassMetadata::INHERITANCE_TYPE_NONE) {
-			$discrColumn     = $this->class->getDiscriminatorColumn();
+			$discrColumn = $this->class->getDiscriminatorColumn();
 			$discrColumnName = $this->getSQLResultCasing($this->platform, $discrColumn->name);
 
 			// Find mapped discriminator column from the result set.
@@ -86,7 +86,7 @@ class SimpleObjectHydrator extends AbstractHydrator
 				$discrColumnName = $metaMappingDiscrColumnName;
 			}
 
-			if (! isset($row[$discrColumnName])) {
+			if (!isset($row[$discrColumnName])) {
 				throw HydrationException::missingDiscriminatorColumn(
 					$entityName,
 					$discrColumnName,
@@ -102,11 +102,11 @@ class SimpleObjectHydrator extends AbstractHydrator
 
 			$discrMap = $this->class->discriminatorMap;
 
-			if (! isset($discrMap[$row[$discrColumnName]])) {
+			if (!isset($discrMap[$row[$discrColumnName]])) {
 				throw HydrationException::invalidDiscriminatorValue($row[$discrColumnName], array_keys($discrMap));
 			}
 
-			$entityName       = $discrMap[$row[$discrColumnName]];
+			$entityName = $discrMap[$row[$discrColumnName]];
 			$discrColumnValue = $row[$discrColumnName];
 
 			unset($row[$discrColumnName]);
@@ -120,12 +120,12 @@ class SimpleObjectHydrator extends AbstractHydrator
 
 			$cacheKeyInfo = $this->hydrateColumnInfo($column);
 
-			if (! $cacheKeyInfo) {
+			if (!$cacheKeyInfo) {
 				continue;
 			}
 
 			// If we have inheritance in resultset, make sure the field belongs to the correct class
-			if (isset($cacheKeyInfo['discriminatorValues']) && ! in_array((string) $discrColumnValue, $cacheKeyInfo['discriminatorValues'], true)) {
+			if (isset($cacheKeyInfo['discriminatorValues']) && !in_array((string) $discrColumnValue, $cacheKeyInfo['discriminatorValues'], true)) {
 				continue;
 			}
 
@@ -134,14 +134,14 @@ class SimpleObjectHydrator extends AbstractHydrator
 
 			// Convert field to a valid PHP value
 			if (isset($cacheKeyInfo['type'])) {
-				$type  = $cacheKeyInfo['type'];
+				$type = $cacheKeyInfo['type'];
 				$value = $type->convertToPHPValue($value, $this->platform);
 			}
 
 			if ($value !== null && isset($cacheKeyInfo['enumType'])) {
 				$originalValue = $currentValue = $value;
 				try {
-					if (! is_array($originalValue)) {
+					if (!is_array($originalValue)) {
 						$value = $this->buildEnum($originalValue, $cacheKeyInfo['enumType']);
 					} else {
 						$value = [];
@@ -163,7 +163,7 @@ class SimpleObjectHydrator extends AbstractHydrator
 			$fieldName = $cacheKeyInfo['fieldName'];
 
 			// Prevent overwrite in case of inherit classes using same property name (See AbstractHydrator)
-			if (! isset($data[$fieldName]) || ! $valueIsNull) {
+			if (!isset($data[$fieldName]) || !$valueIsNull) {
 				$data[$fieldName] = $value;
 			}
 		}
@@ -172,7 +172,7 @@ class SimpleObjectHydrator extends AbstractHydrator
 			$this->registerManaged($this->class, $this->hints[Query::HINT_REFRESH_ENTITY], $data);
 		}
 
-		$uow    = $this->em->getUnitOfWork();
+		$uow = $this->em->getUnitOfWork();
 		$entity = $uow->createEntity($entityName, $data, $this->hints);
 
 		$result[] = $entity;

@@ -7,7 +7,7 @@ namespace Doctrine\ORM\Mapping;
 final class OneToManyAssociationMapping extends ToManyInverseSideMapping
 {
 	/**
-	 * @param mixed[] $mappingArray
+	 * @param         mixed[] $mappingArray
 	 * @phpstan-param array{
 	 *     fieldName: string,
 	 *     sourceEntity: class-string,
@@ -32,7 +32,7 @@ final class OneToManyAssociationMapping extends ToManyInverseSideMapping
 	{
 		$mapping = parent::fromMappingArray($mappingArray);
 
-		if ($mapping->orphanRemoval && ! $mapping->isCascadeRemove()) {
+		if ($mapping->orphanRemoval && !$mapping->isCascadeRemove()) {
 			$mapping->cascade[] = 'remove';
 		}
 
@@ -40,7 +40,7 @@ final class OneToManyAssociationMapping extends ToManyInverseSideMapping
 	}
 
 	/**
-	 * @param mixed[] $mappingArray
+	 * @param         mixed[] $mappingArray
 	 * @phpstan-param array{
 	 *     fieldName: string,
 	 *     sourceEntity: class-string,
@@ -66,7 +66,7 @@ final class OneToManyAssociationMapping extends ToManyInverseSideMapping
 		$mapping = self::fromMappingArray($mappingArray);
 
 		// OneToMany-side MUST be inverse (must have mappedBy)
-		if (! isset($mapping->mappedBy)) {
+		if (!isset($mapping->mappedBy)) {
 			throw MappingException::oneToManyRequiresMappedBy($name, $mapping->fieldName);
 		}
 

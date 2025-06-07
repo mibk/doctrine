@@ -24,7 +24,7 @@ Context: %s
 Problem: Feature was deprecated in doctrine/dbal 2.x and is not supported by installed doctrine/dbal:3.x
 Solution: See the doctrine/deprecations logs for new alternative approaches.
 EXCEPTION
-			,
+				,
 			$context,
 		));
 	}
@@ -37,7 +37,7 @@ Context: %s
 Problem: Feature was deprecated in doctrine/persistence 2.x and is not supported by installed doctrine/persistence:3.x
 Solution: See the doctrine/deprecations logs for new alternative approaches.
 EXCEPTION
-			,
+				,
 			$context,
 		));
 	}

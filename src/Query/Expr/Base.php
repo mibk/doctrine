@@ -19,7 +19,7 @@ use function sprintf;
 /**
  * Abstract base Expr class for building DQL parts.
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 abstract class Base implements Stringable
 {
@@ -43,7 +43,7 @@ abstract class Base implements Stringable
 	}
 
 	/**
-	 * @param string[]|object[]|string|object $args
+	 * @param         string[]|object[]|string|object $args
 	 * @phpstan-param list<string|object>|string|object $args
 	 *
 	 * @return $this
@@ -66,7 +66,7 @@ abstract class Base implements Stringable
 	{
 		if ($arg !== null && (! $arg instanceof self || $arg->count() > 0)) {
 			// If we decide to keep Expr\Base instances, we can use this check
-			if (! is_string($arg) && ! in_array($arg::class, $this->allowedClasses, true)) {
+			if (!is_string($arg) && !in_array($arg::class, $this->allowedClasses, true)) {
 				throw new InvalidArgumentException(sprintf(
 					"Expression of type '%s' not allowed in this context.",
 					get_debug_type($arg),

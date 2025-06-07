@@ -72,7 +72,7 @@ abstract class AssociationMapping implements ArrayAccess
 	public bool|null $unique = null;
 
 	/**
-	 * @param string       $fieldName    The name of the field in the entity
+	 * @param string $fieldName The name of the field in the entity
 	 *                                   the association is mapped to.
 	 * @param class-string $sourceEntity The class name of the source entity.
 	 *                                   In the case of to-many associations
@@ -92,11 +92,12 @@ abstract class AssociationMapping implements ArrayAccess
 		public readonly string $fieldName,
 		public string $sourceEntity,
 		public readonly string $targetEntity,
-	) {
+	)
+	{
 	}
 
 	/**
-	 * @param mixed[] $mappingArray
+	 * @param         mixed[] $mappingArray
 	 * @phpstan-param array{
 	 *     fieldName: string,
 	 *     sourceEntity: class-string,
@@ -122,8 +123,8 @@ abstract class AssociationMapping implements ArrayAccess
 		unset($mappingArray['isOwningSide'], $mappingArray['type']);
 		$mapping = new static(
 			$mappingArray['fieldName'],
-			$mappingArray['sourceEntity'],
-			$mappingArray['targetEntity'],
+				$mappingArray['sourceEntity'],
+				$mappingArray['targetEntity'],
 		);
 		unset($mappingArray['fieldName'], $mappingArray['sourceEntity'], $mappingArray['targetEntity']);
 
@@ -153,7 +154,7 @@ abstract class AssociationMapping implements ArrayAccess
 	}
 
 	/**
-	 * @phpstan-assert-if-true OwningSideMapping $this
+	 * @phpstan-assert-if-true  OwningSideMapping $this
 	 * @phpstan-assert-if-false InverseSideMapping $this
 	 */
 	final public function isOwningSide(): bool
@@ -230,11 +231,11 @@ abstract class AssociationMapping implements ArrayAccess
 	final public function type(): int
 	{
 		return match (true) {
-			$this instanceof OneToOneAssociationMapping => ClassMetadata::ONE_TO_ONE,
-			$this instanceof OneToManyAssociationMapping => ClassMetadata::ONE_TO_MANY,
-			$this instanceof ManyToOneAssociationMapping => ClassMetadata::MANY_TO_ONE,
+			$this instanceof OneToOneAssociationMapping   => ClassMetadata::ONE_TO_ONE,
+			$this instanceof OneToManyAssociationMapping  => ClassMetadata::ONE_TO_MANY,
+			$this instanceof ManyToOneAssociationMapping  => ClassMetadata::MANY_TO_ONE,
 			$this instanceof ManyToManyAssociationMapping => ClassMetadata::MANY_TO_MANY,
-			default => throw new Exception('Cannot determine type for ' . static::class),
+			default                                       => throw new Exception('Cannot determine type for ' . static::class),
 		};
 	}
 
@@ -247,13 +248,13 @@ abstract class AssociationMapping implements ArrayAccess
 	final public function offsetGet(mixed $offset): mixed
 	{
 		return match ($offset) {
-			'isOwningSide' => $this->isOwningSide(),
-			'type' => $this->type(),
-			'isCascadeRemove' => $this->isCascadeRemove(),
+			'isOwningSide'     => $this->isOwningSide(),
+			'type'             => $this->type(),
+			'isCascadeRemove'  => $this->isCascadeRemove(),
 			'isCascadePersist' => $this->isCascadePersist(),
 			'isCascadeRefresh' => $this->isCascadeRefresh(),
-			'isCascadeDetach' => $this->isCascadeDetach(),
-			default => property_exists($this, $offset) ? $this->$offset : throw new OutOfRangeException(sprintf(
+			'isCascadeDetach'  => $this->isCascadeDetach(),
+			default            => property_exists($this, $offset) ? $this->$offset : throw new OutOfRangeException(sprintf(
 				'Unknown property "%s" on class %s',
 				$offset,
 				static::class,
@@ -264,7 +265,7 @@ abstract class AssociationMapping implements ArrayAccess
 	public function offsetSet(mixed $offset, mixed $value): void
 	{
 		assert($offset !== null);
-		if (! property_exists($this, $offset)) {
+		if (!property_exists($this, $offset)) {
 			throw new OutOfRangeException(sprintf(
 				'Unknown property "%s" on class %s',
 				$offset,
@@ -282,7 +283,7 @@ abstract class AssociationMapping implements ArrayAccess
 	/** @param string $offset */
 	public function offsetUnset(mixed $offset): void
 	{
-		if (! property_exists($this, $offset)) {
+		if (!property_exists($this, $offset)) {
 			throw new OutOfRangeException(sprintf(
 				'Unknown property "%s" on class %s',
 				$offset,
@@ -319,7 +320,7 @@ abstract class AssociationMapping implements ArrayAccess
 		$array = (array) $this;
 
 		$array['isOwningSide'] = $this->isOwningSide();
-		$array['type']         = $this->type();
+		$array['type'] = $this->type();
 
 		return $array;
 	}

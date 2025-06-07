@@ -36,7 +36,7 @@ final class ManyToManyOwningSideMapping extends ToManyOwningSideMapping implemen
 	}
 
 	/**
-	 * @param mixed[] $mappingArray
+	 * @param         mixed[] $mappingArray
 	 * @phpstan-param array{
 	 *     fieldName: string,
 	 *     sourceEntity: class-string,
@@ -82,7 +82,7 @@ final class ManyToManyOwningSideMapping extends ToManyOwningSideMapping implemen
 		}
 
 		// owning side MUST have a join table
-		if (! isset($mappingArray['joinTable']) || ! isset($mappingArray['joinTable']['name'])) {
+		if (!isset($mappingArray['joinTable']) || !isset($mappingArray['joinTable']['name'])) {
 			$mappingArray['joinTable']['name'] = $namingStrategy->joinTableName(
 				$mappingArray['sourceEntity'],
 				$mappingArray['targetEntity'],
@@ -99,9 +99,9 @@ final class ManyToManyOwningSideMapping extends ToManyOwningSideMapping implemen
 		if ($mapping->joinTable->joinColumns === []) {
 			$mapping->joinTable->joinColumns = [
 				JoinColumnMapping::fromMappingArray([
-					'name' => $namingStrategy->joinKeyColumnName($mapping->sourceEntity, $selfReferencingEntityWithoutJoinColumns ? 'source' : null),
+					'name'                 => $namingStrategy->joinKeyColumnName($mapping->sourceEntity, $selfReferencingEntityWithoutJoinColumns ? 'source' : null),
 					'referencedColumnName' => $namingStrategy->referenceColumnName(),
-					'onDelete' => 'CASCADE',
+					'onDelete'             => 'CASCADE',
 				]),
 			];
 		}
@@ -109,9 +109,9 @@ final class ManyToManyOwningSideMapping extends ToManyOwningSideMapping implemen
 		if ($mapping->joinTable->inverseJoinColumns === []) {
 			$mapping->joinTable->inverseJoinColumns = [
 				JoinColumnMapping::fromMappingArray([
-					'name' => $namingStrategy->joinKeyColumnName($mapping->targetEntity, $selfReferencingEntityWithoutJoinColumns ? 'target' : null),
+					'name'                 => $namingStrategy->joinKeyColumnName($mapping->targetEntity, $selfReferencingEntityWithoutJoinColumns ? 'target' : null),
 					'referencedColumnName' => $namingStrategy->referenceColumnName(),
-					'onDelete' => 'CASCADE',
+					'onDelete'             => 'CASCADE',
 				]),
 			];
 		}
@@ -124,13 +124,13 @@ final class ManyToManyOwningSideMapping extends ToManyOwningSideMapping implemen
 			}
 
 			if ($joinColumn->name[0] === '`') {
-				$joinColumn->name   = trim($joinColumn->name, '`');
+				$joinColumn->name = trim($joinColumn->name, '`');
 				$joinColumn->quoted = true;
 			}
 
 			if ($joinColumn->referencedColumnName[0] === '`') {
 				$joinColumn->referencedColumnName = trim($joinColumn->referencedColumnName, '`');
-				$joinColumn->quoted               = true;
+				$joinColumn->quoted = true;
 			}
 
 			if (isset($joinColumn->onDelete) && strtolower($joinColumn->onDelete) === 'cascade') {
@@ -138,7 +138,7 @@ final class ManyToManyOwningSideMapping extends ToManyOwningSideMapping implemen
 			}
 
 			$mapping->relationToSourceKeyColumns[$joinColumn->name] = $joinColumn->referencedColumnName;
-			$mapping->joinTableColumns[]                            = $joinColumn->name;
+			$mapping->joinTableColumns[] = $joinColumn->name;
 		}
 
 		foreach ($mapping->joinTable->inverseJoinColumns as $inverseJoinColumn) {
@@ -147,13 +147,13 @@ final class ManyToManyOwningSideMapping extends ToManyOwningSideMapping implemen
 			}
 
 			if ($inverseJoinColumn->name[0] === '`') {
-				$inverseJoinColumn->name   = trim($inverseJoinColumn->name, '`');
+				$inverseJoinColumn->name = trim($inverseJoinColumn->name, '`');
 				$inverseJoinColumn->quoted = true;
 			}
 
 			if ($inverseJoinColumn->referencedColumnName[0] === '`') {
 				$inverseJoinColumn->referencedColumnName = trim($inverseJoinColumn->referencedColumnName, '`');
-				$inverseJoinColumn->quoted               = true;
+				$inverseJoinColumn->quoted = true;
 			}
 
 			if (isset($inverseJoinColumn->onDelete) && strtolower($inverseJoinColumn->onDelete) === 'cascade') {
@@ -161,7 +161,7 @@ final class ManyToManyOwningSideMapping extends ToManyOwningSideMapping implemen
 			}
 
 			$mapping->relationToTargetKeyColumns[$inverseJoinColumn->name] = $inverseJoinColumn->referencedColumnName;
-			$mapping->joinTableColumns[]                                   = $inverseJoinColumn->name;
+			$mapping->joinTableColumns[] = $inverseJoinColumn->name;
 		}
 
 		return $mapping;
@@ -170,7 +170,7 @@ final class ManyToManyOwningSideMapping extends ToManyOwningSideMapping implemen
 	/** @return list<string> */
 	public function __sleep(): array
 	{
-		$serialized   = parent::__sleep();
+		$serialized = parent::__sleep();
 		$serialized[] = 'joinTable';
 		$serialized[] = 'joinTableColumns';
 

@@ -15,7 +15,7 @@ use Doctrine\ORM\Query\TokenType;
 /**
  * "LENGTH" "(" StringPrimary ")"
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class LengthFunction extends FunctionNode implements TypedExpression
 {

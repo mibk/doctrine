@@ -29,7 +29,8 @@ class DefaultRegion implements Region
 		private readonly string $name,
 		private readonly CacheItemPoolInterface $cacheItemPool,
 		private readonly int $lifetime = 0,
-	) {
+	)
+	{
 	}
 
 	public function getName(): string
@@ -44,7 +45,7 @@ class DefaultRegion implements Region
 
 	public function get(CacheKey $key): CacheEntry|null
 	{
-		$item  = $this->cacheItemPool->getItem($this->getCacheEntryKey($key));
+		$item = $this->cacheItemPool->getItem($this->getCacheEntryKey($key));
 		$entry = $item->isHit() ? $item->get() : null;
 
 		if (! $entry instanceof CacheEntry) {
@@ -68,7 +69,7 @@ class DefaultRegion implements Region
 
 		$result = [];
 		foreach ($keys as $arrayKey => $cacheKey) {
-			if (! isset($items[$cacheKey]) || ! $items[$cacheKey]->isHit()) {
+			if (!isset($items[$cacheKey]) || !$items[$cacheKey]->isHit()) {
 				return null;
 			}
 

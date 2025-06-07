@@ -9,7 +9,7 @@ use Doctrine\ORM\Query\SqlWalker;
 /**
  * UpdateStatement = UpdateClause [WhereClause]
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class UpdateStatement extends Node
 {

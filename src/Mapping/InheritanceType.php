@@ -12,6 +12,7 @@ final class InheritanceType implements MappingAttribute
 	/** @phpstan-param 'NONE'|'JOINED'|'SINGLE_TABLE' $value */
 	public function __construct(
 		public readonly string $value,
-	) {
+	)
+	{
 	}
 }

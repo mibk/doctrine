@@ -9,7 +9,7 @@ use Doctrine\ORM\Query\SqlWalker;
 /**
  * FromClause ::= "FROM" IdentificationVariableDeclaration {"," IdentificationVariableDeclaration}
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class FromClause extends Node
 {

@@ -7,7 +7,7 @@ namespace Doctrine\ORM\Query\Expr;
 /**
  * Expression class for building DQL select statements.
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class Select extends Base
 {

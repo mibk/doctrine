@@ -19,7 +19,8 @@ class AnsiQuoteStrategy implements QuoteStrategy
 		string $fieldName,
 		ClassMetadata $class,
 		AbstractPlatform $platform,
-	): string {
+	): string
+	{
 		return $class->fieldMappings[$fieldName]->columnName;
 	}
 
@@ -45,7 +46,8 @@ class AnsiQuoteStrategy implements QuoteStrategy
 		JoinColumnMapping $joinColumn,
 		ClassMetadata $class,
 		AbstractPlatform $platform,
-	): string {
+	): string
+	{
 		return $joinColumn->referencedColumnName;
 	}
 
@@ -53,7 +55,8 @@ class AnsiQuoteStrategy implements QuoteStrategy
 		ManyToManyOwningSideMapping $association,
 		ClassMetadata $class,
 		AbstractPlatform $platform,
-	): string {
+	): string
+	{
 		return $association->joinTable->name;
 	}
 
@@ -70,7 +73,8 @@ class AnsiQuoteStrategy implements QuoteStrategy
 		int $counter,
 		AbstractPlatform $platform,
 		ClassMetadata|null $class = null,
-	): string {
+	): string
+	{
 		return $this->getSQLResultCasing($platform, $columnName . '_' . $counter);
 	}
 }

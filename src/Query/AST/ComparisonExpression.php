@@ -14,7 +14,7 @@ use Doctrine\ORM\Query\SqlWalker;
  *                          DatetimeExpression ComparisonOperator (DatetimeExpression | QuantifiedExpression) |
  *                          EntityExpression ("=" | "<>") (EntityExpression | QuantifiedExpression)
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class ComparisonExpression extends Node
 {
@@ -22,7 +22,8 @@ class ComparisonExpression extends Node
 		public Node|string $leftExpression,
 		public string $operator,
 		public Node|string $rightExpression,
-	) {
+	)
+	{
 	}
 
 	public function dispatch(SqlWalker $walker): string

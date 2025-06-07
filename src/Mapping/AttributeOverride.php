@@ -10,6 +10,7 @@ final class AttributeOverride implements MappingAttribute
 	public function __construct(
 		public string $name,
 		public Column $column,
-	) {
+	)
+	{
 	}
 }

@@ -41,9 +41,9 @@ class CountWalker extends TreeWalkerAdapter
 
 		$countPathExpressionOrLiteral = '*';
 		if ($distinct) {
-			$fromRoot            = reset($from);
-			$rootAlias           = $fromRoot->rangeVariableDeclaration->aliasIdentificationVariable;
-			$rootClass           = $this->getMetadataForDqlAlias($rootAlias);
+			$fromRoot = reset($from);
+			$rootAlias = $fromRoot->rangeVariableDeclaration->aliasIdentificationVariable;
+			$rootClass = $this->getMetadataForDqlAlias($rootAlias);
 			$identifierFieldName = $rootClass->getSingleIdentifierFieldName();
 
 			$pathType = PathExpression::TYPE_STATE_FIELD;
@@ -51,7 +51,7 @@ class CountWalker extends TreeWalkerAdapter
 				$pathType = PathExpression::TYPE_SINGLE_VALUED_ASSOCIATION;
 			}
 
-			$countPathExpressionOrLiteral       = new PathExpression(
+			$countPathExpressionOrLiteral = new PathExpression(
 				PathExpression::TYPE_STATE_FIELD | PathExpression::TYPE_SINGLE_VALUED_ASSOCIATION,
 				$rootAlias,
 				$identifierFieldName,

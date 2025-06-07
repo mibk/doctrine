@@ -10,7 +10,7 @@ use Doctrine\ORM\Query\SqlWalker;
  * InstanceOfExpression ::= IdentificationVariable ["NOT"] "INSTANCE" ["OF"] (InstanceOfParameter | "(" InstanceOfParameter {"," InstanceOfParameter}* ")")
  * InstanceOfParameter  ::= AbstractSchemaName | InputParameter
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class InstanceOfExpression extends Node
 {
@@ -19,7 +19,8 @@ class InstanceOfExpression extends Node
 		public string $identificationVariable,
 		public array $value,
 		public bool $not = false,
-	) {
+	)
+	{
 	}
 
 	public function dispatch(SqlWalker $walker): string

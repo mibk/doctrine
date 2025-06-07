@@ -16,7 +16,7 @@ use function strcasecmp;
 /**
  * "TRIM" "(" [["LEADING" | "TRAILING" | "BOTH"] [char] "FROM"] StringPrimary ")"
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class TrimFunction extends FunctionNode
 {
@@ -29,8 +29,8 @@ class TrimFunction extends FunctionNode
 	public function getSql(SqlWalker $sqlWalker): string
 	{
 		$stringPrimary = $sqlWalker->walkStringPrimary($this->stringPrimary);
-		$platform      = $sqlWalker->getConnection()->getDatabasePlatform();
-		$trimMode      = $this->getTrimMode();
+		$platform = $sqlWalker->getConnection()->getDatabasePlatform();
+		$trimMode = $this->getTrimMode();
 
 		if ($this->trimChar !== false) {
 			return $platform->getTrimExpression(

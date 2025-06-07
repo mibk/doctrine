@@ -12,7 +12,7 @@ use Doctrine\ORM\Query\TokenType;
 /**
  * "DATE_DIFF" "(" ArithmeticPrimary "," ArithmeticPrimary ")"
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class DateDiffFunction extends FunctionNode
 {

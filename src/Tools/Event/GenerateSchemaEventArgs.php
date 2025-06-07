@@ -11,14 +11,15 @@ use Doctrine\ORM\EntityManagerInterface;
 /**
  * Event Args used for the Events::postGenerateSchema event.
  *
- * @link        www.doctrine-project.com
+ * @link www.doctrine-project.com
  */
 class GenerateSchemaEventArgs extends EventArgs
 {
 	public function __construct(
 		private readonly EntityManagerInterface $em,
 		private readonly Schema $schema,
-	) {
+	)
+	{
 	}
 
 	public function getEntityManager(): EntityManagerInterface

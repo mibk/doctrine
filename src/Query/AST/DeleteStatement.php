@@ -9,7 +9,7 @@ use Doctrine\ORM\Query\SqlWalker;
 /**
  * DeleteStatement = DeleteClause [WhereClause]
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class DeleteStatement extends Node
 {

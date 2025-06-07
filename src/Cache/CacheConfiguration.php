@@ -28,7 +28,7 @@ class CacheConfiguration
 
 	public function getCacheLogger(): CacheLogger|null
 	{
-		 return $this->cacheLogger;
+		return $this->cacheLogger;
 	}
 
 	public function setCacheLogger(CacheLogger $logger): void

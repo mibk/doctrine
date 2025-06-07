@@ -45,22 +45,23 @@ abstract class AbstractCollectionPersister implements CachedCollectionPersister
 		protected Region $region,
 		EntityManagerInterface $em,
 		protected AssociationMapping $association,
-	) {
+	)
+	{
 		$configuration = $em->getConfiguration();
-		$cacheConfig   = $configuration->getSecondLevelCacheConfiguration();
-		$cacheFactory  = $cacheConfig->getCacheFactory();
+		$cacheConfig = $configuration->getSecondLevelCacheConfiguration();
+		$cacheFactory = $cacheConfig->getCacheFactory();
 
-		$this->region          = $region;
-		$this->persister       = $persister;
-		$this->association     = $association;
-		$this->filters         = $em->getFilters();
-		$this->regionName      = $region->getName();
-		$this->uow             = $em->getUnitOfWork();
+		$this->region = $region;
+		$this->persister = $persister;
+		$this->association = $association;
+		$this->filters = $em->getFilters();
+		$this->regionName = $region->getName();
+		$this->uow = $em->getUnitOfWork();
 		$this->metadataFactory = $em->getMetadataFactory();
-		$this->cacheLogger     = $cacheConfig->getCacheLogger();
-		$this->hydrator        = $cacheFactory->buildCollectionHydrator($em, $association);
-		$this->sourceEntity    = $em->getClassMetadata($association->sourceEntity);
-		$this->targetEntity    = $em->getClassMetadata($association->targetEntity);
+		$this->cacheLogger = $cacheConfig->getCacheLogger();
+		$this->hydrator = $cacheFactory->buildCollectionHydrator($em, $association);
+		$this->sourceEntity = $em->getClassMetadata($association->sourceEntity);
+		$this->targetEntity = $em->getClassMetadata($association->targetEntity);
 	}
 
 	public function getCacheRegion(): Region
@@ -92,13 +93,13 @@ abstract class AbstractCollectionPersister implements CachedCollectionPersister
 	public function storeCollectionCache(CollectionCacheKey $key, Collection|array $elements): void
 	{
 		$associationMapping = $this->sourceEntity->associationMappings[$key->association];
-		$targetPersister    = $this->uow->getEntityPersister($this->targetEntity->rootEntityName);
+		$targetPersister = $this->uow->getEntityPersister($this->targetEntity->rootEntityName);
 		assert($targetPersister instanceof CachedEntityPersister);
-		$targetRegion   = $targetPersister->getCacheRegion();
+		$targetRegion = $targetPersister->getCacheRegion();
 		$targetHydrator = $targetPersister->getEntityHydrator();
 
 		// Only preserve ordering if association configured it
-		if (! $associationMapping->isIndexed()) {
+		if (!$associationMapping->isIndexed()) {
 			// Elements may be an array or a Collection
 			$elements = array_values($elements instanceof Collection ? $elements->getValues() : $elements);
 		}
@@ -110,14 +111,14 @@ abstract class AbstractCollectionPersister implements CachedCollectionPersister
 				continue;
 			}
 
-			$class     = $this->targetEntity;
+			$class = $this->targetEntity;
 			$className = DefaultProxyClassNameResolver::getClass($elements[$index]);
 
 			if ($className !== $this->targetEntity->name) {
 				$class = $this->metadataFactory->getMetadataFor($className);
 			}
 
-			$entity      = $elements[$index];
+			$entity = $elements[$index];
 			$entityEntry = $targetHydrator->buildCacheEntry($class, $entityKey, $entity);
 
 			$targetRegion->put($entityKey, $entityEntry);
@@ -141,8 +142,8 @@ abstract class AbstractCollectionPersister implements CachedCollectionPersister
 	public function count(PersistentCollection $collection): int
 	{
 		$ownerId = $this->uow->getEntityIdentifier($collection->getOwner());
-		$key     = new CollectionCacheKey($this->sourceEntity->rootEntityName, $this->association->fieldName, $ownerId, $this->filters->getHash());
-		$entry   = $this->region->get($key);
+		$key = new CollectionCacheKey($this->sourceEntity->rootEntityName, $this->association->fieldName, $ownerId, $this->filters->getHash());
+		$entry = $this->region->get($key);
 
 		if ($entry !== null) {
 			return count($entry->identifiers);

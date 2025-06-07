@@ -9,7 +9,7 @@ use Doctrine\ORM\Query\SqlWalker;
 /**
  * CollectionMemberExpression ::= EntityExpression ["NOT"] "MEMBER" ["OF"] CollectionValuedPathExpression
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class CollectionMemberExpression extends Node
 {
@@ -17,7 +17,8 @@ class CollectionMemberExpression extends Node
 		public mixed $entityExpression,
 		public PathExpression $collectionValuedPathExpression,
 		public bool $not = false,
-	) {
+	)
+	{
 	}
 
 	public function dispatch(SqlWalker $walker): string

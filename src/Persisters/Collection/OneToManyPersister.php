@@ -36,7 +36,7 @@ class OneToManyPersister extends AbstractCollectionPersister
 		// the entire collection with a new would trigger this operation.
 		$mapping = $this->getMapping($collection);
 
-		if (! $mapping->orphanRemoval) {
+		if (!$mapping->orphanRemoval) {
 			// Handling non-orphan removal should never happen, as @OneToMany
 			// can only be inverse side. For owning side one to many, it is
 			// required to have a join table, which would classify as a ManyToManyPersister.
@@ -62,7 +62,7 @@ class OneToManyPersister extends AbstractCollectionPersister
 	{
 		$mapping = $this->getMapping($collection);
 
-		if (! $mapping->isIndexed()) {
+		if (!$mapping->isIndexed()) {
 			throw new BadMethodCallException('Selecting a collection by index is only supported on indexed collections.');
 		}
 
@@ -83,7 +83,7 @@ class OneToManyPersister extends AbstractCollectionPersister
 
 	public function count(PersistentCollection $collection): int
 	{
-		$mapping   = $this->getMapping($collection);
+		$mapping = $this->getMapping($collection);
 		$persister = $this->uow->getEntityPersister($mapping->targetEntity);
 
 		// only works with single id identifier entities. Will throw an
@@ -99,7 +99,7 @@ class OneToManyPersister extends AbstractCollectionPersister
 	 */
 	public function slice(PersistentCollection $collection, int $offset, int|null $length = null): array
 	{
-		$mapping   = $this->getMapping($collection);
+		$mapping = $this->getMapping($collection);
 		$persister = $this->uow->getEntityPersister($mapping->targetEntity);
 
 		return $persister->getOneToManyCollection($mapping, $collection->getOwner(), $offset, $length);
@@ -109,7 +109,7 @@ class OneToManyPersister extends AbstractCollectionPersister
 	{
 		$mapping = $this->getMapping($collection);
 
-		if (! $mapping->isIndexed()) {
+		if (!$mapping->isIndexed()) {
 			throw new BadMethodCallException('Selecting a collection by index is only supported on indexed collections.');
 		}
 
@@ -128,11 +128,11 @@ class OneToManyPersister extends AbstractCollectionPersister
 
 	public function contains(PersistentCollection $collection, object $element): bool
 	{
-		if (! $this->isValidEntityState($element)) {
+		if (!$this->isValidEntityState($element)) {
 			return false;
 		}
 
-		$mapping   = $this->getMapping($collection);
+		$mapping = $this->getMapping($collection);
 		$persister = $this->uow->getEntityPersister($mapping->targetEntity);
 
 		// only works with single id identifier entities. Will throw an
@@ -158,18 +158,18 @@ class OneToManyPersister extends AbstractCollectionPersister
 	 */
 	private function deleteEntityCollection(PersistentCollection $collection): int
 	{
-		$mapping     = $this->getMapping($collection);
-		$identifier  = $this->uow->getEntityIdentifier($collection->getOwner());
+		$mapping = $this->getMapping($collection);
+		$identifier = $this->uow->getEntityIdentifier($collection->getOwner());
 		$sourceClass = $this->em->getClassMetadata($mapping->sourceEntity);
 		$targetClass = $this->em->getClassMetadata($mapping->targetEntity);
-		$columns     = [];
-		$parameters  = [];
-		$types       = [];
+		$columns = [];
+		$parameters = [];
+		$types = [];
 
 		foreach ($this->em->getMetadataFactory()->getOwningSide($mapping)->joinColumns as $joinColumn) {
-			$columns[]    = $this->quoteStrategy->getJoinColumnName($joinColumn, $targetClass, $this->platform);
+			$columns[] = $this->quoteStrategy->getJoinColumnName($joinColumn, $targetClass, $this->platform);
 			$parameters[] = $identifier[$sourceClass->getFieldForColumn($joinColumn->referencedColumnName)];
-			$types[]      = PersisterHelper::getTypeOfColumn($joinColumn->referencedColumnName, $sourceClass, $this->em);
+			$types[] = PersisterHelper::getTypeOfColumn($joinColumn->referencedColumnName, $sourceClass, $this->em);
 		}
 
 		$statement = 'DELETE FROM ' . $this->quoteStrategy->getTableName($targetClass, $this->platform)
@@ -178,10 +178,10 @@ class OneToManyPersister extends AbstractCollectionPersister
 		if ($targetClass->isInheritanceTypeSingleTable()) {
 			$discriminatorColumn = $targetClass->getDiscriminatorColumn();
 			$discriminatorValues = $targetClass->discriminatorValue ? [$targetClass->discriminatorValue] : array_keys($targetClass->discriminatorMap);
-			$statement          .= ' AND ' . $discriminatorColumn->name . ' IN (' . implode(', ', array_fill(0, count($discriminatorValues), '?')) . ')';
+			$statement .= ' AND ' . $discriminatorColumn->name . ' IN (' . implode(', ', array_fill(0, count($discriminatorValues), '?')) . ')';
 			foreach ($discriminatorValues as $discriminatorValue) {
 				$parameters[] = $discriminatorValue;
-				$types[]      = $discriminatorColumn->type;
+				$types[] = $discriminatorColumn->type;
 			}
 		}
 
@@ -202,15 +202,15 @@ class OneToManyPersister extends AbstractCollectionPersister
 	 */
 	private function deleteJoinedEntityCollection(PersistentCollection $collection): int
 	{
-		$mapping     = $this->getMapping($collection);
+		$mapping = $this->getMapping($collection);
 		$sourceClass = $this->em->getClassMetadata($mapping->sourceEntity);
 		$targetClass = $this->em->getClassMetadata($mapping->targetEntity);
-		$rootClass   = $this->em->getClassMetadata($targetClass->rootEntityName);
+		$rootClass = $this->em->getClassMetadata($targetClass->rootEntityName);
 
 		// 1) Build temporary table DDL
-		$tempTable         = $this->platform->getTemporaryTableName($rootClass->getTemporaryIdTableName());
-		$idColumnNames     = $rootClass->getIdentifierColumnNames();
-		$idColumnList      = implode(', ', $idColumnNames);
+		$tempTable = $this->platform->getTemporaryTableName($rootClass->getTemporaryIdTableName());
+		$idColumnNames = $rootClass->getIdentifierColumnNames();
+		$idColumnList = implode(', ', $idColumnNames);
 		$columnDefinitions = [];
 
 		foreach ($idColumnNames as $idColumnName) {
@@ -229,12 +229,12 @@ class OneToManyPersister extends AbstractCollectionPersister
 		// 2) Build insert table records into temporary table
 		$query = $this->em->createQuery(
 			' SELECT t0.' . implode(', t0.', $rootClass->getIdentifierFieldNames())
-			. ' FROM ' . $targetClass->name . ' t0 WHERE t0.' . $mapping->mappedBy . ' = :owner',
+				. ' FROM ' . $targetClass->name . ' t0 WHERE t0.' . $mapping->mappedBy . ' = :owner',
 		)->setParameter('owner', $collection->getOwner());
 
 		$sql = $query->getSQL();
 		assert(is_string($sql));
-		$statement  = 'INSERT INTO ' . $tempTable . ' (' . $idColumnList . ') ' . $sql;
+		$statement = 'INSERT INTO ' . $tempTable . ' (' . $idColumnList . ') ' . $sql;
 		$parameters = array_values($sourceClass->getIdentifierValues($collection->getOwner()));
 		$numDeleted = $this->conn->executeStatement($statement, $parameters);
 

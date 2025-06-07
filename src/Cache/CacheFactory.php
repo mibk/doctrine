@@ -48,7 +48,7 @@ interface CacheFactory
 	/**
 	 * Build a cache region
 	 *
-	 * @param array<string,mixed> $cache The cache configuration.
+	 * @param array<string, mixed> $cache The cache configuration.
 	 */
 	public function getRegion(array $cache): Region;
 

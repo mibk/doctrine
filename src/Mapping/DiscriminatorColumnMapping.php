@@ -31,7 +31,8 @@ final class DiscriminatorColumnMapping implements ArrayAccess
 		public string $type,
 		public string $fieldName,
 		public string $name,
-	) {
+	)
+	{
 	}
 
 	/**

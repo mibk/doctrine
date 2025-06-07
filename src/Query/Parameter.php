@@ -9,7 +9,7 @@ use function trim;
 /**
  * Defines a Query Parameter.
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class Parameter
 {
@@ -43,7 +43,7 @@ class Parameter
 
 	public function __construct(int|string $name, mixed $value, mixed $type = null)
 	{
-		$this->name          = self::normalizeName($name);
+		$this->name = self::normalizeName($name);
 		$this->typeSpecified = $type !== null;
 
 		$this->setValue($value, $type);
@@ -79,7 +79,7 @@ class Parameter
 	public function setValue(mixed $value, mixed $type = null): void
 	{
 		$this->value = $value;
-		$this->type  = $type ?: ParameterTypeInferer::inferType($value);
+		$this->type = $type ?: ParameterTypeInferer::inferType($value);
 	}
 
 	public function typeWasSpecified(): bool

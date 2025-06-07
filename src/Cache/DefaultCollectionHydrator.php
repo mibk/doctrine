@@ -21,12 +21,13 @@ class DefaultCollectionHydrator implements CollectionHydrator
 {
 	private readonly UnitOfWork $uow;
 
-	/** @var array<string,mixed> */
+	/** @var array<string, mixed> */
 	private static array $hints = [Query::HINT_CACHE_ENABLED => true];
 
 	public function __construct(
 		private readonly EntityManagerInterface $em,
-	) {
+	)
+	{
 		$this->uow = $em->getUnitOfWork();
 	}
 
@@ -43,11 +44,11 @@ class DefaultCollectionHydrator implements CollectionHydrator
 
 	public function loadCacheEntry(ClassMetadata $metadata, CollectionCacheKey $key, CollectionCacheEntry $entry, PersistentCollection $collection): array|null
 	{
-		$assoc           = $metadata->associationMappings[$key->association];
+		$assoc = $metadata->associationMappings[$key->association];
 		$targetPersister = $this->uow->getEntityPersister($assoc->targetEntity);
 		assert($targetPersister instanceof CachedPersister);
 		$targetRegion = $targetPersister->getCacheRegion();
-		$list         = [];
+		$list = [];
 
 		/** @var EntityCacheEntry[]|null $entityEntries */
 		$entityEntries = $targetRegion->getMultiple($entry);

@@ -36,9 +36,9 @@ final class RootTypeWalker extends SqlOutputWalker
 			throw new RuntimeException('Can only process queries that select only one FROM component');
 		}
 
-		$fromRoot            = reset($from);
-		$rootAlias           = $fromRoot->rangeVariableDeclaration->aliasIdentificationVariable;
-		$rootClass           = $this->getMetadataForDqlAlias($rootAlias);
+		$fromRoot = reset($from);
+		$rootAlias = $fromRoot->rangeVariableDeclaration->aliasIdentificationVariable;
+		$rootClass = $this->getMetadataForDqlAlias($rootAlias);
 		$identifierFieldName = $rootClass->getSingleIdentifierFieldName();
 
 		return PersisterHelper::getTypeOfField(

@@ -50,15 +50,16 @@ class ResultSetMappingBuilder extends ResultSetMapping implements Stringable
 	public function __construct(
 		private readonly EntityManagerInterface $em,
 		private readonly int $defaultRenameMode = self::COLUMN_RENAMING_NONE,
-	) {
+	)
+	{
 	}
 
 	/**
 	 * Adds a root entity and all of its fields to the result set.
 	 *
-	 * @param class-string          $class          The class name of the root entity.
-	 * @param string                $alias          The unique alias to use for the root entity.
-	 * @param array<string, string> $renamedColumns Columns that have been renamed (tableColumnName => queryColumnName).
+	 * @param         class-string          $class          The class name of the root entity.
+	 * @param         string                $alias          The unique alias to use for the root entity.
+	 * @param         array<string, string> $renamedColumns Columns that have been renamed (tableColumnName => queryColumnName).
 	 * @phpstan-param self::COLUMN_RENAMING_*|null $renameMode
 	 */
 	public function addRootEntityFromClassMetadata(
@@ -66,8 +67,9 @@ class ResultSetMappingBuilder extends ResultSetMapping implements Stringable
 		string $alias,
 		array $renamedColumns = [],
 		int|null $renameMode = null,
-	): void {
-		$renameMode     = $renameMode ?: $this->defaultRenameMode;
+	): void
+	{
+		$renameMode = $renameMode ?: $this->defaultRenameMode;
 		$columnAliasMap = $this->getColumnAliasMap($class, $renameMode, $renamedColumns);
 
 		$this->addEntityResult($class, $alias);
@@ -77,12 +79,12 @@ class ResultSetMappingBuilder extends ResultSetMapping implements Stringable
 	/**
 	 * Adds a joined entity and all of its fields to the result set.
 	 *
-	 * @param class-string          $class          The class name of the joined entity.
-	 * @param string                $alias          The unique alias to use for the joined entity.
-	 * @param string                $parentAlias    The alias of the entity result that is the parent of this joined result.
-	 * @param string                $relation       The association field that connects the parent entity result
+	 * @param class-string $class       The class name of the joined entity.
+	 * @param string       $alias       The unique alias to use for the joined entity.
+	 * @param string       $parentAlias The alias of the entity result that is the parent of this joined result.
+	 * @param string       $relation    The association field that connects the parent entity result
 	 *                                              with the joined entity result.
-	 * @param array<string, string> $renamedColumns Columns that have been renamed (tableColumnName => queryColumnName).
+	 * @param         array<string, string> $renamedColumns Columns that have been renamed (tableColumnName => queryColumnName).
 	 * @phpstan-param self::COLUMN_RENAMING_*|null $renameMode
 	 */
 	public function addJoinedEntityFromClassMetadata(
@@ -92,8 +94,9 @@ class ResultSetMappingBuilder extends ResultSetMapping implements Stringable
 		string $relation,
 		array $renamedColumns = [],
 		int|null $renameMode = null,
-	): void {
-		$renameMode     = $renameMode ?: $this->defaultRenameMode;
+	): void
+	{
+		$renameMode = $renameMode ?: $this->defaultRenameMode;
 		$columnAliasMap = $this->getColumnAliasMap($class, $renameMode, $renamedColumns);
 
 		$this->addJoinedEntityResult($class, $alias, $parentAlias, $relation);
@@ -103,7 +106,7 @@ class ResultSetMappingBuilder extends ResultSetMapping implements Stringable
 	/**
 	 * Adds all fields of the given class to the result set mapping (columns and meta fields).
 	 *
-	 * @param string[] $columnAliasMap
+	 * @param         string[] $columnAliasMap
 	 * @phpstan-param array<string, string> $columnAliasMap
 	 *
 	 * @throws InvalidArgumentException
@@ -111,15 +114,15 @@ class ResultSetMappingBuilder extends ResultSetMapping implements Stringable
 	protected function addAllClassFields(string $class, string $alias, array $columnAliasMap = []): void
 	{
 		$classMetadata = $this->em->getClassMetadata($class);
-		$platform      = $this->em->getConnection()->getDatabasePlatform();
+		$platform = $this->em->getConnection()->getDatabasePlatform();
 
-		if (! $this->isInheritanceSupported($classMetadata)) {
+		if (!$this->isInheritanceSupported($classMetadata)) {
 			throw new InvalidArgumentException('ResultSetMapping builder does not currently support your inheritance scheme.');
 		}
 
 		foreach ($classMetadata->getColumnNames() as $columnName) {
 			$propertyName = $classMetadata->getFieldName($columnName);
-			$columnAlias  = $this->getSQLResultCasing($platform, $columnAliasMap[$columnName]);
+			$columnAlias = $this->getSQLResultCasing($platform, $columnAliasMap[$columnName]);
 
 			if (isset($this->fieldMappings[$columnAlias])) {
 				throw new InvalidArgumentException(sprintf(
@@ -131,20 +134,20 @@ class ResultSetMappingBuilder extends ResultSetMapping implements Stringable
 			$this->addFieldResult($alias, $columnAlias, $propertyName);
 
 			$enumType = $classMetadata->getFieldMapping($propertyName)->enumType ?? null;
-			if (! empty($enumType)) {
+			if (!empty($enumType)) {
 				$this->addEnumResult($columnAlias, $enumType);
 			}
 		}
 
 		foreach ($classMetadata->associationMappings as $associationMapping) {
 			if ($associationMapping->isToOneOwningSide()) {
-				$targetClass  = $this->em->getClassMetadata($associationMapping->targetEntity);
+				$targetClass = $this->em->getClassMetadata($associationMapping->targetEntity);
 				$isIdentifier = isset($associationMapping->id) && $associationMapping->id === true;
 
 				foreach ($associationMapping->joinColumns as $joinColumn) {
-					$columnName  = $joinColumn->name;
+					$columnName = $joinColumn->name;
 					$columnAlias = $this->getSQLResultCasing($platform, $columnAliasMap[$columnName]);
-					$columnType  = PersisterHelper::getTypeOfColumn($joinColumn->referencedColumnName, $targetClass, $this->em);
+					$columnType = PersisterHelper::getTypeOfColumn($joinColumn->referencedColumnName, $targetClass, $this->em);
 
 					if (isset($this->metaMappings[$columnAlias])) {
 						throw new InvalidArgumentException(sprintf(
@@ -163,12 +166,12 @@ class ResultSetMappingBuilder extends ResultSetMapping implements Stringable
 	{
 		if (
 			$classMetadata->isInheritanceTypeSingleTable()
-			&& in_array($classMetadata->name, $classMetadata->discriminatorMap, true)
+				&& in_array($classMetadata->name, $classMetadata->discriminatorMap, true)
 		) {
 			return true;
 		}
 
-		return ! ($classMetadata->isInheritanceTypeSingleTable() || $classMetadata->isInheritanceTypeJoined());
+		return !($classMetadata->isInheritanceTypeSingleTable() || $classMetadata->isInheritanceTypeJoined());
 	}
 
 	/**
@@ -182,9 +185,9 @@ class ResultSetMappingBuilder extends ResultSetMapping implements Stringable
 	{
 		return match ($mode) {
 			self::COLUMN_RENAMING_INCREMENT => $columnName . $this->sqlCounter++,
-			self::COLUMN_RENAMING_CUSTOM => $customRenameColumns[$columnName] ?? $columnName,
-			self::COLUMN_RENAMING_NONE => $columnName,
-			default => throw new InvalidArgumentException(sprintf('%d is not a valid value for $mode', $mode)),
+			self::COLUMN_RENAMING_CUSTOM    => $customRenameColumns[$columnName] ?? $columnName,
+			self::COLUMN_RENAMING_NONE      => $columnName,
+			default                         => throw new InvalidArgumentException(sprintf('%d is not a valid value for $mode', $mode)),
 		};
 	}
 
@@ -193,7 +196,7 @@ class ResultSetMappingBuilder extends ResultSetMapping implements Stringable
 	 *
 	 * This depends on the renaming mode selected by the user.
 	 *
-	 * @param class-string $className
+	 * @param         class-string $className
 	 * @phpstan-param self::COLUMN_RENAMING_* $mode
 	 * @phpstan-param array<string, string> $customRenameColumns
 	 *
@@ -203,13 +206,14 @@ class ResultSetMappingBuilder extends ResultSetMapping implements Stringable
 		string $className,
 		int $mode,
 		array $customRenameColumns,
-	): array {
+	): array
+	{
 		if ($customRenameColumns) { // for BC with 2.2-2.3 API
 			$mode = self::COLUMN_RENAMING_CUSTOM;
 		}
 
 		$columnAlias = [];
-		$class       = $this->em->getClassMetadata($className);
+		$class = $this->em->getClassMetadata($className);
 
 		foreach ($class->getColumnNames() as $columnName) {
 			$columnAlias[$columnName] = $this->getColumnAlias($columnName, $mode, $customRenameColumns);
@@ -218,7 +222,7 @@ class ResultSetMappingBuilder extends ResultSetMapping implements Stringable
 		foreach ($class->associationMappings as $associationMapping) {
 			if ($associationMapping->isToOneOwningSide()) {
 				foreach ($associationMapping->joinColumns as $joinColumn) {
-					$columnName               = $joinColumn->name;
+					$columnName = $joinColumn->name;
 					$columnAlias[$columnName] = $this->getColumnAlias($columnName, $mode, $customRenameColumns);
 				}
 			}
@@ -233,7 +237,7 @@ class ResultSetMappingBuilder extends ResultSetMapping implements Stringable
 	 * Works only for all the entity results. The select parts for scalar
 	 * expressions have to be written manually.
 	 *
-	 * @param string[] $tableAliases
+	 * @param         string[] $tableAliases
 	 * @phpstan-param array<string, string> $tableAliases
 	 */
 	public function generateSelectClause(array $tableAliases = []): string
@@ -248,12 +252,12 @@ class ResultSetMappingBuilder extends ResultSetMapping implements Stringable
 			}
 
 			if (isset($this->fieldMappings[$columnName])) {
-				$class             = $this->em->getClassMetadata($this->declaringClasses[$columnName]);
-				$fieldName         = $this->fieldMappings[$columnName];
+				$class = $this->em->getClassMetadata($this->declaringClasses[$columnName]);
+				$fieldName = $this->fieldMappings[$columnName];
 				$classFieldMapping = $class->fieldMappings[$fieldName];
-				$columnSql         = $tableAlias . '.' . $classFieldMapping->columnName;
+				$columnSql = $tableAlias . '.' . $classFieldMapping->columnName;
 
-				$type      = Type::getType($classFieldMapping->type);
+				$type = Type::getType($classFieldMapping->type);
 				$columnSql = $type->convertToPHPValueSQL($columnSql, $this->em->getConnection()->getDatabasePlatform());
 
 				$sql .= $columnSql;

@@ -22,19 +22,19 @@ use function sprintf;
 /**
  * Command to (re)generate the proxy classes used by doctrine.
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class GenerateProxiesCommand extends AbstractEntityManagerCommand
 {
 	protected function configure(): void
 	{
 		$this->setName('orm:generate-proxies')
-			 ->setAliases(['orm:generate:proxies'])
-			 ->setDescription('Generates proxy classes for entity classes')
-			 ->addArgument('dest-path', InputArgument::OPTIONAL, 'The path to generate your proxy classes. If none is provided, it will attempt to grab from configuration.')
-			 ->addOption('em', null, InputOption::VALUE_REQUIRED, 'Name of the entity manager to operate on')
-			 ->addOption('filter', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'A string pattern used to match entities that should be processed.')
-			 ->setHelp('Generates proxy classes for entity classes.');
+			->setAliases(['orm:generate:proxies'])
+			->setDescription('Generates proxy classes for entity classes')
+			->addArgument('dest-path', InputArgument::OPTIONAL, 'The path to generate your proxy classes. If none is provided, it will attempt to grab from configuration.')
+			->addOption('em', null, InputOption::VALUE_REQUIRED, 'Name of the entity manager to operate on')
+			->addOption('filter', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'A string pattern used to match entities that should be processed.')
+			->setHelp('Generates proxy classes for entity classes.');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output): int
@@ -56,19 +56,19 @@ class GenerateProxiesCommand extends AbstractEntityManagerCommand
 			}
 		}
 
-		if (! is_dir($destPath)) {
+		if (!is_dir($destPath)) {
 			mkdir($destPath, 0775, true);
 		}
 
 		$destPath = realpath($destPath);
 
-		if (! file_exists($destPath)) {
+		if (!file_exists($destPath)) {
 			throw new InvalidArgumentException(
 				sprintf("Proxies destination directory '<info>%s</info>' does not exist.", $em->getConfiguration()->getProxyDir()),
 			);
 		}
 
-		if (! is_writable($destPath)) {
+		if (!is_writable($destPath)) {
 			throw new InvalidArgumentException(
 				sprintf("Proxies destination directory '<info>%s</info>' does not have write permissions.", $destPath),
 			);

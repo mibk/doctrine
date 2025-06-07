@@ -84,7 +84,7 @@ class QueryException extends Exception implements ORMException
 	{
 		return new self(
 			'Invalid query operation: Not allowed to iterate over fetch join collections ' .
-			'in class ' . $assoc->sourceEntity . ' association ' . $assoc->fieldName,
+				'in class ' . $assoc->sourceEntity . ' association ' . $assoc->fieldName,
 		);
 	}
 
@@ -92,21 +92,21 @@ class QueryException extends Exception implements ORMException
 	{
 		return new self(
 			'Loading partial objects is dangerous. Fetch full objects or consider ' .
-			'using a different fetch mode. If you really want partial objects, ' .
-			'set the doctrine.forcePartialLoad query hint to TRUE.',
+				'using a different fetch mode. If you really want partial objects, ' .
+				'set the doctrine.forcePartialLoad query hint to TRUE.',
 		);
 	}
 
 	/**
-	 * @param string[] $assoc
+	 * @param         string[] $assoc
 	 * @phpstan-param array<string, string> $assoc
 	 */
 	public static function overwritingJoinConditionsNotYetSupported(array $assoc): self
 	{
 		return new self(
 			'Unsupported query operation: It is not yet possible to overwrite the join ' .
-			'conditions in class ' . $assoc['sourceEntityName'] . ' association ' . $assoc['fieldName'] . '. ' .
-			'Use WITH to append additional join conditions to the association.',
+				'conditions in class ' . $assoc['sourceEntityName'] . ' association ' . $assoc['fieldName'] . '. ' .
+				'Use WITH to append additional join conditions to the association.',
 		);
 	}
 
@@ -114,7 +114,7 @@ class QueryException extends Exception implements ORMException
 	{
 		return new self(
 			'A single-valued association path expression to an inverse side is not supported in DQL queries. ' .
-			'Instead of "' . $pathExpr->identificationVariable . '.' . $pathExpr->field . '" use an explicit join.',
+				'Instead of "' . $pathExpr->identificationVariable . '.' . $pathExpr->field . '" use an explicit join.',
 		);
 	}
 
@@ -122,7 +122,7 @@ class QueryException extends Exception implements ORMException
 	{
 		return new self(
 			'Iterate with fetch join in class ' . $assoc->sourceEntity .
-			' using association ' . $assoc->fieldName . ' not allowed.',
+				' using association ' . $assoc->fieldName . ' not allowed.',
 		);
 	}
 
@@ -143,8 +143,8 @@ class QueryException extends Exception implements ORMException
 	{
 		return new self(
 			'A single-valued association path expression to an entity with a composite primary ' .
-			'key is not supported. Explicitly name the components of the composite primary key ' .
-			'in the query.',
+				'key is not supported. Explicitly name the components of the composite primary key ' .
+				'in the query.',
 		);
 	}
 
@@ -158,7 +158,7 @@ class QueryException extends Exception implements ORMException
 	{
 		return new self(
 			"Invalid query component given for DQL alias '" . $dqlAlias . "', " .
-			"requires 'metadata', 'parent', 'relation', 'map', 'nestingLevel' and 'token' keys.",
+				"requires 'metadata', 'parent', 'relation', 'map', 'nestingLevel' and 'token' keys.",
 		);
 	}
 }

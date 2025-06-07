@@ -15,7 +15,7 @@ use function sprintf;
  * The PersisterHelper contains logic to infer binding types which is used in
  * several persisters.
  *
- * @link   www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class PersisterHelper
 {
@@ -30,13 +30,13 @@ class PersisterHelper
 			return [$class->fieldMappings[$fieldName]->type];
 		}
 
-		if (! isset($class->associationMappings[$fieldName])) {
+		if (!isset($class->associationMappings[$fieldName])) {
 			return [];
 		}
 
 		$assoc = $class->associationMappings[$fieldName];
 
-		if (! $assoc->isOwningSide()) {
+		if (!$assoc->isOwningSide()) {
 			return self::getTypeOfField($assoc->mappedBy, $em->getClassMetadata($assoc->targetEntity), $em);
 		}
 
@@ -46,7 +46,7 @@ class PersisterHelper
 			$joinData = $assoc;
 		}
 
-		$types       = [];
+		$types = [];
 		$targetClass = $em->getClassMetadata($assoc->targetEntity);
 
 		foreach ($joinData->joinColumns as $joinColumn) {
@@ -69,14 +69,14 @@ class PersisterHelper
 
 		// iterate over to-one association mappings
 		foreach ($class->associationMappings as $assoc) {
-			if (! $assoc->isToOneOwningSide()) {
+			if (!$assoc->isToOneOwningSide()) {
 				continue;
 			}
 
 			foreach ($assoc->joinColumns as $joinColumn) {
 				if ($joinColumn->name === $columnName) {
 					$targetColumnName = $joinColumn->referencedColumnName;
-					$targetClass      = $em->getClassMetadata($assoc->targetEntity);
+					$targetClass = $em->getClassMetadata($assoc->targetEntity);
 
 					return self::getTypeOfColumn($targetColumnName, $targetClass, $em);
 				}
@@ -85,14 +85,14 @@ class PersisterHelper
 
 		// iterate over to-many association mappings
 		foreach ($class->associationMappings as $assoc) {
-			if (! $assoc->isManyToManyOwningSide()) {
+			if (!$assoc->isManyToManyOwningSide()) {
 				continue;
 			}
 
 			foreach ($assoc->joinTable->joinColumns as $joinColumn) {
 				if ($joinColumn->name === $columnName) {
 					$targetColumnName = $joinColumn->referencedColumnName;
-					$targetClass      = $em->getClassMetadata($assoc->targetEntity);
+					$targetClass = $em->getClassMetadata($assoc->targetEntity);
 
 					return self::getTypeOfColumn($targetColumnName, $targetClass, $em);
 				}

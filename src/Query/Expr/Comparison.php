@@ -9,7 +9,7 @@ use Stringable;
 /**
  * Expression class for DQL comparison expressions.
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class Comparison implements Stringable
 {

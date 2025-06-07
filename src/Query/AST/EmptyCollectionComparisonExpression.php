@@ -9,14 +9,15 @@ use Doctrine\ORM\Query\SqlWalker;
 /**
  * EmptyCollectionComparisonExpression ::= CollectionValuedPathExpression "IS" ["NOT"] "EMPTY"
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class EmptyCollectionComparisonExpression extends Node
 {
 	public function __construct(
 		public PathExpression $expression,
 		public bool $not = false,
-	) {
+	)
+	{
 	}
 
 	public function dispatch(SqlWalker $walker): string

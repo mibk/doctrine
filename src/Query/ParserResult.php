@@ -15,7 +15,7 @@ use function sprintf;
  * Encapsulates the resulting components from a DQL query parsing process that
  * can be serialized.
  *
- * @link        http://www.doctrine-project.org
+ * @link http://www.doctrine-project.org
  */
 class ParserResult
 {
@@ -137,7 +137,7 @@ class ParserResult
 	 *
 	 * @param string|int $dqlPosition The name or position of the DQL parameter.
 	 *
-	 * @return int[] The positions of the corresponding SQL parameters.
+	 * @return         int[] The positions of the corresponding SQL parameters.
 	 * @phpstan-return list<int>
 	 */
 	public function getSqlParameterPositions(string|int $dqlPosition): array

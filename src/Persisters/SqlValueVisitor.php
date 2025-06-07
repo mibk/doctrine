@@ -30,7 +30,7 @@ class SqlValueVisitor extends ExpressionVisitor
 		$value = $this->getValueFromComparison($comparison);
 
 		$this->values[] = $value;
-		$this->types[]  = [$comparison->getField(), $value, $comparison->getOperator()];
+		$this->types[] = [$comparison->getField(), $value, $comparison->getOperator()];
 
 		return null;
 	}
@@ -62,7 +62,7 @@ class SqlValueVisitor extends ExpressionVisitor
 	/**
 	 * Returns the Parameters and Types necessary for matching the last visited expression.
 	 *
-	 * @return mixed[][]
+	 * @return         mixed[][]
 	 * @phpstan-return array{0: array, 1: array<array<mixed>>}
 	 */
 	public function getParamsAndTypes(): array
@@ -79,10 +79,10 @@ class SqlValueVisitor extends ExpressionVisitor
 		$value = $comparison->getValue()->getValue();
 
 		return match ($comparison->getOperator()) {
-			Comparison::CONTAINS => '%' . $value . '%',
+			Comparison::CONTAINS    => '%' . $value . '%',
 			Comparison::STARTS_WITH => $value . '%',
-			Comparison::ENDS_WITH => '%' . $value,
-			default => $value,
+			Comparison::ENDS_WITH   => '%' . $value,
+			default                 => $value,
 		};
 	}
 }

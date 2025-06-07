@@ -18,7 +18,7 @@ use const CASE_UPPER;
  * Naming strategy implementing the underscore naming convention.
  * Converts 'MyEntity' to 'my_entity' or 'MY_ENTITY'.
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class UnderscoreNamingStrategy implements NamingStrategy
 {
@@ -65,13 +65,14 @@ class UnderscoreNamingStrategy implements NamingStrategy
 		string $embeddedColumnName,
 		string $className,
 		string $embeddedClassName,
-	): string {
+	): string
+	{
 		return $this->underscore($propertyName) . '_' . $embeddedColumnName;
 	}
 
 	public function referenceColumnName(): string
 	{
-		return $this->case === CASE_UPPER ?  'ID' : 'id';
+		return $this->case === CASE_UPPER ? 'ID' : 'id';
 	}
 
 	public function joinColumnName(string $propertyName, string $className): string
@@ -83,16 +84,18 @@ class UnderscoreNamingStrategy implements NamingStrategy
 		string $sourceEntity,
 		string $targetEntity,
 		string $propertyName,
-	): string {
+	): string
+	{
 		return $this->classToTableName($sourceEntity) . '_' . $this->classToTableName($targetEntity);
 	}
 
 	public function joinKeyColumnName(
 		string $entityName,
 		string|null $referencedColumnName,
-	): string {
+	): string
+	{
 		return $this->classToTableName($entityName) . '_' .
-				($referencedColumnName ?: $this->referenceColumnName());
+			($referencedColumnName ?: $this->referenceColumnName());
 	}
 
 	private function underscore(string $string): string

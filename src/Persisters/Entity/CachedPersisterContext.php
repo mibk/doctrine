@@ -55,6 +55,7 @@ class CachedPersisterContext
 		 * Whether this persistent context is considering limit operations applied to the selection queries
 		 */
 		public bool $handlesLimits,
-	) {
+	)
+	{
 	}
 }

@@ -9,7 +9,7 @@ use Doctrine\ORM\Query\SqlWalker;
 /**
  * NullIfExpression ::= "NULLIF" "(" ScalarExpression "," ScalarExpression ")"
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class NullIfExpression extends Node
 {

@@ -13,7 +13,7 @@ final class Table implements MappingAttribute
 	/**
 	 * @param array<Index>|null            $indexes
 	 * @param array<UniqueConstraint>|null $uniqueConstraints
-	 * @param array<string,mixed>          $options
+	 * @param array<string, mixed>         $options
 	 */
 	public function __construct(
 		public readonly string|null $name = null,
@@ -21,7 +21,8 @@ final class Table implements MappingAttribute
 		public readonly array|null $indexes = null,
 		public readonly array|null $uniqueConstraints = null,
 		public readonly array $options = [],
-	) {
+	)
+	{
 		if ($this->indexes !== null) {
 			Deprecation::trigger(
 				'doctrine/orm',

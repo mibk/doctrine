@@ -41,17 +41,17 @@ use const JSON_UNESCAPED_UNICODE;
 /**
  * Show information about mapped entities.
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 final class MappingDescribeCommand extends AbstractEntityManagerCommand
 {
 	protected function configure(): void
 	{
 		$this->setName('orm:mapping:describe')
-			 ->addArgument('entityName', InputArgument::REQUIRED, 'Full or partial name of entity')
-			 ->setDescription('Display information about mapped objects')
-			 ->addOption('em', null, InputOption::VALUE_REQUIRED, 'Name of the entity manager to operate on')
-			 ->setHelp(<<<'EOT'
+			->addArgument('entityName', InputArgument::REQUIRED, 'Full or partial name of entity')
+			->setDescription('Display information about mapped objects')
+			->addOption('em', null, InputOption::VALUE_REQUIRED, 'Name of the entity manager to operate on')
+			->setHelp(<<<'EOT'
 The %command.full_name% command describes the metadata for the given full or partial entity class name.
 
 	<info>%command.full_name%</info> My\Namespace\Entity\MyEntity
@@ -82,7 +82,8 @@ EOT);
 		string $entityName,
 		EntityManagerInterface $entityManager,
 		SymfonyStyle $ui,
-	): void {
+	): void
+	{
 		$metadata = $this->getClassMetadata($entityName, $entityManager);
 
 		$ui->table(
@@ -132,13 +133,13 @@ EOT);
 	private function getMappedEntities(EntityManagerInterface $entityManager): array
 	{
 		$entityClassNames = $entityManager->getConfiguration()
-										  ->getMetadataDriverImpl()
-										  ->getAllClassNames();
+			->getMetadataDriverImpl()
+			->getAllClassNames();
 
-		if (! $entityClassNames) {
+		if (!$entityClassNames) {
 			throw new InvalidArgumentException(
 				'You do not have any mapped Doctrine ORM entities according to the current configuration. ' .
-				'If you have entities or mapping files you should check your mapping configuration for errors.',
+					'If you have entities or mapping files you should check your mapping configuration for errors.',
 			);
 		}
 
@@ -154,7 +155,8 @@ EOT);
 	private function getClassMetadata(
 		string $entityName,
 		EntityManagerInterface $entityManager,
-	): ClassMetadata {
+	): ClassMetadata
+	{
 		try {
 			return $entityManager->getClassMetadata($entityName);
 		} catch (MappingException) {
@@ -162,10 +164,10 @@ EOT);
 
 		$matches = array_filter(
 			$this->getMappedEntities($entityManager),
-			static fn ($mappedEntity) => preg_match('{' . preg_quote($entityName) . '}', $mappedEntity),
+			static fn($mappedEntity) => preg_match('{' . preg_quote($entityName) . '}', $mappedEntity),
 		);
 
-		if (! $matches) {
+		if (!$matches) {
 			throw new InvalidArgumentException(sprintf(
 				'Could not find any mapped Entity classes matching "%s"',
 				$entityName,
@@ -228,7 +230,7 @@ EOT);
 	 * @param string $label Label for the value
 	 * @param mixed  $value A Value to show
 	 *
-	 * @return string[]
+	 * @return         string[]
 	 * @phpstan-return array{0: string, 1: string}
 	 */
 	private function formatField(string $label, mixed $value): array
@@ -245,7 +247,7 @@ EOT);
 	 *
 	 * @phpstan-param array<string, FieldMapping|AssociationMapping> $propertyMappings
 	 *
-	 * @return string[][]
+	 * @return         string[][]
 	 * @phpstan-return list<array{0: string, 1: string}>
 	 */
 	private function formatMappings(array $propertyMappings): array
@@ -268,7 +270,7 @@ EOT);
 	 *
 	 * @phpstan-param list<object> $entityListeners
 	 *
-	 * @return string[]
+	 * @return         string[]
 	 * @phpstan-return array{0: string, 1: string}
 	 */
 	private function formatEntityListeners(array $entityListeners): array

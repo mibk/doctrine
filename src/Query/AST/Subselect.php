@@ -9,7 +9,7 @@ use Doctrine\ORM\Query\SqlWalker;
 /**
  * Subselect ::= SimpleSelectClause SubselectFromClause [WhereClause] [GroupByClause] [HavingClause] [OrderByClause]
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class Subselect extends Node
 {

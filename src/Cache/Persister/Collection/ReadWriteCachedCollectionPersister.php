@@ -20,7 +20,8 @@ class ReadWriteCachedCollectionPersister extends AbstractCollectionPersister
 		ConcurrentRegion $region,
 		EntityManagerInterface $em,
 		AssociationMapping $association,
-	) {
+	)
+	{
 		parent::__construct($persister, $region, $em, $association);
 	}
 
@@ -61,8 +62,8 @@ class ReadWriteCachedCollectionPersister extends AbstractCollectionPersister
 	public function delete(PersistentCollection $collection): void
 	{
 		$ownerId = $this->uow->getEntityIdentifier($collection->getOwner());
-		$key     = new CollectionCacheKey($this->sourceEntity->rootEntityName, $this->association->fieldName, $ownerId, $this->filters->getHash());
-		$lock    = $this->region->lock($key);
+		$key = new CollectionCacheKey($this->sourceEntity->rootEntityName, $this->association->fieldName, $ownerId, $this->filters->getHash());
+		$lock = $this->region->lock($key);
 
 		$this->persister->delete($collection);
 
@@ -71,33 +72,33 @@ class ReadWriteCachedCollectionPersister extends AbstractCollectionPersister
 		}
 
 		$this->queuedCache['delete'][spl_object_id($collection)] = [
-			'key'   => $key,
-			'lock'  => $lock,
+			'key'  => $key,
+			'lock' => $lock,
 		];
 	}
 
 	public function update(PersistentCollection $collection): void
 	{
 		$isInitialized = $collection->isInitialized();
-		$isDirty       = $collection->isDirty();
+		$isDirty = $collection->isDirty();
 
-		if (! $isInitialized && ! $isDirty) {
+		if (!$isInitialized && !$isDirty) {
 			return;
 		}
 
 		$this->persister->update($collection);
 
 		$ownerId = $this->uow->getEntityIdentifier($collection->getOwner());
-		$key     = new CollectionCacheKey($this->sourceEntity->rootEntityName, $this->association->fieldName, $ownerId, $this->filters->getHash());
-		$lock    = $this->region->lock($key);
+		$key = new CollectionCacheKey($this->sourceEntity->rootEntityName, $this->association->fieldName, $ownerId, $this->filters->getHash());
+		$lock = $this->region->lock($key);
 
 		if ($lock === null) {
 			return;
 		}
 
 		$this->queuedCache['update'][spl_object_id($collection)] = [
-			'key'   => $key,
-			'lock'  => $lock,
+			'key'  => $key,
+			'lock' => $lock,
 		];
 	}
 }

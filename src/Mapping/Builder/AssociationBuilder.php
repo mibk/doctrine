@@ -17,7 +17,8 @@ class AssociationBuilder
 		protected readonly ClassMetadataBuilder $builder,
 		protected array $mapping,
 		protected readonly int $type,
-	) {
+	)
+	{
 	}
 
 	/** @return $this */
@@ -112,14 +113,15 @@ class AssociationBuilder
 		bool $unique = false,
 		string|null $onDelete = null,
 		string|null $columnDef = null,
-	): static {
+	): static
+	{
 		$this->joinColumns[] = [
-			'name' => $columnName,
+			'name'                 => $columnName,
 			'referencedColumnName' => $referencedColumnName,
-			'nullable' => $nullable,
-			'unique' => $unique,
-			'onDelete' => $onDelete,
-			'columnDefinition' => $columnDef,
+			'nullable'             => $nullable,
+			'unique'               => $unique,
+			'onDelete'             => $onDelete,
+			'columnDefinition'     => $columnDef,
 		];
 
 		return $this;

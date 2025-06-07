@@ -7,7 +7,7 @@ namespace Doctrine\ORM\Query\Expr;
 /**
  * Expression class for building DQL OR clauses.
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class Orx extends Composite
 {

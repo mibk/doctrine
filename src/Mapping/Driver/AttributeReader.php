@@ -82,8 +82,9 @@ final class AttributeReader
 	public function getPropertyAttributeCollection(
 		ReflectionProperty $property,
 		string $attributeName,
-	): RepeatableAttributeCollection {
-		if (! $this->isRepeatable($attributeName)) {
+	): RepeatableAttributeCollection
+	{
+		if (!$this->isRepeatable($attributeName)) {
 			throw new LogicException(sprintf(
 				'The attribute "%s" is not repeatable. Call getPropertyAttribute() instead.',
 				$attributeName,
@@ -108,7 +109,7 @@ final class AttributeReader
 			$attributeName = $attribute->getName();
 			assert(is_string($attributeName));
 			// Make sure we only get Doctrine Attributes
-			if (! is_subclass_of($attributeName, MappingAttribute::class)) {
+			if (!is_subclass_of($attributeName, MappingAttribute::class)) {
 				continue;
 			}
 
@@ -116,7 +117,7 @@ final class AttributeReader
 			assert($instance instanceof MappingAttribute);
 
 			if ($this->isRepeatable($attributeName)) {
-				if (! isset($instances[$attributeName])) {
+				if (!isset($instances[$attributeName])) {
 					$instances[$attributeName] = new RepeatableAttributeCollection();
 				}
 
@@ -139,7 +140,7 @@ final class AttributeReader
 		}
 
 		$reflectionClass = new ReflectionClass($attributeClassName);
-		$attribute       = $reflectionClass->getAttributes()[0]->newInstance();
+		$attribute = $reflectionClass->getAttributes()[0]->newInstance();
 
 		return $this->isRepeatableAttribute[$attributeClassName] = ($attribute->flags & Attribute::IS_REPEATABLE) > 0;
 	}

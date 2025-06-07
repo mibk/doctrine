@@ -82,7 +82,7 @@ abstract class AbstractHydrator
 	public function __construct(protected EntityManagerInterface $em)
 	{
 		$this->platform = $em->getConnection()->getDatabasePlatform();
-		$this->uow      = $em->getUnitOfWork();
+		$this->uow = $em->getUnitOfWork();
 	}
 
 	/**
@@ -96,8 +96,8 @@ abstract class AbstractHydrator
 	 */
 	final public function toIterable(Result $stmt, ResultSetMapping $resultSetMapping, array $hints = []): Generator
 	{
-		$this->stmt  = $stmt;
-		$this->rsm   = $resultSetMapping;
+		$this->stmt = $stmt;
+		$this->rsm = $resultSetMapping;
 		$this->hints = $hints;
 
 		$evm = $this->em->getEventManager();
@@ -159,8 +159,8 @@ abstract class AbstractHydrator
 	 */
 	public function hydrateAll(Result $stmt, ResultSetMapping $resultSetMapping, array $hints = []): mixed
 	{
-		$this->stmt  = $stmt;
-		$this->rsm   = $resultSetMapping;
+		$this->stmt = $stmt;
+		$this->rsm = $resultSetMapping;
 		$this->hints = $hints;
 
 		$this->em->getEventManager()->addEventListener([Events::onClear], $this);
@@ -199,9 +199,9 @@ abstract class AbstractHydrator
 	{
 		$this->statement()->free();
 
-		$this->stmt          = null;
-		$this->rsm           = null;
-		$this->cache         = [];
+		$this->stmt = null;
+		$this->rsm = null;
+		$this->cache = [];
 		$this->metadataCache = [];
 
 		$this
@@ -243,7 +243,7 @@ abstract class AbstractHydrator
 	 * field names during this procedure as well as any necessary conversions on
 	 * the values applied. Scalar values are kept in a specific key 'scalars'.
 	 *
-	 * @param mixed[] $data SQL Result Row.
+	 * @param         mixed[] $data SQL Result Row.
 	 * @phpstan-param array<string, string> $id                 Dql-Alias => ID-Hash.
 	 * @phpstan-param array<string, bool>   $nonemptyComponents Does this DQL-Alias has at least one non NULL value?
 	 *
@@ -266,14 +266,14 @@ abstract class AbstractHydrator
 		$rowData = ['data' => [], 'newObjects' => []];
 
 		foreach ($this->rsm->newObjectMappings as $mapping) {
-			if (! array_key_exists($mapping['objIndex'], $this->rsm->newObject)) {
+			if (!array_key_exists($mapping['objIndex'], $this->rsm->newObject)) {
 				$this->rsm->newObject[$mapping['objIndex']] = $mapping['className'];
 			}
 		}
 
 		foreach ($this->rsm->newObject as $objIndex => $newObject) {
 			$rowData['newObjects'][$objIndex]['class'] = new ReflectionClass($newObject);
-			$rowData['newObjects'][$objIndex]['args']  = [];
+			$rowData['newObjects'][$objIndex]['args'] = [];
 		}
 
 		foreach ($data as $key => $value) {
@@ -285,66 +285,66 @@ abstract class AbstractHydrator
 			$fieldName = $cacheKeyInfo['fieldName'];
 
 			switch (true) {
-				case isset($cacheKeyInfo['isNewObjectParameter']):
-					$argIndex = $cacheKeyInfo['argIndex'];
-					$objIndex = $cacheKeyInfo['objIndex'];
-					$type     = $cacheKeyInfo['type'];
-					$value    = $type->convertToPHPValue($value, $this->platform);
+			case isset($cacheKeyInfo['isNewObjectParameter']):
+				$argIndex = $cacheKeyInfo['argIndex'];
+				$objIndex = $cacheKeyInfo['objIndex'];
+				$type = $cacheKeyInfo['type'];
+				$value = $type->convertToPHPValue($value, $this->platform);
 
-					if ($value !== null && isset($cacheKeyInfo['enumType'])) {
-						$value = $this->buildEnum($value, $cacheKeyInfo['enumType']);
-					}
+				if ($value !== null && isset($cacheKeyInfo['enumType'])) {
+					$value = $this->buildEnum($value, $cacheKeyInfo['enumType']);
+				}
 
-					$rowData['newObjects'][$objIndex]['args'][$argIndex] = $value;
-					break;
+				$rowData['newObjects'][$objIndex]['args'][$argIndex] = $value;
+				break;
 
-				case isset($cacheKeyInfo['isScalar']):
-					$type  = $cacheKeyInfo['type'];
-					$value = $type->convertToPHPValue($value, $this->platform);
+			case isset($cacheKeyInfo['isScalar']):
+				$type = $cacheKeyInfo['type'];
+				$value = $type->convertToPHPValue($value, $this->platform);
 
-					if ($value !== null && isset($cacheKeyInfo['enumType'])) {
-						$value = $this->buildEnum($value, $cacheKeyInfo['enumType']);
-					}
+				if ($value !== null && isset($cacheKeyInfo['enumType'])) {
+					$value = $this->buildEnum($value, $cacheKeyInfo['enumType']);
+				}
 
-					$rowData['scalars'][$fieldName] = $value;
+				$rowData['scalars'][$fieldName] = $value;
 
-					break;
+				break;
 
 				//case (isset($cacheKeyInfo['isMetaColumn'])):
-				default:
-					$dqlAlias = $cacheKeyInfo['dqlAlias'];
-					$type     = $cacheKeyInfo['type'];
+			default:
+				$dqlAlias = $cacheKeyInfo['dqlAlias'];
+				$type = $cacheKeyInfo['type'];
 
-					// If there are field name collisions in the child class, then we need
-					// to only hydrate if we are looking at the correct discriminator value
-					if (
-						isset($cacheKeyInfo['discriminatorColumn'], $data[$cacheKeyInfo['discriminatorColumn']])
-						&& ! in_array((string) $data[$cacheKeyInfo['discriminatorColumn']], $cacheKeyInfo['discriminatorValues'], true)
-					) {
-						break;
-					}
-
-					// in an inheritance hierarchy the same field could be defined several times.
-					// We overwrite this value so long we don't have a non-null value, that value we keep.
-					// Per definition it cannot be that a field is defined several times and has several values.
-					if (isset($rowData['data'][$dqlAlias][$fieldName])) {
-						break;
-					}
-
-					$rowData['data'][$dqlAlias][$fieldName] = $type
-						? $type->convertToPHPValue($value, $this->platform)
-						: $value;
-
-					if ($rowData['data'][$dqlAlias][$fieldName] !== null && isset($cacheKeyInfo['enumType'])) {
-						$rowData['data'][$dqlAlias][$fieldName] = $this->buildEnum($rowData['data'][$dqlAlias][$fieldName], $cacheKeyInfo['enumType']);
-					}
-
-					if ($cacheKeyInfo['isIdentifier'] && $value !== null) {
-						$id[$dqlAlias]                .= '|' . $value;
-						$nonemptyComponents[$dqlAlias] = true;
-					}
-
+				// If there are field name collisions in the child class, then we need
+				// to only hydrate if we are looking at the correct discriminator value
+				if (
+					isset($cacheKeyInfo['discriminatorColumn'], $data[$cacheKeyInfo['discriminatorColumn']])
+						&& !in_array((string) $data[$cacheKeyInfo['discriminatorColumn']], $cacheKeyInfo['discriminatorValues'], true)
+				) {
 					break;
+				}
+
+				// in an inheritance hierarchy the same field could be defined several times.
+				// We overwrite this value so long we don't have a non-null value, that value we keep.
+				// Per definition it cannot be that a field is defined several times and has several values.
+				if (isset($rowData['data'][$dqlAlias][$fieldName])) {
+					break;
+				}
+
+				$rowData['data'][$dqlAlias][$fieldName] = $type
+					? $type->convertToPHPValue($value, $this->platform)
+					: $value;
+
+				if ($rowData['data'][$dqlAlias][$fieldName] !== null && isset($cacheKeyInfo['enumType'])) {
+					$rowData['data'][$dqlAlias][$fieldName] = $this->buildEnum($rowData['data'][$dqlAlias][$fieldName], $cacheKeyInfo['enumType']);
+				}
+
+				if ($cacheKeyInfo['isIdentifier'] && $value !== null) {
+					$id[$dqlAlias] .= '|' . $value;
+					$nonemptyComponents[$dqlAlias] = true;
+				}
+
+				break;
 			}
 		}
 
@@ -374,10 +374,10 @@ abstract class AbstractHydrator
 	 * values according to their types. The resulting row has the same number
 	 * of elements as before.
 	 *
-	 * @param mixed[] $data
+	 * @param         mixed[] $data
 	 * @phpstan-param array<string, mixed> $data
 	 *
-	 * @return mixed[] The processed row.
+	 * @return         mixed[] The processed row.
 	 * @phpstan-return array<string, mixed>
 	 */
 	protected function gatherScalarRowData(array &$data): array
@@ -394,8 +394,8 @@ abstract class AbstractHydrator
 
 			// WARNING: BC break! We know this is the desired behavior to type convert values, but this
 			// erroneous behavior exists since 2.0 and we're forced to keep compatibility.
-			if (! isset($cacheKeyInfo['isScalar'])) {
-				$type  = $cacheKeyInfo['type'];
+			if (!isset($cacheKeyInfo['isScalar'])) {
+				$type = $cacheKeyInfo['type'];
 				$value = $type ? $type->convertToPHPValue($value, $this->platform) : $value;
 
 				$fieldName = $cacheKeyInfo['dqlAlias'] . '_' . $fieldName;
@@ -412,7 +412,7 @@ abstract class AbstractHydrator
 	 *
 	 * @param string $key Column name
 	 *
-	 * @return mixed[]|null
+	 * @return         mixed[]|null
 	 * @phpstan-return array<string, mixed>|null
 	 */
 	protected function hydrateColumnInfo(string $key): array|null
@@ -422,84 +422,84 @@ abstract class AbstractHydrator
 		}
 
 		switch (true) {
-			// NOTE: Most of the times it's a field mapping, so keep it first!!!
-			case isset($this->rsm->fieldMappings[$key]):
-				$classMetadata = $this->getClassMetadata($this->rsm->declaringClasses[$key]);
-				$fieldName     = $this->rsm->fieldMappings[$key];
-				$fieldMapping  = $classMetadata->fieldMappings[$fieldName];
-				$ownerMap      = $this->rsm->columnOwnerMap[$key];
-				$columnInfo    = [
-					'isIdentifier' => in_array($fieldName, $classMetadata->identifier, true),
-					'fieldName'    => $fieldName,
-					'type'         => Type::getType($fieldMapping->type),
-					'dqlAlias'     => $ownerMap,
-					'enumType'     => $this->rsm->enumMappings[$key] ?? null,
-				];
+		// NOTE: Most of the times it's a field mapping, so keep it first!!!
+		case isset($this->rsm->fieldMappings[$key]):
+			$classMetadata = $this->getClassMetadata($this->rsm->declaringClasses[$key]);
+			$fieldName = $this->rsm->fieldMappings[$key];
+			$fieldMapping = $classMetadata->fieldMappings[$fieldName];
+			$ownerMap = $this->rsm->columnOwnerMap[$key];
+			$columnInfo = [
+				'isIdentifier' => in_array($fieldName, $classMetadata->identifier, true),
+				'fieldName'    => $fieldName,
+				'type'         => Type::getType($fieldMapping->type),
+				'dqlAlias'     => $ownerMap,
+				'enumType'     => $this->rsm->enumMappings[$key] ?? null,
+			];
 
-				// the current discriminator value must be saved in order to disambiguate fields hydration,
-				// should there be field name collisions
-				if ($classMetadata->parentClasses && isset($this->rsm->discriminatorColumns[$ownerMap])) {
-					return $this->cache[$key] = array_merge(
-						$columnInfo,
-						[
-							'discriminatorColumn' => $this->rsm->discriminatorColumns[$ownerMap],
-							'discriminatorValue'  => $classMetadata->discriminatorValue,
-							'discriminatorValues' => $this->getDiscriminatorValues($classMetadata),
-						],
-					);
-				}
+			// the current discriminator value must be saved in order to disambiguate fields hydration,
+			// should there be field name collisions
+			if ($classMetadata->parentClasses && isset($this->rsm->discriminatorColumns[$ownerMap])) {
+				return $this->cache[$key] = array_merge(
+					$columnInfo,
+					[
+						'discriminatorColumn' => $this->rsm->discriminatorColumns[$ownerMap],
+						'discriminatorValue'  => $classMetadata->discriminatorValue,
+						'discriminatorValues' => $this->getDiscriminatorValues($classMetadata),
+					],
+				);
+			}
 
-				return $this->cache[$key] = $columnInfo;
+			return $this->cache[$key] = $columnInfo;
 
-			case isset($this->rsm->newObjectMappings[$key]):
-				// WARNING: A NEW object is also a scalar, so it must be declared before!
-				$mapping = $this->rsm->newObjectMappings[$key];
+		case isset($this->rsm->newObjectMappings[$key]):
+			// WARNING: A NEW object is also a scalar, so it must be declared before!
+			$mapping = $this->rsm->newObjectMappings[$key];
 
-				return $this->cache[$key] = [
-					'isScalar'             => true,
-					'isNewObjectParameter' => true,
-					'fieldName'            => $this->rsm->scalarMappings[$key],
-					'type'                 => Type::getType($this->rsm->typeMappings[$key]),
-					'argIndex'             => $mapping['argIndex'],
-					'objIndex'             => $mapping['objIndex'],
-					'enumType'             => $this->rsm->enumMappings[$key] ?? null,
-				];
+			return $this->cache[$key] = [
+				'isScalar'             => true,
+				'isNewObjectParameter' => true,
+				'fieldName'            => $this->rsm->scalarMappings[$key],
+				'type'                 => Type::getType($this->rsm->typeMappings[$key]),
+				'argIndex'             => $mapping['argIndex'],
+				'objIndex'             => $mapping['objIndex'],
+				'enumType'             => $this->rsm->enumMappings[$key] ?? null,
+			];
 
-			case isset($this->rsm->scalarMappings[$key], $this->hints[LimitSubqueryWalker::FORCE_DBAL_TYPE_CONVERSION]):
-				return $this->cache[$key] = [
-					'fieldName' => $this->rsm->scalarMappings[$key],
-					'type'      => Type::getType($this->rsm->typeMappings[$key]),
-					'dqlAlias'  => '',
-					'enumType'  => $this->rsm->enumMappings[$key] ?? null,
-				];
+		case isset($this->rsm->scalarMappings[$key], $this->hints[LimitSubqueryWalker::FORCE_DBAL_TYPE_CONVERSION]):
+			return $this->cache[$key] = [
+				'fieldName' => $this->rsm->scalarMappings[$key],
+				'type'      => Type::getType($this->rsm->typeMappings[$key]),
+				'dqlAlias'  => '',
+				'enumType'  => $this->rsm->enumMappings[$key] ?? null,
+			];
 
-			case isset($this->rsm->scalarMappings[$key]):
-				return $this->cache[$key] = [
-					'isScalar'  => true,
-					'fieldName' => $this->rsm->scalarMappings[$key],
-					'type'      => Type::getType($this->rsm->typeMappings[$key]),
-					'enumType'  => $this->rsm->enumMappings[$key] ?? null,
-				];
+		case isset($this->rsm->scalarMappings[$key]):
+			return $this->cache[$key] = [
+				'isScalar'  => true,
+				'fieldName' => $this->rsm->scalarMappings[$key],
+				'type'      => Type::getType($this->rsm->typeMappings[$key]),
+				'enumType'  => $this->rsm->enumMappings[$key] ?? null,
+			];
 
-			case isset($this->rsm->metaMappings[$key]):
-				// Meta column (has meaning in relational schema only, i.e. foreign keys or discriminator columns).
-				$fieldName = $this->rsm->metaMappings[$key];
-				$dqlAlias  = $this->rsm->columnOwnerMap[$key];
-				$type      = isset($this->rsm->typeMappings[$key])
-					? Type::getType($this->rsm->typeMappings[$key])
-					: null;
+		case isset($this->rsm->metaMappings[$key]):
+			// Meta column (has meaning in relational schema only, i.e. foreign keys or discriminator columns).
+			$fieldName = $this->rsm->metaMappings[$key];
+			$dqlAlias = $this->rsm->columnOwnerMap[$key];
+			$type = isset($this->rsm->typeMappings[$key])
+				? Type::getType($this->rsm->typeMappings[$key])
+				: null;
 
-				// Cache metadata fetch
-				$this->getClassMetadata($this->rsm->aliasMap[$dqlAlias]);
+			// Cache metadata fetch
+			$this->getClassMetadata($this->rsm->aliasMap[$dqlAlias]);
 
-				return $this->cache[$key] = [
-					'isIdentifier' => isset($this->rsm->isIdentifierColumn[$dqlAlias][$key]),
-					'isMetaColumn' => true,
-					'fieldName'    => $fieldName,
-					'type'         => $type,
-					'dqlAlias'     => $dqlAlias,
-					'enumType'     => $this->rsm->enumMappings[$key] ?? null,
-				];
+			return $this->cache[$key] = [
+				'isIdentifier' => isset($this->rsm->isIdentifierColumn[$dqlAlias][$key]),
+				'isMetaColumn' => true,
+				'fieldName'    => $fieldName,
+				'type'         => $type,
+				'dqlAlias'     => $dqlAlias,
+				'enumType'     => $this->rsm->enumMappings[$key] ?? null,
+			];
 		}
 
 		// this column is a left over, maybe from a LIMIT query hack for example in Oracle or DB2
@@ -508,13 +508,13 @@ abstract class AbstractHydrator
 	}
 
 	/**
-	 * @return string[]
+	 * @return         string[]
 	 * @phpstan-return non-empty-list<string>
 	 */
 	private function getDiscriminatorValues(ClassMetadata $classMetadata): array
 	{
 		$values = array_map(
-			fn (string $subClass): string => (string) $this->getClassMetadata($subClass)->discriminatorValue,
+			fn(string $subClass): string => (string) $this->getClassMetadata($subClass)->discriminatorValue,
 			$classMetadata->subClasses,
 		);
 
@@ -528,7 +528,7 @@ abstract class AbstractHydrator
 	 */
 	protected function getClassMetadata(string $className): ClassMetadata
 	{
-		if (! isset($this->metadataCache[$className])) {
+		if (!isset($this->metadataCache[$className])) {
 			$this->metadataCache[$className] = $this->em->getClassMetadata($className);
 		}
 
@@ -554,7 +554,7 @@ abstract class AbstractHydrator
 			}
 		} else {
 			$fieldName = $class->identifier[0];
-			$id        = [
+			$id = [
 				$fieldName => isset($class->associationMappings[$fieldName]) && $class->associationMappings[$fieldName]->isToOneOwningSide()
 					? $data[$class->associationMappings[$fieldName]->joinColumns[0]->name]
 					: $data[$fieldName],
@@ -573,7 +573,7 @@ abstract class AbstractHydrator
 	{
 		if (is_array($value)) {
 			return array_map(
-				static fn ($value) => $enumType::from($value),
+				static fn($value) => $enumType::from($value),
 				$value,
 			);
 		}

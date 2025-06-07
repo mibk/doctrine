@@ -21,15 +21,16 @@ final class ReflectionEmbeddedProperty extends ReflectionProperty
 	private Instantiator|null $instantiator = null;
 
 	/**
-	 * @param ReflectionProperty $parentProperty reflection property of the class where the embedded object has to be put
-	 * @param ReflectionProperty $childProperty  reflection property of the embedded object
+	 * @param         ReflectionProperty $parentProperty reflection property of the class where the embedded object has to be put
+	 * @param         ReflectionProperty $childProperty  reflection property of the embedded object
 	 * @phpstan-param class-string $embeddedClass
 	 */
 	public function __construct(
 		private readonly ReflectionProperty $parentProperty,
 		private readonly ReflectionProperty $childProperty,
 		private readonly string $embeddedClass,
-	) {
+	)
+	{
 		parent::__construct($childProperty->getDeclaringClass()->name, $childProperty->getName());
 	}
 

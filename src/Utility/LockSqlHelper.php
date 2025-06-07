@@ -8,8 +8,8 @@ use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Platforms\DB2Platform;
 use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
-use Doctrine\DBAL\Platforms\SQLitePlatform;
 use Doctrine\DBAL\Platforms\SQLServerPlatform;
+use Doctrine\DBAL\Platforms\SQLitePlatform;
 
 /** @internal */
 trait LockSqlHelper
@@ -18,8 +18,8 @@ trait LockSqlHelper
 	{
 		return match (true) {
 			$platform instanceof AbstractMySQLPlatform => 'LOCK IN SHARE MODE',
-			$platform instanceof PostgreSQLPlatform => 'FOR SHARE',
-			default => $this->getWriteLockSQL($platform),
+			$platform instanceof PostgreSQLPlatform    => 'FOR SHARE',
+			default                                    => $this->getWriteLockSQL($platform),
 		};
 	}
 
@@ -29,7 +29,7 @@ trait LockSqlHelper
 			$platform instanceof DB2Platform => 'WITH RR USE AND KEEP UPDATE LOCKS',
 			$platform instanceof SQLitePlatform,
 			$platform instanceof SQLServerPlatform => '',
-			default => 'FOR UPDATE',
+			default                                => 'FOR UPDATE',
 		};
 	}
 }

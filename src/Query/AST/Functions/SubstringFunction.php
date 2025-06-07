@@ -12,7 +12,7 @@ use Doctrine\ORM\Query\TokenType;
 /**
  * "SUBSTRING" "(" StringPrimary "," SimpleArithmeticExpression "," SimpleArithmeticExpression ")"
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class SubstringFunction extends FunctionNode
 {

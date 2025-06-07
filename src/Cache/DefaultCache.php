@@ -24,7 +24,7 @@ class DefaultCache implements Cache
 	private readonly CacheFactory $cacheFactory;
 
 	/**
-	 * @var QueryCache[]
+	 * @var         QueryCache[]
 	 * @phpstan-var array<string, QueryCache>
 	 */
 	private array $queryCaches = [];
@@ -33,8 +33,9 @@ class DefaultCache implements Cache
 
 	public function __construct(
 		private readonly EntityManagerInterface $em,
-	) {
-		$this->uow          = $em->getUnitOfWork();
+	)
+	{
+		$this->uow = $em->getUnitOfWork();
 		$this->cacheFactory = $em->getConfiguration()
 			->getSecondLevelCacheConfiguration()
 			->getCacheFactory();
@@ -42,10 +43,10 @@ class DefaultCache implements Cache
 
 	public function getEntityCacheRegion(string $className): Region|null
 	{
-		$metadata  = $this->em->getClassMetadata($className);
+		$metadata = $this->em->getClassMetadata($className);
 		$persister = $this->uow->getEntityPersister($metadata->rootEntityName);
 
-		if (! ($persister instanceof CachedPersister)) {
+		if (!($persister instanceof CachedPersister)) {
 			return null;
 		}
 
@@ -54,10 +55,10 @@ class DefaultCache implements Cache
 
 	public function getCollectionCacheRegion(string $className, string $association): Region|null
 	{
-		$metadata  = $this->em->getClassMetadata($className);
+		$metadata = $this->em->getClassMetadata($className);
 		$persister = $this->uow->getCollectionPersister($metadata->getAssociationMapping($association));
 
-		if (! ($persister instanceof CachedPersister)) {
+		if (!($persister instanceof CachedPersister)) {
 			return null;
 		}
 
@@ -66,10 +67,10 @@ class DefaultCache implements Cache
 
 	public function containsEntity(string $className, mixed $identifier): bool
 	{
-		$metadata  = $this->em->getClassMetadata($className);
+		$metadata = $this->em->getClassMetadata($className);
 		$persister = $this->uow->getEntityPersister($metadata->rootEntityName);
 
-		if (! ($persister instanceof CachedPersister)) {
+		if (!($persister instanceof CachedPersister)) {
 			return false;
 		}
 
@@ -78,10 +79,10 @@ class DefaultCache implements Cache
 
 	public function evictEntity(string $className, mixed $identifier): void
 	{
-		$metadata  = $this->em->getClassMetadata($className);
+		$metadata = $this->em->getClassMetadata($className);
 		$persister = $this->uow->getEntityPersister($metadata->rootEntityName);
 
-		if (! ($persister instanceof CachedPersister)) {
+		if (!($persister instanceof CachedPersister)) {
 			return;
 		}
 
@@ -90,10 +91,10 @@ class DefaultCache implements Cache
 
 	public function evictEntityRegion(string $className): void
 	{
-		$metadata  = $this->em->getClassMetadata($className);
+		$metadata = $this->em->getClassMetadata($className);
 		$persister = $this->uow->getEntityPersister($metadata->rootEntityName);
 
-		if (! ($persister instanceof CachedPersister)) {
+		if (!($persister instanceof CachedPersister)) {
 			return;
 		}
 
@@ -107,7 +108,7 @@ class DefaultCache implements Cache
 		foreach ($metadatas as $metadata) {
 			$persister = $this->uow->getEntityPersister($metadata->rootEntityName);
 
-			if (! ($persister instanceof CachedPersister)) {
+			if (!($persister instanceof CachedPersister)) {
 				continue;
 			}
 
@@ -117,10 +118,10 @@ class DefaultCache implements Cache
 
 	public function containsCollection(string $className, string $association, mixed $ownerIdentifier): bool
 	{
-		$metadata  = $this->em->getClassMetadata($className);
+		$metadata = $this->em->getClassMetadata($className);
 		$persister = $this->uow->getCollectionPersister($metadata->getAssociationMapping($association));
 
-		if (! ($persister instanceof CachedPersister)) {
+		if (!($persister instanceof CachedPersister)) {
 			return false;
 		}
 
@@ -129,10 +130,10 @@ class DefaultCache implements Cache
 
 	public function evictCollection(string $className, string $association, mixed $ownerIdentifier): void
 	{
-		$metadata  = $this->em->getClassMetadata($className);
+		$metadata = $this->em->getClassMetadata($className);
 		$persister = $this->uow->getCollectionPersister($metadata->getAssociationMapping($association));
 
-		if (! ($persister instanceof CachedPersister)) {
+		if (!($persister instanceof CachedPersister)) {
 			return;
 		}
 
@@ -141,10 +142,10 @@ class DefaultCache implements Cache
 
 	public function evictCollectionRegion(string $className, string $association): void
 	{
-		$metadata  = $this->em->getClassMetadata($className);
+		$metadata = $this->em->getClassMetadata($className);
 		$persister = $this->uow->getCollectionPersister($metadata->getAssociationMapping($association));
 
-		if (! ($persister instanceof CachedPersister)) {
+		if (!($persister instanceof CachedPersister)) {
 			return;
 		}
 
@@ -157,13 +158,13 @@ class DefaultCache implements Cache
 
 		foreach ($metadatas as $metadata) {
 			foreach ($metadata->associationMappings as $association) {
-				if (! $association->isToMany()) {
+				if (!$association->isToMany()) {
 					continue;
 				}
 
 				$persister = $this->uow->getCollectionPersister($association);
 
-				if (! ($persister instanceof CachedPersister)) {
+				if (!($persister instanceof CachedPersister)) {
 					continue;
 				}
 
@@ -210,7 +211,7 @@ class DefaultCache implements Cache
 
 	private function buildEntityCacheKey(ClassMetadata $metadata, mixed $identifier): EntityCacheKey
 	{
-		if (! is_array($identifier)) {
+		if (!is_array($identifier)) {
 			$identifier = $this->toIdentifierArray($metadata, $identifier);
 		}
 
@@ -221,8 +222,9 @@ class DefaultCache implements Cache
 		ClassMetadata $metadata,
 		string $association,
 		mixed $ownerIdentifier,
-	): CollectionCacheKey {
-		if (! is_array($ownerIdentifier)) {
+	): CollectionCacheKey
+	{
+		if (!is_array($ownerIdentifier)) {
 			$ownerIdentifier = $this->toIdentifierArray($metadata, $ownerIdentifier);
 		}
 

@@ -9,7 +9,7 @@ use Doctrine\ORM\Query\SqlWalker;
 /**
  * JoinAssociationDeclaration ::= JoinAssociationPathExpression ["AS"] AliasIdentificationVariable
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class JoinAssociationDeclaration extends Node
 {
@@ -17,7 +17,8 @@ class JoinAssociationDeclaration extends Node
 		public JoinAssociationPathExpression $joinAssociationPathExpression,
 		public string $aliasIdentificationVariable,
 		public IndexBy|null $indexBy,
-	) {
+	)
+	{
 	}
 
 	public function dispatch(SqlWalker $walker): string

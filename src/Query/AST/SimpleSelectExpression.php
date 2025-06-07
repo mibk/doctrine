@@ -10,7 +10,7 @@ use Doctrine\ORM\Query\SqlWalker;
  * SimpleSelectExpression ::= StateFieldPathExpression | IdentificationVariable
  *                          | (AggregateExpression [["AS"] FieldAliasIdentificationVariable])
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class SimpleSelectExpression extends Node
 {

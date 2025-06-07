@@ -24,8 +24,8 @@ abstract class AbstractEntityInheritancePersister extends BasicEntityPersister
 		$data = parent::prepareInsertData($entity);
 
 		// Populate the discriminator column
-		$discColumn                                                        = $this->class->getDiscriminatorColumn();
-		$this->columnTypes[$discColumn->name]                              = $discColumn->type;
+		$discColumn = $this->class->getDiscriminatorColumn();
+		$this->columnTypes[$discColumn->name] = $discColumn->type;
 		$data[$this->getDiscriminatorColumnTableName()][$discColumn->name] = $this->class->discriminatorValue;
 
 		return $data;
@@ -38,10 +38,10 @@ abstract class AbstractEntityInheritancePersister extends BasicEntityPersister
 
 	protected function getSelectColumnSQL(string $field, ClassMetadata $class, string $alias = 'r'): string
 	{
-		$tableAlias   = $alias === 'r' ? '' : $alias;
+		$tableAlias = $alias === 'r' ? '' : $alias;
 		$fieldMapping = $class->fieldMappings[$field];
-		$columnAlias  = $this->getSQLColumnAlias($fieldMapping->columnName);
-		$sql          = sprintf(
+		$columnAlias = $this->getSQLColumnAlias($fieldMapping->columnName);
+		$sql = sprintf(
 			'%s.%s',
 			$this->getSQLTableAlias($class->name, $tableAlias),
 			$this->quoteStrategy->getColumnName($field, $class, $this->platform),
@@ -50,7 +50,7 @@ abstract class AbstractEntityInheritancePersister extends BasicEntityPersister
 		$this->currentPersisterContext->rsm->addFieldResult($alias, $columnAlias, $field, $class->name);
 
 		$type = Type::getType($fieldMapping->type);
-		$sql  = $type->convertToPHPValueSQL($sql, $this->platform);
+		$sql = $type->convertToPHPValueSQL($sql, $this->platform);
 
 		return $sql . ' AS ' . $columnAlias;
 	}

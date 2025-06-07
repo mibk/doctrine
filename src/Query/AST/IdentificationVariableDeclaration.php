@@ -9,7 +9,7 @@ use Doctrine\ORM\Query\SqlWalker;
 /**
  * IdentificationVariableDeclaration ::= RangeVariableDeclaration [IndexBy] {JoinVariableDeclaration}*
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class IdentificationVariableDeclaration extends Node
 {
@@ -18,7 +18,8 @@ class IdentificationVariableDeclaration extends Node
 		public RangeVariableDeclaration|null $rangeVariableDeclaration = null,
 		public IndexBy|null $indexBy = null,
 		public array $joins = [],
-	) {
+	)
+	{
 	}
 
 	public function dispatch(SqlWalker $walker): string

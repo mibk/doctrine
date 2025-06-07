@@ -14,7 +14,7 @@ use function assert;
 /**
  * "SIZE" "(" CollectionValuedPathExpression ")"
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class SizeFunction extends FunctionNode
 {
@@ -28,17 +28,17 @@ class SizeFunction extends FunctionNode
 	{
 		assert($this->collectionPathExpression->field !== null);
 		$entityManager = $sqlWalker->getEntityManager();
-		$platform      = $entityManager->getConnection()->getDatabasePlatform();
+		$platform = $entityManager->getConnection()->getDatabasePlatform();
 		$quoteStrategy = $entityManager->getConfiguration()->getQuoteStrategy();
-		$dqlAlias      = $this->collectionPathExpression->identificationVariable;
-		$assocField    = $this->collectionPathExpression->field;
+		$dqlAlias = $this->collectionPathExpression->identificationVariable;
+		$assocField = $this->collectionPathExpression->field;
 
 		$class = $sqlWalker->getMetadataForDqlAlias($dqlAlias);
 		$assoc = $class->associationMappings[$assocField];
-		$sql   = 'SELECT COUNT(*) FROM ';
+		$sql = 'SELECT COUNT(*) FROM ';
 
 		if ($assoc->isOneToMany()) {
-			$targetClass      = $entityManager->getClassMetadata($assoc->targetEntity);
+			$targetClass = $entityManager->getClassMetadata($assoc->targetEntity);
 			$targetTableAlias = $sqlWalker->getSQLTableAlias($targetClass->getTableName());
 			$sourceTableAlias = $sqlWalker->getSQLTableAlias($class->getTableName(), $dqlAlias);
 
@@ -57,21 +57,21 @@ class SizeFunction extends FunctionNode
 				}
 
 				$sql .= $targetTableAlias . '.' . $sourceColumn
-					  . ' = '
-					  . $sourceTableAlias . '.' . $quoteStrategy->getColumnName($class->fieldNames[$targetColumn], $class, $platform);
+					. ' = '
+					. $sourceTableAlias . '.' . $quoteStrategy->getColumnName($class->fieldNames[$targetColumn], $class, $platform);
 			}
 		} else { // many-to-many
 			assert($assoc->isManyToMany());
 			$owningAssoc = $entityManager->getMetadataFactory()->getOwningSide($assoc);
-			$joinTable   = $owningAssoc->joinTable;
+			$joinTable = $owningAssoc->joinTable;
 
 			// SQL table aliases
-			$joinTableAlias   = $sqlWalker->getSQLTableAlias($joinTable->name);
+			$joinTableAlias = $sqlWalker->getSQLTableAlias($joinTable->name);
 			$sourceTableAlias = $sqlWalker->getSQLTableAlias($class->getTableName(), $dqlAlias);
 
 			// join to target table
 			$targetClass = $entityManager->getClassMetadata($assoc->targetEntity);
-			$sql        .= $quoteStrategy->getJoinTableName($owningAssoc, $targetClass, $platform) . ' ' . $joinTableAlias . ' WHERE ';
+			$sql .= $quoteStrategy->getJoinTableName($owningAssoc, $targetClass, $platform) . ' ' . $joinTableAlias . ' WHERE ';
 
 			$joinColumns = $assoc->isOwningSide()
 				? $joinTable->joinColumns
@@ -93,8 +93,8 @@ class SizeFunction extends FunctionNode
 				);
 
 				$sql .= $joinTableAlias . '.' . $joinColumn->name
-					  . ' = '
-					  . $sourceTableAlias . '.' . $sourceColumnName;
+					. ' = '
+					. $sourceTableAlias . '.' . $sourceColumnName;
 			}
 		}
 

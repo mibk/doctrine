@@ -13,7 +13,8 @@ class BetweenExpression extends Node
 		public ArithmeticExpression $leftBetweenExpression,
 		public ArithmeticExpression $rightBetweenExpression,
 		public bool $not = false,
-	) {
+	)
+	{
 	}
 
 	public function dispatch(SqlWalker $walker): string

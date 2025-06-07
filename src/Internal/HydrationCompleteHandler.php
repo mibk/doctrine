@@ -22,7 +22,8 @@ final class HydrationCompleteHandler
 	public function __construct(
 		private readonly ListenersInvoker $listenersInvoker,
 		private readonly EntityManagerInterface $em,
-	) {
+	)
+	{
 	}
 
 	/**
@@ -46,7 +47,7 @@ final class HydrationCompleteHandler
 	 */
 	public function hydrationComplete(): void
 	{
-		$toInvoke                          = $this->deferredPostLoadInvocations;
+		$toInvoke = $this->deferredPostLoadInvocations;
 		$this->deferredPostLoadInvocations = [];
 
 		foreach ($toInvoke as $classAndEntity) {

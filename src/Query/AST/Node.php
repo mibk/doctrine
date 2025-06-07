@@ -19,7 +19,7 @@ use const PHP_EOL;
 /**
  * Abstract class of an AST node.
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 abstract class Node implements Stringable
 {
@@ -50,30 +50,30 @@ abstract class Node implements Stringable
 		$str = '';
 
 		if ($value instanceof Node) {
-			$str  .= get_debug_type($value) . '(' . PHP_EOL;
+			$str .= get_debug_type($value) . '(' . PHP_EOL;
 			$props = get_object_vars($value);
 
 			foreach ($props as $name => $prop) {
 				$ident += 4;
-				$str   .= str_repeat(' ', $ident) . '"' . $name . '": '
-					  . $this->dump($prop) . ',' . PHP_EOL;
+				$str .= str_repeat(' ', $ident) . '"' . $name . '": '
+					. $this->dump($prop) . ',' . PHP_EOL;
 				$ident -= 4;
 			}
 
 			$str .= str_repeat(' ', $ident) . ')';
 		} elseif (is_array($value)) {
 			$ident += 4;
-			$str   .= 'array(';
-			$some   = false;
+			$str .= 'array(';
+			$some = false;
 
 			foreach ($value as $k => $v) {
 				$str .= PHP_EOL . str_repeat(' ', $ident) . '"'
-					  . $k . '" => ' . $this->dump($v) . ',';
+					. $k . '" => ' . $this->dump($v) . ',';
 				$some = true;
 			}
 
 			$ident -= 4;
-			$str   .= ($some ? PHP_EOL . str_repeat(' ', $ident) : '') . ')';
+			$str .= ($some ? PHP_EOL . str_repeat(' ', $ident) : '') . ')';
 		} elseif (is_object($value)) {
 			$str .= 'instanceof(' . get_debug_type($value) . ')';
 		} else {

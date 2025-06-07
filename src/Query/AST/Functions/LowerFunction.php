@@ -14,7 +14,7 @@ use function sprintf;
 /**
  * "LOWER" "(" StringPrimary ")"
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class LowerFunction extends FunctionNode
 {

@@ -8,8 +8,8 @@ use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\ForeignKeyConstraint;
 use Doctrine\DBAL\Schema\Index;
-use Doctrine\DBAL\Schema\Index\IndexedColumn;
 use Doctrine\DBAL\Schema\Index\IndexType;
+use Doctrine\DBAL\Schema\Index\IndexedColumn;
 use Doctrine\DBAL\Schema\Name\UnqualifiedName;
 use Doctrine\DBAL\Schema\PrimaryKeyConstraint;
 use Doctrine\DBAL\Schema\SchemaException;
@@ -46,7 +46,7 @@ use function strtolower;
  *
  * @deprecated No replacement planned
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class DatabaseDriver implements MappingDriver
 {
@@ -64,7 +64,7 @@ class DatabaseDriver implements MappingDriver
 	 */
 	private const OBJECT = 'object';
 
-	/** @var array<string,Table>|null */
+	/** @var array<string, Table>|null */
 	private array|null $tables = null;
 
 	/** @var array<class-string, string> */
@@ -133,8 +133,8 @@ class DatabaseDriver implements MappingDriver
 	/**
 	 * Sets tables manually instead of relying on the reverse engineering capabilities of SchemaManager.
 	 *
-	 * @param Table[] $entityTables
-	 * @param Table[] $manyToManyTables
+	 * @param         Table[] $entityTables
+	 * @param         Table[] $manyToManyTables
 	 * @phpstan-param list<Table> $entityTables
 	 * @phpstan-param list<Table> $manyToManyTables
 	 */
@@ -146,7 +146,7 @@ class DatabaseDriver implements MappingDriver
 			$className = $this->getClassNameForTable($table->getName());
 
 			$this->classToTableNames[$className] = $table->getName();
-			$this->tables[$table->getName()]     = $table;
+			$this->tables[$table->getName()] = $table;
 		}
 
 		foreach ($manyToManyTables as $table) {
@@ -180,13 +180,13 @@ class DatabaseDriver implements MappingDriver
 
 		$this->reverseEngineerMappingFromDatabase();
 
-		if (! isset($this->classToTableNames[$className])) {
+		if (!isset($this->classToTableNames[$className])) {
 			throw new InvalidArgumentException('Unknown class ' . $className);
 		}
 
 		$tableName = $this->classToTableNames[$className];
 
-		$metadata->name          = $className;
+		$metadata->name = $className;
 		$metadata->table['name'] = $tableName;
 
 		$this->buildIndexes($metadata);
@@ -196,11 +196,11 @@ class DatabaseDriver implements MappingDriver
 		foreach ($this->manyToManyTables as $manyTable) {
 			foreach ($manyTable->getForeignKeys() as $foreignKey) {
 				// foreign key maps to the table of the current entity, many to many association probably exists
-				if (! (strtolower($tableName) === strtolower(self::getReferencedTableName($foreignKey)))) {
+				if (!(strtolower($tableName) === strtolower(self::getReferencedTableName($foreignKey)))) {
 					continue;
 				}
 
-				$myFk    = $foreignKey;
+				$myFk = $foreignKey;
 				$otherFk = null;
 
 				foreach ($manyTable->getForeignKeys() as $foreignKey) {
@@ -210,7 +210,7 @@ class DatabaseDriver implements MappingDriver
 					}
 				}
 
-				if (! $otherFk) {
+				if (!$otherFk) {
 					// the definition of this many to many table does not contain
 					// enough foreign key information to continue reverse engineering.
 					continue;
@@ -218,34 +218,34 @@ class DatabaseDriver implements MappingDriver
 
 				$localColumn = current(self::getReferencingColumnNames($myFk));
 
-				$associationMapping                 = [];
-				$associationMapping['fieldName']    = $this->getFieldNameForColumn($manyTable->getName(), current(self::getReferencingColumnNames($otherFk)), true);
+				$associationMapping = [];
+				$associationMapping['fieldName'] = $this->getFieldNameForColumn($manyTable->getName(), current(self::getReferencingColumnNames($otherFk)), true);
 				$associationMapping['targetEntity'] = $this->getClassNameForTable(self::getReferencedTableName($otherFk));
 
 				if (current($manyTable->getColumns())->getName() === $localColumn) {
 					$associationMapping['inversedBy'] = $this->getFieldNameForColumn($manyTable->getName(), current(self::getReferencingColumnNames($myFk)), true);
-					$associationMapping['joinTable']  = [
-						'name' => strtolower($manyTable->getName()),
-						'joinColumns' => [],
+					$associationMapping['joinTable'] = [
+						'name'               => strtolower($manyTable->getName()),
+						'joinColumns'        => [],
 						'inverseJoinColumns' => [],
 					];
 
 					$fkCols = self::getReferencedColumnNames($myFk);
-					$cols   = self::getReferencingColumnNames($myFk);
+					$cols = self::getReferencingColumnNames($myFk);
 
 					for ($i = 0, $colsCount = count($cols); $i < $colsCount; $i++) {
 						$associationMapping['joinTable']['joinColumns'][] = [
-							'name' => $cols[$i],
+							'name'                 => $cols[$i],
 							'referencedColumnName' => $fkCols[$i],
 						];
 					}
 
 					$fkCols = self::getReferencedColumnNames($otherFk);
-					$cols   = self::getReferencingColumnNames($otherFk);
+					$cols = self::getReferencingColumnNames($otherFk);
 
 					for ($i = 0, $colsCount = count($cols); $i < $colsCount; $i++) {
 						$associationMapping['joinTable']['inverseJoinColumns'][] = [
-							'name' => $cols[$i],
+							'name'                 => $cols[$i],
 							'referencedColumnName' => $fkCols[$i],
 						];
 					}
@@ -270,7 +270,7 @@ class DatabaseDriver implements MappingDriver
 		$this->tables = $this->manyToManyTables = $this->classToTableNames = [];
 
 		foreach ($this->sm->listTables() as $table) {
-			$tableName   = $table->getName();
+			$tableName = $table->getName();
 			$foreignKeys = $table->getForeignKeys();
 
 			$allForeignKeyColumns = [];
@@ -288,12 +288,12 @@ class DatabaseDriver implements MappingDriver
 			if ($primaryKey === null) {
 				throw new MappingException(
 					'Table ' . $tableName . ' has no primary key. Doctrine does not ' .
-					"support reverse engineering from tables that don't have a primary key.",
+						"support reverse engineering from tables that don't have a primary key.",
 				);
 			}
 
 			if ($primaryKey instanceof PrimaryKeyConstraint) {
-				$pkColumns = array_map(static fn (UnqualifiedName $name) => $name->toString(), $primaryKey->getColumnNames());
+				$pkColumns = array_map(static fn(UnqualifiedName $name) => $name->toString(), $primaryKey->getColumnNames());
 			} else {
 				$pkColumns = self::getIndexedColumns($primaryKey);
 			}
@@ -308,7 +308,7 @@ class DatabaseDriver implements MappingDriver
 				// assumption is lower-case + underscore separated.
 				$className = $this->getClassNameForTable($tableName);
 
-				$this->tables[$tableName]            = $table;
+				$this->tables[$tableName] = $table;
 				$this->classToTableNames[$className] = $tableName;
 			}
 		}
@@ -319,10 +319,10 @@ class DatabaseDriver implements MappingDriver
 	 */
 	private function buildIndexes(ClassMetadata $metadata): void
 	{
-		$tableName  = $metadata->table['name'];
-		$table      = $this->tables[$tableName];
+		$tableName = $metadata->table['name'];
+		$table = $this->tables[$tableName];
 		$primaryKey = self::getPrimaryKey($table);
-		$indexes    = $table->getIndexes();
+		$indexes = $table->getIndexes();
 
 		foreach ($indexes as $index) {
 			if ($index === $primaryKey) {
@@ -335,8 +335,8 @@ class DatabaseDriver implements MappingDriver
 				$isUnique = $index->isUnique();
 			}
 
-			$indexName      = $index->getName();
-			$indexColumns   = self::getIndexedColumns($index);
+			$indexName = $index->getName();
+			$indexColumns = self::getIndexedColumns($index);
 			$constraintType = $isUnique
 				? 'uniqueConstraints'
 				: 'indexes';
@@ -350,17 +350,17 @@ class DatabaseDriver implements MappingDriver
 	 */
 	private function buildFieldMappings(ClassMetadata $metadata): void
 	{
-		$tableName      = $metadata->table['name'];
-		$columns        = $this->tables[$tableName]->getColumns();
-		$primaryKeys    = $this->getTablePrimaryKeys($this->tables[$tableName]);
-		$foreignKeys    = $this->tables[$tableName]->getForeignKeys();
+		$tableName = $metadata->table['name'];
+		$columns = $this->tables[$tableName]->getColumns();
+		$primaryKeys = $this->getTablePrimaryKeys($this->tables[$tableName]);
+		$foreignKeys = $this->tables[$tableName]->getForeignKeys();
 		$allForeignKeys = [];
 
 		foreach ($foreignKeys as $foreignKey) {
 			$allForeignKeys = array_merge($allForeignKeys, self::getReferencingColumnNames($foreignKey));
 		}
 
-		$ids           = [];
+		$ids = [];
 		$fieldMappings = [];
 
 		foreach ($columns as $column) {
@@ -372,7 +372,7 @@ class DatabaseDriver implements MappingDriver
 
 			if ($primaryKeys && in_array($column->getName(), $primaryKeys, true)) {
 				$fieldMapping['id'] = true;
-				$ids[]              = $fieldMapping;
+				$ids[] = $fieldMapping;
 			}
 
 			$fieldMappings[] = $fieldMapping;
@@ -391,7 +391,7 @@ class DatabaseDriver implements MappingDriver
 	/**
 	 * Build field mapping from a schema column definition
 	 *
-	 * @return mixed[]
+	 * @return         mixed[]
 	 * @phpstan-return array{
 	 *     fieldName: string,
 	 *     columnName: string,
@@ -414,7 +414,7 @@ class DatabaseDriver implements MappingDriver
 			'fieldName'  => $this->getFieldNameForColumn($tableName, $column->getName(), false),
 			'columnName' => $column->getName(),
 			'type'       => Type::getTypeRegistry()->lookupName($column->getType()),
-			'nullable'   => ! $column->getNotnull(),
+			'nullable'   => !$column->getNotnull(),
 			'options'    => [
 				'comment' => $column->getComment(),
 			],
@@ -422,28 +422,28 @@ class DatabaseDriver implements MappingDriver
 
 		// Type specific elements
 		switch ($fieldMapping['type']) {
-			case self::ARRAY:
-			case Types::BLOB:
-			case Types::GUID:
-			case self::OBJECT:
-			case Types::SIMPLE_ARRAY:
-			case Types::STRING:
-			case Types::TEXT:
-				$fieldMapping['length']           = $column->getLength();
-				$fieldMapping['options']['fixed'] = $column->getFixed();
-				break;
+		case self::ARRAY:
+		case Types::BLOB:
+		case Types::GUID:
+		case self::OBJECT:
+		case Types::SIMPLE_ARRAY:
+		case Types::STRING:
+		case Types::TEXT:
+			$fieldMapping['length'] = $column->getLength();
+			$fieldMapping['options']['fixed'] = $column->getFixed();
+			break;
 
-			case Types::DECIMAL:
-			case Types::FLOAT:
-				$fieldMapping['precision'] = $column->getPrecision();
-				$fieldMapping['scale']     = $column->getScale();
-				break;
+		case Types::DECIMAL:
+		case Types::FLOAT:
+			$fieldMapping['precision'] = $column->getPrecision();
+			$fieldMapping['scale'] = $column->getScale();
+			break;
 
-			case Types::INTEGER:
-			case Types::BIGINT:
-			case Types::SMALLINT:
-				$fieldMapping['options']['unsigned'] = $column->getUnsigned();
-				break;
+		case Types::INTEGER:
+		case Types::BIGINT:
+		case Types::SMALLINT:
+			$fieldMapping['options']['unsigned'] = $column->getUnsigned();
+			break;
 		}
 
 		// Default
@@ -462,15 +462,15 @@ class DatabaseDriver implements MappingDriver
 	{
 		assert($this->tables !== null);
 
-		$tableName   = $metadata->table['name'];
+		$tableName = $metadata->table['name'];
 		$primaryKeys = $this->getTablePrimaryKeys($this->tables[$tableName]);
 		$foreignKeys = $this->tables[$tableName]->getForeignKeys();
 
 		foreach ($foreignKeys as $foreignKey) {
-			$foreignTableName   = self::getReferencedTableName($foreignKey);
-			$fkColumns          = self::getReferencingColumnNames($foreignKey);
-			$fkForeignColumns   = self::getReferencedColumnNames($foreignKey);
-			$localColumn        = current($fkColumns);
+			$foreignTableName = self::getReferencedTableName($foreignKey);
+			$fkColumns = self::getReferencingColumnNames($foreignKey);
+			$fkForeignColumns = self::getReferencedColumnNames($foreignKey);
+			$localColumn = current($fkColumns);
 			$associationMapping = [
 				'fieldName'    => $this->getFieldNameForColumn($tableName, $localColumn, true),
 				'targetEntity' => $this->getClassNameForTable($foreignTableName),
@@ -492,7 +492,7 @@ class DatabaseDriver implements MappingDriver
 			}
 
 			// Here we need to check if $fkColumns are the same as $primaryKeys
-			if (! array_diff($fkColumns, $primaryKeys)) {
+			if (!array_diff($fkColumns, $primaryKeys)) {
 				$metadata->mapOneToOne($associationMapping);
 			} else {
 				$metadata->mapManyToOne($associationMapping);
@@ -509,7 +509,7 @@ class DatabaseDriver implements MappingDriver
 	{
 		try {
 			if (method_exists($table, 'getPrimaryKeyConstraint')) {
-				return array_map(static fn (UnqualifiedName $name) => $name->toString(), $table->getPrimaryKeyConstraint()->getColumnNames());
+				return array_map(static fn(UnqualifiedName $name) => $name->toString(), $table->getPrimaryKeyConstraint()->getColumnNames());
 			}
 
 			return self::getIndexedColumns($table->getPrimaryKey());
@@ -543,7 +543,8 @@ class DatabaseDriver implements MappingDriver
 		string $tableName,
 		string $columnName,
 		bool $fk = false,
-	): string {
+	): string
+	{
 		if (isset($this->fieldNamesForColumns[$tableName], $this->fieldNamesForColumns[$tableName][$columnName])) {
 			return $this->fieldNamesForColumns[$tableName][$columnName];
 		}
@@ -571,7 +572,7 @@ class DatabaseDriver implements MappingDriver
 	private static function getReferencingColumnNames(ForeignKeyConstraint $foreignKey): array
 	{
 		if (method_exists(ForeignKeyConstraint::class, 'getReferencingColumnNames')) {
-			return array_map(static fn (UnqualifiedName $name) => $name->toString(), $foreignKey->getReferencingColumnNames());
+			return array_map(static fn(UnqualifiedName $name) => $name->toString(), $foreignKey->getReferencingColumnNames());
 		}
 
 		return $foreignKey->getLocalColumns();
@@ -581,7 +582,7 @@ class DatabaseDriver implements MappingDriver
 	private static function getReferencedColumnNames(ForeignKeyConstraint $foreignKey): array
 	{
 		if (method_exists(ForeignKeyConstraint::class, 'getReferencedColumnNames')) {
-			return array_map(static fn (UnqualifiedName $name) => $name->toString(), $foreignKey->getReferencedColumnNames());
+			return array_map(static fn(UnqualifiedName $name) => $name->toString(), $foreignKey->getReferencedColumnNames());
 		}
 
 		return $foreignKey->getForeignColumns();
@@ -591,7 +592,7 @@ class DatabaseDriver implements MappingDriver
 	private static function getIndexedColumns(Index $index): array
 	{
 		if (method_exists(Index::class, 'getIndexedColumns')) {
-			return array_map(static fn (IndexedColumn $indexedColumn) => $indexedColumn->getColumnName()->toString(), $index->getIndexedColumns());
+			return array_map(static fn(IndexedColumn $indexedColumn) => $indexedColumn->getColumnName()->toString(), $index->getIndexedColumns());
 		}
 
 		return $index->getColumns();
@@ -607,7 +608,7 @@ class DatabaseDriver implements MappingDriver
 
 		foreach ($table->getIndexes() as $index) {
 			if ($primaryKeyConstraint !== null) {
-				$primaryKeyConstraintColumns = array_map(static fn (UnqualifiedName $name) => $name->toString(), $primaryKeyConstraint->getColumnNames());
+				$primaryKeyConstraintColumns = array_map(static fn(UnqualifiedName $name) => $name->toString(), $primaryKeyConstraint->getColumnNames());
 
 				if ($primaryKeyConstraintColumns === self::getIndexedColumns($index)) {
 					return $index;

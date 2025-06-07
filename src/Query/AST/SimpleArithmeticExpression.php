@@ -9,7 +9,7 @@ use Doctrine\ORM\Query\SqlWalker;
 /**
  * SimpleArithmeticExpression ::= ArithmeticTerm {("+" | "-") ArithmeticTerm}*
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class SimpleArithmeticExpression extends Node
 {

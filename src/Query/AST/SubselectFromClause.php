@@ -9,7 +9,7 @@ use Doctrine\ORM\Query\SqlWalker;
 /**
  * SubselectFromClause ::= "FROM" SubselectIdentificationVariableDeclaration {"," SubselectIdentificationVariableDeclaration}*
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class SubselectFromClause extends Node
 {

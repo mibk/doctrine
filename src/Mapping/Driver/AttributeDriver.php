@@ -28,7 +28,7 @@ class AttributeDriver implements MappingDriver
 	use ReflectionBasedDriver;
 
 	private const ENTITY_ATTRIBUTE_CLASSES = [
-		Mapping\Entity::class => 1,
+		Mapping\Entity::class           => 1,
 		Mapping\MappedSuperclass::class => 2,
 	];
 
@@ -40,7 +40,7 @@ class AttributeDriver implements MappingDriver
 	 */
 	public function __construct(array $paths, bool $reportFieldsWhereDeclared = true)
 	{
-		if (! $reportFieldsWhereDeclared) {
+		if (!$reportFieldsWhereDeclared) {
 			throw new InvalidArgumentException(sprintf(
 				'The $reportFieldsWhereDeclared argument is no longer supported, make sure to omit it when calling %s.',
 				__METHOD__,
@@ -106,8 +106,8 @@ class AttributeDriver implements MappingDriver
 		$primaryTable = [];
 
 		if (isset($classAttributes[Mapping\Table::class])) {
-			$tableAnnot             = $classAttributes[Mapping\Table::class];
-			$primaryTable['name']   = $tableAnnot->name;
+			$tableAnnot = $classAttributes[Mapping\Table::class];
+			$primaryTable['name'] = $tableAnnot->name;
 			$primaryTable['schema'] = $tableAnnot->schema;
 
 			if ($tableAnnot->options) {
@@ -123,20 +123,20 @@ class AttributeDriver implements MappingDriver
 			foreach ($classAttributes[Mapping\Index::class] as $idx => $indexAnnot) {
 				$index = [];
 
-				if (! empty($indexAnnot->columns)) {
+				if (!empty($indexAnnot->columns)) {
 					$index['columns'] = $indexAnnot->columns;
 				}
 
-				if (! empty($indexAnnot->fields)) {
+				if (!empty($indexAnnot->fields)) {
 					$index['fields'] = $indexAnnot->fields;
 				}
 
 				if (
 					isset($index['columns'], $index['fields'])
-					|| (
-						! isset($index['columns'])
-						&& ! isset($index['fields'])
-					)
+						|| (
+							!isset($index['columns'])
+								&& !isset($index['fields'])
+						)
 				) {
 					throw MappingException::invalidIndexConfiguration(
 						$className,
@@ -144,15 +144,15 @@ class AttributeDriver implements MappingDriver
 					);
 				}
 
-				if (! empty($indexAnnot->flags)) {
+				if (!empty($indexAnnot->flags)) {
 					$index['flags'] = $indexAnnot->flags;
 				}
 
-				if (! empty($indexAnnot->options)) {
+				if (!empty($indexAnnot->options)) {
 					$index['options'] = $indexAnnot->options;
 				}
 
-				if (! empty($indexAnnot->name)) {
+				if (!empty($indexAnnot->name)) {
 					$primaryTable['indexes'][$indexAnnot->name] = $index;
 				} else {
 					$primaryTable['indexes'][] = $index;
@@ -168,20 +168,20 @@ class AttributeDriver implements MappingDriver
 			foreach ($classAttributes[Mapping\UniqueConstraint::class] as $idx => $uniqueConstraintAnnot) {
 				$uniqueConstraint = [];
 
-				if (! empty($uniqueConstraintAnnot->columns)) {
+				if (!empty($uniqueConstraintAnnot->columns)) {
 					$uniqueConstraint['columns'] = $uniqueConstraintAnnot->columns;
 				}
 
-				if (! empty($uniqueConstraintAnnot->fields)) {
+				if (!empty($uniqueConstraintAnnot->fields)) {
 					$uniqueConstraint['fields'] = $uniqueConstraintAnnot->fields;
 				}
 
 				if (
 					isset($uniqueConstraint['columns'], $uniqueConstraint['fields'])
-					|| (
-						! isset($uniqueConstraint['columns'])
-						&& ! isset($uniqueConstraint['fields'])
-					)
+						|| (
+							!isset($uniqueConstraint['columns'])
+								&& !isset($uniqueConstraint['fields'])
+						)
 				) {
 					throw MappingException::invalidUniqueConstraintConfiguration(
 						$className,
@@ -189,11 +189,11 @@ class AttributeDriver implements MappingDriver
 					);
 				}
 
-				if (! empty($uniqueConstraintAnnot->options)) {
+				if (!empty($uniqueConstraintAnnot->options)) {
 					$uniqueConstraint['options'] = $uniqueConstraintAnnot->options;
 				}
 
-				if (! empty($uniqueConstraintAnnot->name)) {
+				if (!empty($uniqueConstraintAnnot->name)) {
 					$primaryTable['uniqueConstraints'][$uniqueConstraintAnnot->name] = $uniqueConstraint;
 				} else {
 					$primaryTable['uniqueConstraints'][] = $uniqueConstraint;
@@ -210,7 +210,7 @@ class AttributeDriver implements MappingDriver
 			}
 
 			$cacheAttribute = $classAttributes[Mapping\Cache::class];
-			$cacheMap       = [
+			$cacheMap = [
 				'region' => $cacheAttribute->region,
 				'usage'  => constant('Doctrine\ORM\Mapping\ClassMetadata::CACHE_USAGE_' . $cacheAttribute->usage),
 			];
@@ -276,7 +276,7 @@ class AttributeDriver implements MappingDriver
 				continue;
 			}
 
-			$mapping              = [];
+			$mapping = [];
 			$mapping['fieldName'] = $property->name;
 
 			// Evaluate #[Cache] attribute
@@ -302,12 +302,12 @@ class AttributeDriver implements MappingDriver
 
 			// Field can only be attributed with one of:
 			// Column, OneToOne, OneToMany, ManyToOne, ManyToMany, Embedded
-			$columnAttribute     = $this->reader->getPropertyAttribute($property, Mapping\Column::class);
-			$oneToOneAttribute   = $this->reader->getPropertyAttribute($property, Mapping\OneToOne::class);
-			$oneToManyAttribute  = $this->reader->getPropertyAttribute($property, Mapping\OneToMany::class);
-			$manyToOneAttribute  = $this->reader->getPropertyAttribute($property, Mapping\ManyToOne::class);
+			$columnAttribute = $this->reader->getPropertyAttribute($property, Mapping\Column::class);
+			$oneToOneAttribute = $this->reader->getPropertyAttribute($property, Mapping\OneToOne::class);
+			$oneToManyAttribute = $this->reader->getPropertyAttribute($property, Mapping\OneToMany::class);
+			$manyToOneAttribute = $this->reader->getPropertyAttribute($property, Mapping\ManyToOne::class);
 			$manyToManyAttribute = $this->reader->getPropertyAttribute($property, Mapping\ManyToMany::class);
-			$embeddedAttribute   = $this->reader->getPropertyAttribute($property, Mapping\Embedded::class);
+			$embeddedAttribute = $this->reader->getPropertyAttribute($property, Mapping\Embedded::class);
 
 			if ($columnAttribute !== null) {
 				$mapping = $this->columnToArray($property->name, $columnAttribute);
@@ -329,15 +329,15 @@ class AttributeDriver implements MappingDriver
 				$metadata->mapField($mapping);
 
 				// Check for SequenceGenerator/TableGenerator definition
-				$seqGeneratorAttribute    = $this->reader->getPropertyAttribute($property, Mapping\SequenceGenerator::class);
+				$seqGeneratorAttribute = $this->reader->getPropertyAttribute($property, Mapping\SequenceGenerator::class);
 				$customGeneratorAttribute = $this->reader->getPropertyAttribute($property, Mapping\CustomIdGenerator::class);
 
 				if ($seqGeneratorAttribute !== null) {
 					$metadata->setSequenceGeneratorDefinition(
 						[
-							'sequenceName' => $seqGeneratorAttribute->sequenceName,
+							'sequenceName'   => $seqGeneratorAttribute->sequenceName,
 							'allocationSize' => $seqGeneratorAttribute->allocationSize,
-							'initialValue' => $seqGeneratorAttribute->initialValue,
+							'initialValue'   => $seqGeneratorAttribute->initialValue,
 						],
 					);
 				} elseif ($customGeneratorAttribute !== null) {
@@ -356,25 +356,25 @@ class AttributeDriver implements MappingDriver
 					$mapping['id'] = true;
 				}
 
-				$mapping['targetEntity']  = $oneToOneAttribute->targetEntity;
-				$mapping['joinColumns']   = $joinColumns;
-				$mapping['mappedBy']      = $oneToOneAttribute->mappedBy;
-				$mapping['inversedBy']    = $oneToOneAttribute->inversedBy;
-				$mapping['cascade']       = $oneToOneAttribute->cascade;
+				$mapping['targetEntity'] = $oneToOneAttribute->targetEntity;
+				$mapping['joinColumns'] = $joinColumns;
+				$mapping['mappedBy'] = $oneToOneAttribute->mappedBy;
+				$mapping['inversedBy'] = $oneToOneAttribute->inversedBy;
+				$mapping['cascade'] = $oneToOneAttribute->cascade;
 				$mapping['orphanRemoval'] = $oneToOneAttribute->orphanRemoval;
-				$mapping['fetch']         = $this->getFetchMode($className, $oneToOneAttribute->fetch);
+				$mapping['fetch'] = $this->getFetchMode($className, $oneToOneAttribute->fetch);
 				$metadata->mapOneToOne($mapping);
 			} elseif ($oneToManyAttribute !== null) {
 				if ($metadata->isEmbeddedClass) {
 					throw MappingException::invalidAttributeOnEmbeddable($metadata->name, Mapping\OneToMany::class);
 				}
 
-				$mapping['mappedBy']      = $oneToManyAttribute->mappedBy;
-				$mapping['targetEntity']  = $oneToManyAttribute->targetEntity;
-				$mapping['cascade']       = $oneToManyAttribute->cascade;
-				$mapping['indexBy']       = $oneToManyAttribute->indexBy;
+				$mapping['mappedBy'] = $oneToManyAttribute->mappedBy;
+				$mapping['targetEntity'] = $oneToManyAttribute->targetEntity;
+				$mapping['cascade'] = $oneToManyAttribute->cascade;
+				$mapping['indexBy'] = $oneToManyAttribute->indexBy;
 				$mapping['orphanRemoval'] = $oneToManyAttribute->orphanRemoval;
-				$mapping['fetch']         = $this->getFetchMode($className, $oneToManyAttribute->fetch);
+				$mapping['fetch'] = $this->getFetchMode($className, $oneToManyAttribute->fetch);
 
 				$orderByAttribute = $this->reader->getPropertyAttribute($property, Mapping\OrderBy::class);
 
@@ -394,23 +394,23 @@ class AttributeDriver implements MappingDriver
 					$mapping['id'] = true;
 				}
 
-				$mapping['joinColumns']  = $joinColumns;
-				$mapping['cascade']      = $manyToOneAttribute->cascade;
-				$mapping['inversedBy']   = $manyToOneAttribute->inversedBy;
+				$mapping['joinColumns'] = $joinColumns;
+				$mapping['cascade'] = $manyToOneAttribute->cascade;
+				$mapping['inversedBy'] = $manyToOneAttribute->inversedBy;
 				$mapping['targetEntity'] = $manyToOneAttribute->targetEntity;
-				$mapping['fetch']        = $this->getFetchMode($className, $manyToOneAttribute->fetch);
+				$mapping['fetch'] = $this->getFetchMode($className, $manyToOneAttribute->fetch);
 				$metadata->mapManyToOne($mapping);
 			} elseif ($manyToManyAttribute !== null) {
 				if ($metadata->isEmbeddedClass) {
 					throw MappingException::invalidAttributeOnEmbeddable($metadata->name, Mapping\ManyToMany::class);
 				}
 
-				$joinTable          = [];
+				$joinTable = [];
 				$joinTableAttribute = $this->reader->getPropertyAttribute($property, Mapping\JoinTable::class);
 
 				if ($joinTableAttribute !== null) {
 					$joinTable = [
-						'name' => $joinTableAttribute->name,
+						'name'   => $joinTableAttribute->name,
 						'schema' => $joinTableAttribute->schema,
 					];
 
@@ -435,14 +435,14 @@ class AttributeDriver implements MappingDriver
 					$joinTable['inverseJoinColumns'][] = $this->joinColumnToArray($joinColumn);
 				}
 
-				$mapping['joinTable']     = $joinTable;
-				$mapping['targetEntity']  = $manyToManyAttribute->targetEntity;
-				$mapping['mappedBy']      = $manyToManyAttribute->mappedBy;
-				$mapping['inversedBy']    = $manyToManyAttribute->inversedBy;
-				$mapping['cascade']       = $manyToManyAttribute->cascade;
-				$mapping['indexBy']       = $manyToManyAttribute->indexBy;
+				$mapping['joinTable'] = $joinTable;
+				$mapping['targetEntity'] = $manyToManyAttribute->targetEntity;
+				$mapping['mappedBy'] = $manyToManyAttribute->mappedBy;
+				$mapping['inversedBy'] = $manyToManyAttribute->inversedBy;
+				$mapping['cascade'] = $manyToManyAttribute->cascade;
+				$mapping['indexBy'] = $manyToManyAttribute->indexBy;
 				$mapping['orphanRemoval'] = $manyToManyAttribute->orphanRemoval;
-				$mapping['fetch']         = $this->getFetchMode($className, $manyToManyAttribute->fetch);
+				$mapping['fetch'] = $this->getFetchMode($className, $manyToManyAttribute->fetch);
 
 				$orderByAttribute = $this->reader->getPropertyAttribute($property, Mapping\OrderBy::class);
 
@@ -452,7 +452,7 @@ class AttributeDriver implements MappingDriver
 
 				$metadata->mapManyToMany($mapping);
 			} elseif ($embeddedAttribute !== null) {
-				$mapping['class']        = $embeddedAttribute->class;
+				$mapping['class'] = $embeddedAttribute->class;
 				$mapping['columnPrefix'] = $embeddedAttribute->columnPrefix;
 
 				$metadata->mapEmbedded($mapping);
@@ -468,7 +468,7 @@ class AttributeDriver implements MappingDriver
 			$associationOverride = $classAttributes[Mapping\AssociationOverrides::class];
 
 			foreach ($associationOverride->overrides as $associationOverride) {
-				$override  = [];
+				$override = [];
 				$fieldName = $associationOverride->name;
 
 				// Check for JoinColumn/JoinColumns attributes
@@ -495,10 +495,10 @@ class AttributeDriver implements MappingDriver
 				// Check for JoinTable attributes
 				if ($associationOverride->joinTable) {
 					$joinTableAnnot = $associationOverride->joinTable;
-					$joinTable      = [
-						'name'      => $joinTableAnnot->name,
-						'schema'    => $joinTableAnnot->schema,
-						'joinColumns' => $override['joinColumns'] ?? [],
+					$joinTable = [
+						'name'               => $joinTableAnnot->name,
+						'schema'             => $joinTableAnnot->schema,
+						'joinColumns'        => $override['joinColumns'] ?? [],
 						'inverseJoinColumns' => $override['inverseJoinColumns'] ?? [],
 					];
 
@@ -547,17 +547,17 @@ class AttributeDriver implements MappingDriver
 			foreach ($entityListenersAttribute->value as $item) {
 				$listenerClassName = $metadata->fullyQualifiedClassName($item);
 
-				if (! class_exists($listenerClassName)) {
+				if (!class_exists($listenerClassName)) {
 					throw MappingException::entityListenerClassNotFound($listenerClassName, $className);
 				}
 
-				$hasMapping    = false;
+				$hasMapping = false;
 				$listenerClass = new ReflectionClass($listenerClassName);
 
 				foreach ($listenerClass->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
 					// find method callbacks.
-					$callbacks  = $this->getMethodCallbacks($method);
-					$hasMapping = $hasMapping ?: ! empty($callbacks);
+					$callbacks = $this->getMethodCallbacks($method);
+					$hasMapping = $hasMapping ?: !empty($callbacks);
 
 					foreach ($callbacks as $value) {
 						$metadata->addEntityListener($value[1], $listenerClassName, $value[0]);
@@ -565,7 +565,7 @@ class AttributeDriver implements MappingDriver
 				}
 
 				// Evaluate the listener using naming convention.
-				if (! $hasMapping) {
+				if (!$hasMapping) {
 					EntityListenerBuilder::bindEntityListener($metadata, $listenerClassName);
 				}
 			}
@@ -597,7 +597,7 @@ class AttributeDriver implements MappingDriver
 	 */
 	private function getFetchMode(string $className, string $fetchMode): int
 	{
-		if (! defined('Doctrine\ORM\Mapping\ClassMetadata::FETCH_' . $fetchMode)) {
+		if (!defined('Doctrine\ORM\Mapping\ClassMetadata::FETCH_' . $fetchMode)) {
 			throw MappingException::invalidFetchMode($className, $fetchMode);
 		}
 
@@ -611,7 +611,7 @@ class AttributeDriver implements MappingDriver
 	 */
 	private function getGeneratedMode(string $generatedMode): int
 	{
-		if (! defined('Doctrine\ORM\Mapping\ClassMetadata::GENERATED_' . $generatedMode)) {
+		if (!defined('Doctrine\ORM\Mapping\ClassMetadata::GENERATED_' . $generatedMode)) {
 			throw MappingException::invalidGeneratedMode($generatedMode);
 		}
 
@@ -621,12 +621,12 @@ class AttributeDriver implements MappingDriver
 	/**
 	 * Parses the given method.
 	 *
-	 * @return list<array{string, string}>
+	 * @return         list<array{string, string}>
 	 * @phpstan-return list<array{string, (Events::*)}>
 	 */
 	private function getMethodCallbacks(ReflectionMethod $method): array
 	{
-		$callbacks  = [];
+		$callbacks = [];
 		$attributes = $this->reader->getMethodAttributes($method);
 
 		foreach ($attributes as $attribute) {
@@ -669,7 +669,7 @@ class AttributeDriver implements MappingDriver
 	/**
 	 * Parse the given JoinColumn as array
 	 *
-	 * @return mixed[]
+	 * @return         mixed[]
 	 * @phpstan-return array{
 	 *                   name: string|null,
 	 *                   unique: bool,
@@ -683,11 +683,11 @@ class AttributeDriver implements MappingDriver
 	private function joinColumnToArray(Mapping\JoinColumn|Mapping\InverseJoinColumn $joinColumn): array
 	{
 		$mapping = [
-			'name' => $joinColumn->name,
-			'unique' => $joinColumn->unique,
-			'nullable' => $joinColumn->nullable,
-			'onDelete' => $joinColumn->onDelete,
-			'columnDefinition' => $joinColumn->columnDefinition,
+			'name'                 => $joinColumn->name,
+			'unique'               => $joinColumn->unique,
+			'nullable'             => $joinColumn->nullable,
+			'onDelete'             => $joinColumn->onDelete,
+			'columnDefinition'     => $joinColumn->columnDefinition,
 			'referencedColumnName' => $joinColumn->referencedColumnName,
 		];
 
@@ -701,7 +701,7 @@ class AttributeDriver implements MappingDriver
 	/**
 	 * Parse the given Column as array
 	 *
-	 * @return mixed[]
+	 * @return         mixed[]
 	 * @phpstan-return array{
 	 *                   fieldName: string,
 	 *                   type: mixed,

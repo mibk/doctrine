@@ -27,14 +27,14 @@ final class DefaultTypedFieldMapper implements TypedFieldMapper
 	private array $typedFieldMappings;
 
 	private const DEFAULT_TYPED_FIELD_MAPPINGS = [
-		DateInterval::class => Types::DATEINTERVAL,
-		DateTime::class => Types::DATETIME_MUTABLE,
+		DateInterval::class      => Types::DATEINTERVAL,
+		DateTime::class          => Types::DATETIME_MUTABLE,
 		DateTimeImmutable::class => Types::DATETIME_IMMUTABLE,
-		'array' => Types::JSON,
-		'bool' => Types::BOOLEAN,
-		'float' => Types::FLOAT,
-		'int' => Types::INTEGER,
-		'string' => Types::STRING,
+		'array'                  => Types::JSON,
+		'bool'                   => Types::BOOLEAN,
+		'float'                  => Types::FLOAT,
+		'int'                    => Types::INTEGER,
+		'string'                 => Types::STRING,
 	];
 
 	/** @param array<class-string|ScalarName, class-string<Type>|string> $typedFieldMappings */
@@ -55,15 +55,15 @@ final class DefaultTypedFieldMapper implements TypedFieldMapper
 		}
 
 		if (
-			! $type->isBuiltin()
-			&& enum_exists($type->getName())
-			&& (! isset($mapping['type']) || (
-				defined('Doctrine\DBAL\Types\Types::ENUM')
-				&& $mapping['type'] === Types::ENUM
-			))
+			!$type->isBuiltin()
+				&& enum_exists($type->getName())
+				&& (!isset($mapping['type']) || (
+					defined('Doctrine\DBAL\Types\Types::ENUM')
+						&& $mapping['type'] === Types::ENUM
+				))
 		) {
 			$reflection = new ReflectionEnum($type->getName());
-			if (! $reflection->isBacked()) {
+			if (!$reflection->isBacked()) {
 				throw MappingException::backedEnumTypeRequired(
 					$field->class,
 					$mapping['fieldName'],
@@ -73,7 +73,7 @@ final class DefaultTypedFieldMapper implements TypedFieldMapper
 
 			assert(is_a($type->getName(), BackedEnum::class, true));
 			$mapping['enumType'] = $type->getName();
-			$type                = $reflection->getBackingType();
+			$type = $reflection->getBackingType();
 		}
 
 		if (isset($mapping['type'])) {

@@ -29,7 +29,7 @@ class ListenersInvoker
 	public function __construct(EntityManagerInterface $em)
 	{
 		$this->eventManager = $em->getEventManager();
-		$this->resolver     = $em->getConfiguration()->getEntityListenerResolver();
+		$this->resolver = $em->getConfiguration()->getEntityListenerResolver();
 	}
 
 	/**
@@ -62,10 +62,10 @@ class ListenersInvoker
 	/**
 	 * Dispatches the lifecycle event of the given entity.
 	 *
-	 * @param ClassMetadata $metadata  The entity metadata.
-	 * @param string        $eventName The entity lifecycle event.
-	 * @param object        $entity    The Entity on which the event occurred.
-	 * @param EventArgs     $event     The Event args.
+	 * @param         ClassMetadata $metadata  The entity metadata.
+	 * @param         string        $eventName The entity lifecycle event.
+	 * @param         object        $entity    The Entity on which the event occurred.
+	 * @param         EventArgs     $event     The Event args.
 	 * @phpstan-param int-mask-of<self::INVOKE_*> $invoke Bitmask to invoke listeners.
 	 */
 	public function invoke(
@@ -74,7 +74,8 @@ class ListenersInvoker
 		object $entity,
 		EventArgs $event,
 		int $invoke,
-	): void {
+	): void
+	{
 		if ($invoke & self::INVOKE_CALLBACKS) {
 			foreach ($metadata->lifecycleCallbacks[$eventName] as $callback) {
 				$entity->$callback($event);
@@ -83,8 +84,8 @@ class ListenersInvoker
 
 		if ($invoke & self::INVOKE_LISTENERS) {
 			foreach ($metadata->entityListeners[$eventName] as $listener) {
-				$class    = $listener['class'];
-				$method   = $listener['method'];
+				$class = $listener['class'];
+				$method = $listener['method'];
 				$instance = $this->resolver->resolve($class);
 
 				$instance->$method($entity, $event);

@@ -18,7 +18,8 @@ final class ReflectionEnumProperty extends ReflectionProperty
 	public function __construct(
 		private readonly ReflectionProperty $originalReflectionProperty,
 		private readonly string $enumType,
-	) {
+	)
+	{
 		parent::__construct(
 			$originalReflectionProperty->class,
 			$originalReflectionProperty->name,
@@ -39,7 +40,7 @@ final class ReflectionEnumProperty extends ReflectionProperty
 
 		if (is_array($enum)) {
 			return array_map(
-				static fn (BackedEnum $item): int|string => $item->value,
+				static fn(BackedEnum $item): int|string => $item->value,
 				$enum,
 			);
 		}
@@ -55,7 +56,7 @@ final class ReflectionEnumProperty extends ReflectionProperty
 	{
 		if ($value !== null) {
 			if (is_array($value)) {
-				$value = array_map(fn (int|string|BackedEnum $item): BackedEnum => $this->initializeEnumValue($object, $item), $value);
+				$value = array_map(fn(int | string | BackedEnum $item): BackedEnum => $this->initializeEnumValue($object, $item), $value);
 			} else {
 				$value = $this->initializeEnumValue($object, $value);
 			}

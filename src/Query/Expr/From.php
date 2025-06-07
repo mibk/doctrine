@@ -9,7 +9,7 @@ use Stringable;
 /**
  * Expression class for DQL from.
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class From implements Stringable
 {
@@ -21,7 +21,8 @@ class From implements Stringable
 		protected string $from,
 		protected string $alias,
 		protected string|null $indexBy = null,
-	) {
+	)
+	{
 	}
 
 	/** @return class-string */
@@ -43,6 +44,6 @@ class From implements Stringable
 	public function __toString(): string
 	{
 		return $this->from . ' ' . $this->alias .
-				($this->indexBy ? ' INDEX BY ' . $this->indexBy : '');
+			($this->indexBy ? ' INDEX BY ' . $this->indexBy : '');
 	}
 }

@@ -16,26 +16,26 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * Command to clear the query cache of the various cache drivers.
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class QueryCommand extends AbstractEntityManagerCommand
 {
 	protected function configure(): void
 	{
 		$this->setName('orm:clear-cache:query')
-			 ->setDescription('Clear all query cache of the various cache drivers')
-			 ->addOption('em', null, InputOption::VALUE_REQUIRED, 'Name of the entity manager to operate on')
-			 ->setHelp('The <info>%command.name%</info> command is meant to clear the query cache of associated Entity Manager.');
+			->setDescription('Clear all query cache of the various cache drivers')
+			->addOption('em', null, InputOption::VALUE_REQUIRED, 'Name of the entity manager to operate on')
+			->setHelp('The <info>%command.name%</info> command is meant to clear the query cache of associated Entity Manager.');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
 		$ui = (new SymfonyStyle($input, $output))->getErrorStyle();
 
-		$em    = $this->getEntityManager($input);
+		$em = $this->getEntityManager($input);
 		$cache = $em->getConfiguration()->getQueryCache();
 
-		if (! $cache) {
+		if (!$cache) {
 			throw new InvalidArgumentException('No Query cache driver is configured on given EntityManager.');
 		}
 

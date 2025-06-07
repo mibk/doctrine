@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Doctrine\ORM\Internal\Hydration;
 
-use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\NonUniqueResultException;
 
 use function array_shift;
 use function count;
@@ -18,7 +18,7 @@ class SingleScalarHydrator extends AbstractHydrator
 {
 	protected function hydrateAllData(): mixed
 	{
-		$data    = $this->statement()->fetchAllAssociative();
+		$data = $this->statement()->fetchAllAssociative();
 		$numRows = count($data);
 
 		if ($numRows === 0) {

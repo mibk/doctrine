@@ -32,7 +32,7 @@ final class JoinTableMapping implements ArrayAccess
 	}
 
 	/**
-	 * @param mixed[] $mappingArray
+	 * @param         mixed[] $mappingArray
 	 * @phpstan-param array{
 	 *    name: string,
 	 *    quoted?: bool|null,
@@ -86,8 +86,8 @@ final class JoinTableMapping implements ArrayAccess
 	{
 		$array = (array) $this;
 
-		$toArray                     = static fn (JoinColumnMapping $column): array => (array) $column;
-		$array['joinColumns']        = array_map($toArray, $array['joinColumns']);
+		$toArray = static fn(JoinColumnMapping $column): array => (array) $column;
+		$array['joinColumns'] = array_map($toArray, $array['joinColumns']);
 		$array['inverseJoinColumns'] = array_map($toArray, $array['inverseJoinColumns']);
 
 		return $array;

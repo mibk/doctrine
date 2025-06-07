@@ -35,7 +35,8 @@ abstract class SQLFilter implements Stringable
 
 	final public function __construct(
 		private readonly EntityManagerInterface $em,
-	) {
+	)
+	{
 	}
 
 	/**
@@ -98,7 +99,7 @@ abstract class SQLFilter implements Stringable
 	 */
 	final public function getParameter(string $name): string
 	{
-		if (! isset($this->parameters[$name])) {
+		if (!isset($this->parameters[$name])) {
 			throw new InvalidArgumentException("Parameter '" . $name . "' does not exist.");
 		}
 
@@ -120,7 +121,7 @@ abstract class SQLFilter implements Stringable
 	 */
 	final public function getParameterList(string $name): string
 	{
-		if (! isset($this->parameters[$name])) {
+		if (!isset($this->parameters[$name])) {
 			throw new InvalidArgumentException("Parameter '" . $name . "' does not exist.");
 		}
 
@@ -128,11 +129,11 @@ abstract class SQLFilter implements Stringable
 			throw FilterException::cannotConvertSingleParameterIntoListValue($name);
 		}
 
-		$param      = $this->parameters[$name];
+		$param = $this->parameters[$name];
 		$connection = $this->em->getConnection();
 
 		$quoted = array_map(
-			static fn (mixed $value): string => $connection->quote((string) $value),
+			static fn(mixed $value): string => $connection->quote((string) $value),
 			$param['value'],
 		);
 

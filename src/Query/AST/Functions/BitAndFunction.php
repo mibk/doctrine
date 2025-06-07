@@ -12,7 +12,7 @@ use Doctrine\ORM\Query\TokenType;
 /**
  * "BIT_AND" "(" ArithmeticPrimary "," ArithmeticPrimary ")"
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class BitAndFunction extends FunctionNode
 {

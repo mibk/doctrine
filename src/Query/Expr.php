@@ -18,7 +18,7 @@ use function str_replace;
 /**
  * This class is used to generate DQL expressions via a set of PHP static functions.
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  *
  * @todo Rename: ExpressionBuilder
  */
@@ -398,7 +398,7 @@ class Expr
 			}
 
 			foreach ($y as &$literal) {
-				if (! ($literal instanceof Expr\Literal)) {
+				if (!($literal instanceof Expr\Literal)) {
 					$literal = $this->quoteLiteral($literal);
 				}
 			}
@@ -421,7 +421,7 @@ class Expr
 			}
 
 			foreach ($y as &$literal) {
-				if (! ($literal instanceof Expr\Literal)) {
+				if (!($literal instanceof Expr\Literal)) {
 					$literal = $this->quoteLiteral($literal);
 				}
 			}

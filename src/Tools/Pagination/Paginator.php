@@ -27,7 +27,7 @@ use function is_string;
  * The paginator can handle various complex scenarios with DQL.
  *
  * @template-covariant T
- * @implements IteratorAggregate<array-key, T>
+ * @implements         IteratorAggregate<array-key, T>
  */
 class Paginator implements Countable, IteratorAggregate
 {
@@ -43,7 +43,8 @@ class Paginator implements Countable, IteratorAggregate
 	public function __construct(
 		Query|QueryBuilder $query,
 		private readonly bool $fetchJoinCollection = true,
-	) {
+	)
+	{
 		if ($query instanceof QueryBuilder) {
 			$query = $query->getQuery();
 		}
@@ -132,7 +133,7 @@ class Paginator implements Countable, IteratorAggregate
 			}
 
 			$whereInQuery = $this->cloneQuery($this->query);
-			$ids          = array_map('current', $foundIdRows);
+			$ids = array_map('current', $foundIdRows);
 
 			$this->appendTreeWalker($whereInQuery, WhereInWalker::class);
 			$whereInQuery->setHint(WhereInWalker::HINT_PAGINATOR_HAS_IDS, true);
@@ -204,7 +205,7 @@ class Paginator implements Countable, IteratorAggregate
 	{
 		$countQuery = $this->cloneQuery($this->query);
 
-		if (! $countQuery->hasHint(CountWalker::HINT_DISTINCT)) {
+		if (!$countQuery->hasHint(CountWalker::HINT_DISTINCT)) {
 			$countQuery->setHint(CountWalker::HINT_DISTINCT, true);
 		}
 
@@ -228,7 +229,7 @@ class Paginator implements Countable, IteratorAggregate
 
 	private function unbindUnusedQueryParams(Query $query): void
 	{
-		$parser            = new Parser($query);
+		$parser = new Parser($query);
 		$parameterMappings = $parser->parse()->getParameterMappings();
 		/** @var Collection|Parameter[] $parameters */
 		$parameters = $query->getParameters();
@@ -236,7 +237,7 @@ class Paginator implements Countable, IteratorAggregate
 		foreach ($parameters as $key => $parameter) {
 			$parameterName = $parameter->getName();
 
-			if (! (isset($parameterMappings[$parameterName]) || array_key_exists($parameterName, $parameterMappings))) {
+			if (!(isset($parameterMappings[$parameterName]) || array_key_exists($parameterName, $parameterMappings))) {
 				unset($parameters[$key]);
 			}
 		}
@@ -255,9 +256,9 @@ class Paginator implements Countable, IteratorAggregate
 		$query->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, RootTypeWalker::class);
 
 		$connection = $this->query->getEntityManager()->getConnection();
-		$type       = $query->getSQL();
+		$type = $query->getSQL();
 		assert(is_string($type));
 
-		return array_map(static fn ($id): mixed => $connection->convertToDatabaseValue($id, $type), $identifiers);
+		return array_map(static fn($id): mixed => $connection->convertToDatabaseValue($id, $type), $identifiers);
 	}
 }

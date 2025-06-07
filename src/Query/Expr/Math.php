@@ -9,7 +9,7 @@ use Stringable;
 /**
  * Expression class for DQL math statements.
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class Math implements Stringable
 {
@@ -20,7 +20,8 @@ class Math implements Stringable
 		protected mixed $leftExpr,
 		protected string $operator,
 		protected mixed $rightExpr,
-	) {
+	)
+	{
 	}
 
 	public function getLeftExpr(): mixed

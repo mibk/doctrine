@@ -38,7 +38,8 @@ class AttachEntityListenersListener
 		string $listenerClass,
 		string|null $eventName = null,
 		string|null $listenerCallback = null,
-	): void {
+	): void
+	{
 		$this->entityListeners[ltrim($entityClass, '\\')][] = [
 			'event'  => $eventName,
 			'class'  => $listenerClass,
@@ -53,7 +54,7 @@ class AttachEntityListenersListener
 	{
 		$metadata = $event->getClassMetadata();
 
-		if (! isset($this->entityListeners[$metadata->name])) {
+		if (!isset($this->entityListeners[$metadata->name])) {
 			return;
 		}
 

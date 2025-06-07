@@ -12,7 +12,7 @@ use function implode;
 /**
  * Expression class for building DQL Order By parts.
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class OrderBy implements Stringable
 {
@@ -29,7 +29,8 @@ class OrderBy implements Stringable
 	public function __construct(
 		string|null $sort = null,
 		string|null $order = null,
-	) {
+	)
+	{
 		if ($sort) {
 			$this->add($sort, $order);
 		}
@@ -37,7 +38,7 @@ class OrderBy implements Stringable
 
 	public function add(string $sort, string|null $order = null): void
 	{
-		$order         = ! $order ? 'ASC' : $order;
+		$order = !$order ? 'ASC' : $order;
 		$this->parts[] = $sort . ' ' . $order;
 	}
 

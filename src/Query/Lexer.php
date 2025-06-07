@@ -41,10 +41,10 @@ class Lexer extends AbstractLexer
 	{
 		return [
 			'[a-z_][a-z0-9_]*\:[a-z_][a-z0-9_]*(?:\\\[a-z_][a-z0-9_]*)*', // aliased name
-			'[a-z_\\\][a-z0-9_]*(?:\\\[a-z_][a-z0-9_]*)*', // identifier or qualified name
-			'(?:[0-9]+(?:[\.][0-9]+)*)(?:e[+-]?[0-9]+)?', // numbers
-			"'(?:[^']|'')*'", // quoted strings
-			'\?[0-9]*|:[a-z_][a-z0-9_]*', // parameters
+			'[a-z_\\\][a-z0-9_]*(?:\\\[a-z_][a-z0-9_]*)*',                // identifier or qualified name
+			'(?:[0-9]+(?:[\.][0-9]+)*)(?:e[+-]?[0-9]+)?',                 // numbers
+			"'(?:[^']|'')*'",                                             // quoted strings
+			'\?[0-9]*|:[a-z_][a-z0-9_]*',                                 // parameters
 		];
 	}
 
@@ -61,88 +61,88 @@ class Lexer extends AbstractLexer
 		$type = TokenType::T_NONE;
 
 		switch (true) {
-			// Recognize numeric values
-			case is_numeric($value):
-				if (str_contains($value, '.') || stripos($value, 'e') !== false) {
-					return TokenType::T_FLOAT;
-				}
+		// Recognize numeric values
+		case is_numeric($value):
+			if (str_contains($value, '.') || stripos($value, 'e') !== false) {
+				return TokenType::T_FLOAT;
+			}
 
-				return TokenType::T_INTEGER;
+			return TokenType::T_INTEGER;
 
 			// Recognize quoted strings
-			case $value[0] === "'":
-				$value = str_replace("''", "'", substr($value, 1, strlen($value) - 2));
+		case $value[0] === "'":
+			$value = str_replace("''", "'", substr($value, 1, strlen($value) - 2));
 
-				return TokenType::T_STRING;
+			return TokenType::T_STRING;
 
 			// Recognize identifiers, aliased or qualified names
-			case ctype_alpha($value[0]) || $value[0] === '_' || $value[0] === '\\':
-				$name = 'Doctrine\ORM\Query\TokenType::T_' . strtoupper($value);
+		case ctype_alpha($value[0]) || $value[0] === '_' || $value[0] === '\\':
+			$name = 'Doctrine\ORM\Query\TokenType::T_' . strtoupper($value);
 
-				if (defined($name)) {
-					$type = constant($name);
+			if (defined($name)) {
+				$type = constant($name);
 
-					if ($type->value > 100) {
-						return $type;
-					}
+				if ($type->value > 100) {
+					return $type;
 				}
+			}
 
-				if (str_contains($value, '\\')) {
-					return TokenType::T_FULLY_QUALIFIED_NAME;
-				}
+			if (str_contains($value, '\\')) {
+				return TokenType::T_FULLY_QUALIFIED_NAME;
+			}
 
-				return TokenType::T_IDENTIFIER;
+			return TokenType::T_IDENTIFIER;
 
 			// Recognize input parameters
-			case $value[0] === '?' || $value[0] === ':':
-				return TokenType::T_INPUT_PARAMETER;
+		case $value[0] === '?' || $value[0] === ':':
+			return TokenType::T_INPUT_PARAMETER;
 
 			// Recognize symbols
-			case $value === '.':
-				return TokenType::T_DOT;
+		case $value === '.':
+			return TokenType::T_DOT;
 
-			case $value === ',':
-				return TokenType::T_COMMA;
+		case $value === ',':
+			return TokenType::T_COMMA;
 
-			case $value === '(':
-				return TokenType::T_OPEN_PARENTHESIS;
+		case $value === '(':
+			return TokenType::T_OPEN_PARENTHESIS;
 
-			case $value === ')':
-				return TokenType::T_CLOSE_PARENTHESIS;
+		case $value === ')':
+			return TokenType::T_CLOSE_PARENTHESIS;
 
-			case $value === '=':
-				return TokenType::T_EQUALS;
+		case $value === '=':
+			return TokenType::T_EQUALS;
 
-			case $value === '>':
-				return TokenType::T_GREATER_THAN;
+		case $value === '>':
+			return TokenType::T_GREATER_THAN;
 
-			case $value === '<':
-				return TokenType::T_LOWER_THAN;
+		case $value === '<':
+			return TokenType::T_LOWER_THAN;
 
-			case $value === '+':
-				return TokenType::T_PLUS;
+		case $value === '+':
+			return TokenType::T_PLUS;
 
-			case $value === '-':
-				return TokenType::T_MINUS;
+		case $value === '-':
+			return TokenType::T_MINUS;
 
-			case $value === '*':
-				return TokenType::T_MULTIPLY;
+		case $value === '*':
+			return TokenType::T_MULTIPLY;
 
-			case $value === '/':
-				return TokenType::T_DIVIDE;
+		case $value === '/':
+			return TokenType::T_DIVIDE;
 
-			case $value === '!':
-				return TokenType::T_NEGATE;
+		case $value === '!':
+			return TokenType::T_NEGATE;
 
-			case $value === '{':
-				return TokenType::T_OPEN_CURLY_BRACE;
+		case $value === '{':
+			return TokenType::T_OPEN_CURLY_BRACE;
 
-			case $value === '}':
-				return TokenType::T_CLOSE_CURLY_BRACE;
+		case $value === '}':
+			return TokenType::T_CLOSE_CURLY_BRACE;
 
 			// Default
-			default:
-				// Do nothing
+		default:
+			// Do nothing
 		}
 
 		return $type;

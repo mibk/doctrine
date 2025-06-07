@@ -23,14 +23,14 @@ class CollectionRegionCommand extends AbstractEntityManagerCommand
 	protected function configure(): void
 	{
 		$this->setName('orm:clear-cache:region:collection')
-			 ->setDescription('Clear a second-level cache collection region')
-			 ->addArgument('owner-class', InputArgument::OPTIONAL, 'The owner entity name.')
-			 ->addArgument('association', InputArgument::OPTIONAL, 'The association collection name.')
-			 ->addArgument('owner-id', InputArgument::OPTIONAL, 'The owner identifier.')
-			 ->addOption('em', null, InputOption::VALUE_REQUIRED, 'Name of the entity manager to operate on')
-			 ->addOption('all', null, InputOption::VALUE_NONE, 'If defined, all entity regions will be deleted/invalidated.')
-			 ->addOption('flush', null, InputOption::VALUE_NONE, 'If defined, all cache entries will be flushed.')
-			 ->setHelp(<<<'EOT'
+			->setDescription('Clear a second-level cache collection region')
+			->addArgument('owner-class', InputArgument::OPTIONAL, 'The owner entity name.')
+			->addArgument('association', InputArgument::OPTIONAL, 'The association collection name.')
+			->addArgument('owner-id', InputArgument::OPTIONAL, 'The owner identifier.')
+			->addOption('em', null, InputOption::VALUE_REQUIRED, 'Name of the entity manager to operate on')
+			->addOption('all', null, InputOption::VALUE_NONE, 'If defined, all entity regions will be deleted/invalidated.')
+			->addOption('flush', null, InputOption::VALUE_NONE, 'If defined, all cache entries will be flushed.')
+			->setHelp(<<<'EOT'
 The <info>%command.name%</info> command is meant to clear a second-level cache collection regions for an associated Entity Manager.
 It is possible to delete/invalidate all collection region, a specific collection region or flushes the cache provider.
 
@@ -60,17 +60,17 @@ EOT);
 	{
 		$ui = (new SymfonyStyle($input, $output))->getErrorStyle();
 
-		$em         = $this->getEntityManager($input);
+		$em = $this->getEntityManager($input);
 		$ownerClass = $input->getArgument('owner-class');
-		$assoc      = $input->getArgument('association');
-		$ownerId    = $input->getArgument('owner-id');
-		$cache      = $em->getCache();
+		$assoc = $input->getArgument('association');
+		$ownerId = $input->getArgument('owner-id');
+		$cache = $em->getCache();
 
 		if (! $cache instanceof Cache) {
 			throw new InvalidArgumentException('No second-level cache is configured on the given EntityManager.');
 		}
 
-		if (( ! $ownerClass || ! $assoc) && ! $input->getOption('all')) {
+		if ((!$ownerClass || !$assoc) && !$input->getOption('all')) {
 			throw new InvalidArgumentException('Missing arguments "--owner-class" "--association"');
 		}
 

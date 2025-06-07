@@ -9,7 +9,7 @@ use ReflectionClass;
 
 use function class_exists;
 
-if (! class_exists(StaticReflectionService::class)) {
+if (!class_exists(StaticReflectionService::class)) {
 	trait GetReflectionClassImplementation
 	{
 		public function getReflectionClass(): ReflectionClass

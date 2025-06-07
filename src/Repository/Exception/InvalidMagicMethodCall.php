@@ -13,10 +13,11 @@ final class InvalidMagicMethodCall extends LogicException implements RepositoryE
 		string $entityName,
 		string $fieldName,
 		string $method,
-	): self {
+	): self
+	{
 		return new self(
 			"Entity '" . $entityName . "' has no field '" . $fieldName . "'. " .
-			"You can therefore not call '" . $method . "' on the entities' repository.",
+				"You can therefore not call '" . $method . "' on the entities' repository.",
 		);
 	}
 

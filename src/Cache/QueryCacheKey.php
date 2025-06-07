@@ -17,7 +17,8 @@ class QueryCacheKey extends CacheKey
 		public readonly int $lifetime = 0,
 		public readonly int $cacheMode = Cache::MODE_NORMAL,
 		public readonly TimestampCacheKey|null $timestampKey = null,
-	) {
+	)
+	{
 		parent::__construct($cacheId);
 	}
 }

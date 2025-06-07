@@ -28,7 +28,8 @@ class EntityCacheKey extends CacheKey
 	public function __construct(
 		public readonly string $entityClass,
 		array $identifier,
-	) {
+	)
+	{
 		ksort($identifier);
 
 		$this->identifier = $identifier;

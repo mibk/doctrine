@@ -13,7 +13,8 @@ class AggregateExpression extends Node
 		public string $functionName,
 		public Node|string $pathExpression,
 		public bool $isDistinct,
-	) {
+	)
+	{
 	}
 
 	public function dispatch(SqlWalker $walker): string

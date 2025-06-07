@@ -10,7 +10,7 @@ use Doctrine\ORM\Query\SqlWalker;
  * SelectExpression ::= IdentificationVariable ["." "*"] | StateFieldPathExpression |
  *                      (AggregateExpression | "(" Subselect ")") [["AS"] ["HIDDEN"] FieldAliasIdentificationVariable]
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class SelectExpression extends Node
 {
@@ -18,7 +18,8 @@ class SelectExpression extends Node
 		public mixed $expression,
 		public string|null $fieldIdentificationVariable,
 		public bool $hiddenAliasResultVariable = false,
-	) {
+	)
+	{
 	}
 
 	public function dispatch(SqlWalker $walker): string

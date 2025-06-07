@@ -43,7 +43,7 @@ class ORMInvalidArgumentException extends InvalidArgumentException
 	{
 		return new self(
 			"The given entity of type '" . $className . "' (" . self::objToStr($entity) . ') has no identity/no ' .
-			'id values set. It cannot be added to the identity map.',
+				'id values set. It cannot be added to the identity map.',
 		);
 	}
 
@@ -56,7 +56,7 @@ class ORMInvalidArgumentException extends InvalidArgumentException
 	public static function newEntitiesFoundThroughRelationships(array $newEntitiesWithAssociations): self
 	{
 		$errorMessages = array_map(
-			static function (array $newEntityWithAssociation): string {
+			static function(array $newEntityWithAssociation): string {
 				[$associationMapping, $entity] = $newEntityWithAssociation;
 
 				return self::newEntityFoundThroughRelationshipMessage($associationMapping, $entity);
@@ -70,8 +70,8 @@ class ORMInvalidArgumentException extends InvalidArgumentException
 
 		return new self(
 			'Multiple non-persisted new entities were found through the given association graph:'
-			. "\n\n * "
-			. implode("\n * ", $errorMessages),
+				. "\n\n * "
+				. implode("\n * ", $errorMessages),
 		);
 	}
 
@@ -127,7 +127,7 @@ class ORMInvalidArgumentException extends InvalidArgumentException
 Binding entities to query parameters only allowed for entities that have an identifier.
 Class "%s" does not have an identifier.
 EXCEPTION
-			,
+				,
 			$class,
 		));
 	}
@@ -189,7 +189,7 @@ EXCEPTION
 			. ($entity instanceof Stringable
 				? ''
 				: ' If you cannot find out which entity causes the problem implement \''
-				. $associationMapping->targetEntity . '#__toString()\' to get a clue.'
+					. $associationMapping->targetEntity . '#__toString()\' to get a clue.'
 			);
 	}
 }

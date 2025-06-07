@@ -44,7 +44,7 @@ class FilterCollection
 	/**
 	 * Instances of suspended filters.
 	 *
-	 * @var SQLFilter[]
+	 * @var         SQLFilter[]
 	 * @phpstan-var array<string, SQLFilter>
 	 */
 	private array $suspendedFilters = [];
@@ -58,7 +58,8 @@ class FilterCollection
 
 	public function __construct(
 		private readonly EntityManagerInterface $em,
-	) {
+	)
+	{
 		$this->config = $em->getConfiguration();
 	}
 
@@ -75,7 +76,7 @@ class FilterCollection
 	/**
 	 * Gets all the suspended filters.
 	 *
-	 * @return SQLFilter[] The suspended filters.
+	 * @return         SQLFilter[] The suspended filters.
 	 * @phpstan-return array<string, SQLFilter>
 	 */
 	public function getSuspendedFilters(): array
@@ -90,11 +91,11 @@ class FilterCollection
 	 */
 	public function enable(string $name): SQLFilter
 	{
-		if (! $this->has($name)) {
+		if (!$this->has($name)) {
 			throw new InvalidArgumentException("Filter '" . $name . "' does not exist.");
 		}
 
-		if (! $this->isEnabled($name)) {
+		if (!$this->isEnabled($name)) {
 			$filterClass = $this->config->getFilterClassName($name);
 
 			assert($filterClass !== null);
@@ -163,7 +164,7 @@ class FilterCollection
 	 */
 	public function restore(string $name): SQLFilter
 	{
-		if (! $this->isSuspended($name)) {
+		if (!$this->isSuspended($name)) {
 			throw new InvalidArgumentException("Filter '" . $name . "' is not suspended.");
 		}
 
@@ -185,7 +186,7 @@ class FilterCollection
 	 */
 	public function getFilter(string $name): SQLFilter
 	{
-		if (! $this->isEnabled($name)) {
+		if (!$this->isEnabled($name)) {
 			throw new InvalidArgumentException("Filter '" . $name . "' is not enabled.");
 		}
 
@@ -244,7 +245,7 @@ class FilterCollection
 			$filterHash .= $name . $filter;
 		}
 
-		$this->filterHash   = $filterHash;
+		$this->filterHash = $filterHash;
 		$this->filtersState = self::FILTERS_STATE_CLEAN;
 
 		return $filterHash;

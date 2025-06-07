@@ -11,7 +11,7 @@ use function strtoupper;
 /**
  * QuantifiedExpression ::= ("ALL" | "ANY" | "SOME") "(" Subselect ")"
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class QuantifiedExpression extends Node
 {

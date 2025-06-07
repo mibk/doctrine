@@ -17,7 +17,7 @@ trait ToManyAssociationMappingImplementation
 	 * column. Otherwise the collection does not contain all the entities that
 	 * are actually related.
 	 */
-	public string|null $indexBy = null;
+	public string | null $indexBy = null;
 
 	/**
 	 * A map of field names (of the target entity) to sorting directions
@@ -40,7 +40,7 @@ trait ToManyAssociationMappingImplementation
 
 	final public function indexBy(): string
 	{
-		if (! $this->isIndexed()) {
+		if (!$this->isIndexed()) {
 			throw new LogicException(sprintf(
 				'This mapping is not indexed. Use %s::isIndexed() to check that before calling %s.',
 				self::class,

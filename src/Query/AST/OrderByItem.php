@@ -11,7 +11,7 @@ use function strtoupper;
 /**
  * OrderByItem ::= (ResultVariable | StateFieldPathExpression) ["ASC" | "DESC"]
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class OrderByItem extends Node
 {

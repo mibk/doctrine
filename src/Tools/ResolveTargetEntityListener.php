@@ -44,7 +44,7 @@ class ResolveTargetEntityListener implements EventSubscriber
 	 */
 	public function addResolveTargetEntity(string $originalEntity, string $newEntity, array $mapping): void
 	{
-		$mapping['targetEntity']                                   = ltrim($newEntity, '\\');
+		$mapping['targetEntity'] = ltrim($newEntity, '\\');
 		$this->resolveTargetEntities[ltrim($originalEntity, '\\')] = $mapping;
 	}
 
@@ -90,8 +90,8 @@ class ResolveTargetEntityListener implements EventSubscriber
 
 	private function remapAssociation(ClassMetadata $classMetadata, AssociationMapping $mapping): void
 	{
-		$newMapping              = $this->resolveTargetEntities[$mapping->targetEntity];
-		$newMapping              = array_replace_recursive(
+		$newMapping = $this->resolveTargetEntities[$mapping->targetEntity];
+		$newMapping = array_replace_recursive(
 			$mapping->toArray(),
 			$newMapping,
 		);
@@ -100,18 +100,18 @@ class ResolveTargetEntityListener implements EventSubscriber
 		unset($classMetadata->associationMappings[$mapping->fieldName]);
 
 		switch ($mapping->type()) {
-			case ClassMetadata::MANY_TO_MANY:
-				$classMetadata->mapManyToMany($newMapping);
-				break;
-			case ClassMetadata::MANY_TO_ONE:
-				$classMetadata->mapManyToOne($newMapping);
-				break;
-			case ClassMetadata::ONE_TO_MANY:
-				$classMetadata->mapOneToMany($newMapping);
-				break;
-			case ClassMetadata::ONE_TO_ONE:
-				$classMetadata->mapOneToOne($newMapping);
-				break;
+		case ClassMetadata::MANY_TO_MANY:
+			$classMetadata->mapManyToMany($newMapping);
+			break;
+		case ClassMetadata::MANY_TO_ONE:
+			$classMetadata->mapManyToOne($newMapping);
+			break;
+		case ClassMetadata::ONE_TO_MANY:
+			$classMetadata->mapOneToMany($newMapping);
+			break;
+		case ClassMetadata::ONE_TO_ONE:
+			$classMetadata->mapOneToOne($newMapping);
+			break;
 		}
 	}
 }

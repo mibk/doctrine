@@ -12,6 +12,7 @@ final class ChangeTrackingPolicy implements MappingAttribute
 	/** @phpstan-param 'DEFERRED_IMPLICIT'|'DEFERRED_EXPLICIT' $value */
 	public function __construct(
 		public readonly string $value,
-	) {
+	)
+	{
 	}
 }

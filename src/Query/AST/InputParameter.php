@@ -23,9 +23,9 @@ class InputParameter extends Node
 			throw QueryException::invalidParameterFormat($value);
 		}
 
-		$param         = substr($value, 1);
-		$this->isNamed = ! is_numeric($param);
-		$this->name    = $param;
+		$param = substr($value, 1);
+		$this->isNamed = !is_numeric($param);
+		$this->name = $param;
 	}
 
 	public function dispatch(SqlWalker $walker): string

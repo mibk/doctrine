@@ -29,7 +29,8 @@ class PathExpression extends Node
 		public int $expectedType,
 		public string $identificationVariable,
 		public string|null $field = null,
-	) {
+	)
+	{
 	}
 
 	public function dispatch(SqlWalker $walker): string

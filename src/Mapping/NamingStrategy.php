@@ -7,7 +7,7 @@ namespace Doctrine\ORM\Mapping;
 /**
  * A set of rules for determining the physical column and table names
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 interface NamingStrategy
 {

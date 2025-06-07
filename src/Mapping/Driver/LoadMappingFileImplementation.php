@@ -8,7 +8,7 @@ use Doctrine\Persistence\Mapping\StaticReflectionService;
 
 use function class_exists;
 
-if (! class_exists(StaticReflectionService::class)) {
+if (!class_exists(StaticReflectionService::class)) {
 	/** @internal */
 	trait LoadMappingFileImplementation
 	{

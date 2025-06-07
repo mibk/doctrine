@@ -51,9 +51,9 @@ class WhereInWalker extends TreeWalkerAdapter
 			throw new RuntimeException('Cannot count query which selects two FROM components, cannot make distinction');
 		}
 
-		$fromRoot            = reset($from);
-		$rootAlias           = $fromRoot->rangeVariableDeclaration->aliasIdentificationVariable;
-		$rootClass           = $this->getMetadataForDqlAlias($rootAlias);
+		$fromRoot = reset($from);
+		$rootAlias = $fromRoot->rangeVariableDeclaration->aliasIdentificationVariable;
+		$rootClass = $this->getMetadataForDqlAlias($rootAlias);
 		$identifierFieldName = $rootClass->getSingleIdentifierFieldName();
 
 		$pathType = PathExpression::TYPE_STATE_FIELD;
@@ -61,17 +61,17 @@ class WhereInWalker extends TreeWalkerAdapter
 			$pathType = PathExpression::TYPE_SINGLE_VALUED_ASSOCIATION;
 		}
 
-		$pathExpression       = new PathExpression(PathExpression::TYPE_STATE_FIELD | PathExpression::TYPE_SINGLE_VALUED_ASSOCIATION, $rootAlias, $identifierFieldName);
+		$pathExpression = new PathExpression(PathExpression::TYPE_STATE_FIELD | PathExpression::TYPE_SINGLE_VALUED_ASSOCIATION, $rootAlias, $identifierFieldName);
 		$pathExpression->type = $pathType;
 
 		$hasIds = $this->_getQuery()->getHint(self::HINT_PAGINATOR_HAS_IDS);
 
 		if ($hasIds) {
-			$arithmeticExpression                             = new ArithmeticExpression();
+			$arithmeticExpression = new ArithmeticExpression();
 			$arithmeticExpression->simpleArithmeticExpression = new SimpleArithmeticExpression(
 				[$pathExpression],
 			);
-			$expression                                       = new InListExpression(
+			$expression = new InListExpression(
 				$arithmeticExpression,
 				[new InputParameter(':' . self::PAGINATOR_ID_ALIAS)],
 			);
@@ -79,7 +79,7 @@ class WhereInWalker extends TreeWalkerAdapter
 			$expression = new NullComparisonExpression($pathExpression);
 		}
 
-		$conditionalPrimary                              = new ConditionalPrimary();
+		$conditionalPrimary = new ConditionalPrimary();
 		$conditionalPrimary->simpleConditionalExpression = $expression;
 		if ($selectStatement->whereClause) {
 			if ($selectStatement->whereClause->conditionalExpression instanceof ConditionalTerm) {
@@ -96,8 +96,8 @@ class WhereInWalker extends TreeWalkerAdapter
 					],
 				);
 			} else {
-				$tmpPrimary                                          = new ConditionalPrimary();
-				$tmpPrimary->conditionalExpression                   = $selectStatement->whereClause->conditionalExpression;
+				$tmpPrimary = new ConditionalPrimary();
+				$tmpPrimary->conditionalExpression = $selectStatement->whereClause->conditionalExpression;
 				$selectStatement->whereClause->conditionalExpression = new ConditionalTerm(
 					[
 						$tmpPrimary,

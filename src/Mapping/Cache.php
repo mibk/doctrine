@@ -14,6 +14,7 @@ final class Cache implements MappingAttribute
 	public function __construct(
 		public readonly string $usage = 'READ_ONLY',
 		public readonly string|null $region = null,
-	) {
+	)
+	{
 	}
 }

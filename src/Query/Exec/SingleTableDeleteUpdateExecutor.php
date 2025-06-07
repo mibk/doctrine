@@ -13,7 +13,7 @@ use Doctrine\ORM\Query\SqlWalker;
  * Executor that executes the SQL statements for DQL DELETE/UPDATE statements on classes
  * that are mapped to a single table.
  *
- * @link        www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class SingleTableDeleteUpdateExecutor extends AbstractSqlExecutor
 {

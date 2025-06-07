@@ -194,7 +194,7 @@ class MappingException extends PersistenceMappingException implements ORMExcepti
 	{
 		$message = "The mapping of field '" . $field . "' is invalid: The option '" . $expectedOption . "' is required.";
 
-		if (! empty($hint)) {
+		if (!empty($hint)) {
 			$message .= ' (Hint: ' . $hint . ')';
 		}
 
@@ -319,13 +319,13 @@ class MappingException extends PersistenceMappingException implements ORMExcepti
 
 	public static function fileMappingDriversRequireConfiguredDirectoryPath(string|null $path = null): self
 	{
-		if (! empty($path)) {
+		if (!empty($path)) {
 			$path = '[' . $path . ']';
 		}
 
 		return new self(
 			'File mapping drivers must have a valid directory path, ' .
-			'however the given path ' . $path . ' seems to be incorrect!',
+				'however the given path ' . $path . ' seems to be incorrect!',
 		);
 	}
 
@@ -340,26 +340,26 @@ class MappingException extends PersistenceMappingException implements ORMExcepti
 	{
 		return new self(sprintf(
 			"Entity class '%s' used in the discriminator map of class '%s' " .
-			'does not exist.',
+				'does not exist.',
 			$className,
 			$owningClass,
 		));
 	}
 
 	/**
-	 * @param string[]             $entries
-	 * @param array<string,string> $map
+	 * @param string[]              $entries
+	 * @param array<string, string> $map
 	 */
 	public static function duplicateDiscriminatorEntry(string $className, array $entries, array $map): self
 	{
 		return new self(
 			'The entries ' . implode(', ', $entries) . " in discriminator map of class '" . $className . "' is duplicated. " .
-			'If the discriminator map is automatically generated you have to convert it to an explicit discriminator map now. ' .
-			'The entries of the current map are: @DiscriminatorMap({' . implode(', ', array_map(
-				static fn ($a, $b) => sprintf("'%s': '%s'", $a, $b),
-				array_keys($map),
-				array_values($map),
-			)) . '})',
+				'If the discriminator map is automatically generated you have to convert it to an explicit discriminator map now. ' .
+				'The entries of the current map are: @DiscriminatorMap({' . implode(', ', array_map(
+					static fn($a, $b) => sprintf("'%s': '%s'", $a, $b),
+					array_keys($map),
+					array_values($map),
+				)) . '})',
 		);
 	}
 
@@ -440,7 +440,7 @@ class MappingException extends PersistenceMappingException implements ORMExcepti
 	{
 		return new self(sprintf(
 			"Cannot find a field on '%s' that is mapped to column '%s'. Either the " .
-			'field does not exist or an association exists but it has multiple join columns.',
+				'field does not exist or an association exists but it has multiple join columns.',
 			$className,
 			$column,
 		));
@@ -488,8 +488,8 @@ class MappingException extends PersistenceMappingException implements ORMExcepti
 	{
 		return new self(
 			"Entity '" . $className . "' has to be part of the discriminator map of '" . $rootClassName . "' " .
-			"to be properly mapped in the inheritance hierarchy. Alternatively you can make '" . $className . "' an abstract class " .
-			'to avoid this exception from occurring.',
+				"to be properly mapped in the inheritance hierarchy. Alternatively you can make '" . $className . "' an abstract class " .
+				'to avoid this exception from occurring.',
 		);
 	}
 
@@ -550,7 +550,7 @@ class MappingException extends PersistenceMappingException implements ORMExcepti
 	/** @param string[] $cascades */
 	public static function invalidCascadeOption(array $cascades, string $className, string $propertyName): self
 	{
-		$cascades = implode(', ', array_map(static fn (string $e): string => "'" . $e . "'", $cascades));
+		$cascades = implode(', ', array_map(static fn(string $e): string => "'" . $e . "'", $cascades));
 
 		return new self(sprintf(
 			"You have specified invalid cascade options for %s::$%s: %s; available options: 'remove', 'persist', 'refresh', and 'detach'",
@@ -572,7 +572,7 @@ class MappingException extends PersistenceMappingException implements ORMExcepti
 		return new self(
 			sprintf(
 				'Infinite nesting detected for embedded property %s::%s. ' .
-				'You cannot embed an embeddable from the same type inside an embeddable.',
+					'You cannot embed an embeddable from the same type inside an embeddable.',
 				$className,
 				$propertyName,
 			),
@@ -652,14 +652,15 @@ class MappingException extends PersistenceMappingException implements ORMExcepti
 		string $value,
 		string $enumType,
 		ValueError $previous,
-	): self {
+	): self
+	{
 		return new self(sprintf(
 			<<<'EXCEPTION'
 Context: Trying to hydrate enum property "%s::$%s"
 Problem: Case "%s" is not listed in enum "%s"
 Solution: Either add the case to the enum type or migrate the database column to use another case of the enum
 EXCEPTION
-			,
+				,
 			$className,
 			$fieldName,
 			$value,
@@ -670,7 +671,7 @@ EXCEPTION
 	/** @param LibXMLError[] $errors */
 	public static function fromLibXmlErrors(array $errors): self
 	{
-		$formatter = static fn (LibXMLError $error): string => sprintf(
+		$formatter = static fn(LibXMLError $error): string => sprintf(
 			'libxml error: %s in %s at line %d',
 			$error->message,
 			$error->file,

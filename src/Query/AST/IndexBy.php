@@ -9,7 +9,7 @@ use Doctrine\ORM\Query\SqlWalker;
 /**
  * IndexBy ::= "INDEX" "BY" SingleValuedPathExpression
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class IndexBy extends Node
 {

@@ -26,8 +26,9 @@ final class JoinTable implements MappingAttribute
 		array|JoinColumn $joinColumns = [],
 		array|JoinColumn $inverseJoinColumns = [],
 		public readonly array $options = [],
-	) {
-		$this->joinColumns        = $joinColumns instanceof JoinColumn ? [$joinColumns] : $joinColumns;
+	)
+	{
+		$this->joinColumns = $joinColumns instanceof JoinColumn ? [$joinColumns] : $joinColumns;
 		$this->inverseJoinColumns = $inverseJoinColumns instanceof JoinColumn
 			? [$inverseJoinColumns]
 			: $inverseJoinColumns;

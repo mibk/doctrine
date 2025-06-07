@@ -13,7 +13,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * Base class for CreateCommand, DropCommand and UpdateCommand.
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 abstract class AbstractCommand extends AbstractEntityManagerCommand
 {

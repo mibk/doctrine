@@ -9,7 +9,7 @@ use function constant;
 /**
  * Field Builder
  *
- * @link        www.doctrine-project.com
+ * @link www.doctrine-project.com
  */
 class FieldBuilder
 {
@@ -25,7 +25,8 @@ class FieldBuilder
 	public function __construct(
 		private readonly ClassMetadataBuilder $builder,
 		private array $mapping,
-	) {
+	)
+	{
 	}
 
 	/**
@@ -95,7 +96,7 @@ class FieldBuilder
 	 */
 	public function insertable(bool $flag = true): self
 	{
-		if (! $flag) {
+		if (!$flag) {
 			$this->mapping['notInsertable'] = true;
 		}
 
@@ -109,7 +110,7 @@ class FieldBuilder
 	 */
 	public function updatable(bool $flag = true): self
 	{
-		if (! $flag) {
+		if (!$flag) {
 			$this->mapping['notUpdatable'] = true;
 		}
 
@@ -180,9 +181,9 @@ class FieldBuilder
 	public function setSequenceGenerator(string $sequenceName, int $allocationSize = 1, int $initialValue = 1): static
 	{
 		$this->sequenceDef = [
-			'sequenceName' => $sequenceName,
+			'sequenceName'   => $sequenceName,
 			'allocationSize' => $allocationSize,
-			'initialValue' => $initialValue,
+			'initialValue'   => $initialValue,
 		];
 
 		return $this;

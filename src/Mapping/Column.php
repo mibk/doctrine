@@ -11,10 +11,10 @@ use BackedEnum;
 final class Column implements MappingAttribute
 {
 	/**
-	 * @param int|null                      $precision The precision for a decimal (exact numeric) column (Applies only for decimal column).
-	 * @param int|null                      $scale     The scale for a decimal (exact numeric) column (Applies only for decimal column).
-	 * @param class-string<BackedEnum>|null $enumType
-	 * @param array<string,mixed>           $options
+	 * @param         int|null                      $precision The precision for a decimal (exact numeric) column (Applies only for decimal column).
+	 * @param         int|null                      $scale     The scale for a decimal (exact numeric) column (Applies only for decimal column).
+	 * @param         class-string<BackedEnum>|null $enumType
+	 * @param         array<string, mixed>          $options
 	 * @phpstan-param 'NEVER'|'INSERT'|'ALWAYS'|null $generated
 	 */
 	public function __construct(
@@ -31,6 +31,7 @@ final class Column implements MappingAttribute
 		public readonly array $options = [],
 		public readonly string|null $columnDefinition = null,
 		public readonly string|null $generated = null,
-	) {
+	)
+	{
 	}
 }

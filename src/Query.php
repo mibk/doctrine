@@ -124,7 +124,7 @@ class Query extends AbstractQuery
 	/**
 	 * A snapshot of the parameter types the query was parsed with.
 	 *
-	 * @var array<string,Type>
+	 * @var array<string, Type>
 	 */
 	private array $parsedTypes = [];
 
@@ -217,12 +217,12 @@ class Query extends AbstractQuery
 			return $this->parserResult;
 		}
 
-		$this->state       = self::STATE_CLEAN;
+		$this->state = self::STATE_CLEAN;
 		$this->parsedTypes = $types;
 
 		$queryCache = $this->queryCache ?? $this->em->getConfiguration()->getQueryCache();
 		// Check query cache.
-		if (! ($this->useQueryCache && $queryCache)) {
+		if (!($this->useQueryCache && $queryCache)) {
 			$parser = new Parser($this);
 
 			$this->parserResult = $parser->parse();
@@ -232,7 +232,7 @@ class Query extends AbstractQuery
 
 		$cacheItem = $queryCache->getItem($this->getQueryCacheId());
 
-		if (! $this->expireQueryCache && $cacheItem->isHit()) {
+		if (!$this->expireQueryCache && $cacheItem->isHit()) {
 			$cached = $cacheItem->get();
 			if ($cached instanceof ParserResult) {
 				// Cache hit.
@@ -268,8 +268,8 @@ class Query extends AbstractQuery
 
 		// Prepare parameters
 		$paramMappings = $this->parserResult->getParameterMappings();
-		$paramCount    = count($this->parameters);
-		$mappingCount  = count($paramMappings);
+		$paramCount = count($this->parameters);
+		$mappingCount = count($paramMappings);
 
 		if ($paramCount > $mappingCount) {
 			throw QueryException::tooManyParameters($mappingCount, $paramCount);
@@ -297,17 +297,18 @@ class Query extends AbstractQuery
 	}
 
 	/**
-	 * @param array<string,mixed> $sqlParams
-	 * @param array<string,Type>  $types
-	 * @param array<string,mixed> $connectionParams
+	 * @param array<string, mixed> $sqlParams
+	 * @param array<string, Type>  $types
+	 * @param array<string, mixed> $connectionParams
 	 */
 	private function evictResultSetCache(
 		AbstractSqlExecutor $executor,
 		array $sqlParams,
 		array $types,
 		array $connectionParams,
-	): void {
-		if ($this->queryCacheProfile === null || ! $this->getExpireResultCache()) {
+	): void
+	{
+		if ($this->queryCacheProfile === null || !$this->getExpireResultCache()) {
 			return;
 		}
 
@@ -346,7 +347,7 @@ class Query extends AbstractQuery
 	 *
 	 * @param array<list<int>> $paramMappings
 	 *
-	 * @return mixed[][]
+	 * @return         mixed[][]
 	 * @phpstan-return array{0: list<mixed>, 1: array}
 	 *
 	 * @throws Query\QueryException
@@ -354,12 +355,12 @@ class Query extends AbstractQuery
 	private function processParameterMappings(array $paramMappings): array
 	{
 		$sqlParams = [];
-		$types     = [];
+		$types = [];
 
 		foreach ($this->parameters as $parameter) {
 			$key = $parameter->getName();
 
-			if (! isset($paramMappings[$key])) {
+			if (!isset($paramMappings[$key])) {
 				throw QueryException::unknownParameter($key);
 			}
 
@@ -373,7 +374,7 @@ class Query extends AbstractQuery
 
 			// optimized multi value sql positions away for now,
 			// they are not allowed in DQL anyways.
-			$value      = [$value];
+			$value = [$value];
 			$countValue = count($value);
 
 			for ($i = 0, $l = count($sqlPositions); $i < $l; $i++) {
@@ -397,7 +398,7 @@ class Query extends AbstractQuery
 	}
 
 	/**
-	 * @return mixed[] tuple of (value, type)
+	 * @return         mixed[] tuple of (value, type)
 	 * @phpstan-return array{0: mixed, 1: mixed}
 	 */
 	private function resolveParameterValue(Parameter $parameter): array
@@ -406,10 +407,10 @@ class Query extends AbstractQuery
 			return [$parameter->getValue(), $parameter->getType()];
 		}
 
-		$key           = $parameter->getName();
+		$key = $parameter->getName();
 		$originalValue = $parameter->getValue();
-		$value         = $originalValue;
-		$rsm           = $this->getResultSetMapping();
+		$value = $originalValue;
+		$rsm = $this->getResultSetMapping();
 
 		if ($value instanceof ClassMetadata && isset($rsm->metadataParameterMapping[$key])) {
 			$value = $value->getMetadataValue($rsm->metadataParameterMapping[$key]);
@@ -499,7 +500,7 @@ class Query extends AbstractQuery
 	{
 		parent::free();
 
-		$this->dql   = null;
+		$this->dql = null;
 		$this->state = self::STATE_CLEAN;
 	}
 
@@ -508,7 +509,7 @@ class Query extends AbstractQuery
 	 */
 	public function setDQL(string $dqlQuery): self
 	{
-		$this->dql   = $dqlQuery;
+		$this->dql = $dqlQuery;
 		$this->state = self::STATE_DIRTY;
 
 		return $this;
@@ -530,7 +531,7 @@ class Query extends AbstractQuery
 	 * @see AbstractQuery::STATE_CLEAN
 	 * @see AbstractQuery::STATE_DIRTY
 	 *
-	 * @return int The query state.
+	 * @return         int The query state.
 	 * @phpstan-return self::STATE_* The query state.
 	 */
 	public function getState(): int
@@ -558,7 +559,7 @@ class Query extends AbstractQuery
 	public function setFirstResult(int $firstResult): self
 	{
 		$this->firstResult = $firstResult;
-		$this->state       = self::STATE_DIRTY;
+		$this->state = self::STATE_DIRTY;
 
 		return $this;
 	}
@@ -582,7 +583,7 @@ class Query extends AbstractQuery
 	public function setMaxResults(int|null $maxResults): self
 	{
 		$this->maxResults = $maxResults;
-		$this->state      = self::STATE_DIRTY;
+		$this->state = self::STATE_DIRTY;
 
 		return $this;
 	}
@@ -634,7 +635,7 @@ class Query extends AbstractQuery
 	public function setLockMode(LockMode|int $lockMode): self
 	{
 		if (in_array($lockMode, [LockMode::NONE, LockMode::PESSIMISTIC_READ, LockMode::PESSIMISTIC_WRITE], true)) {
-			if (! $this->em->getConnection()->isTransactionActive()) {
+			if (!$this->em->getConnection()->isTransactionActive()) {
 				throw TransactionRequiredException::transactionRequired();
 			}
 		}
@@ -647,7 +648,7 @@ class Query extends AbstractQuery
 	/**
 	 * Get the current lock mode for this query.
 	 *
-	 * @return LockMode|int|null The current lock mode of this query or NULL if no specific lock mode is set.
+	 * @return         LockMode|int|null The current lock mode of this query or NULL if no specific lock mode is set.
 	 * @phpstan-return LockMode::*|null
 	 */
 	public function getLockMode(): LockMode|int|null
@@ -668,7 +669,7 @@ class Query extends AbstractQuery
 	{
 		ksort($this->hints);
 
-		if (! $this->hasHint(self::HINT_CUSTOM_OUTPUT_WALKER)) {
+		if (!$this->hasHint(self::HINT_CUSTOM_OUTPUT_WALKER)) {
 			// Assume Parser will create the SqlOutputWalker; save is_a call, which might trigger a class load
 			$firstAndMaxResult = '';
 		} else {
@@ -690,10 +691,10 @@ class Query extends AbstractQuery
 
 		return md5(
 			$this->getDQL() . serialize($this->hints) .
-			'&platform=' . get_debug_type($this->getEntityManager()->getConnection()->getDatabasePlatform()) .
-			($this->em->hasFilters() ? $this->em->getFilters()->getHash() : '') .
-			$firstAndMaxResult .
-			'&hydrationMode=' . $this->hydrationMode . '&types=' . serialize($this->parsedTypes) . 'DOCTRINE_QUERY_CACHE_SALT',
+				'&platform=' . get_debug_type($this->getEntityManager()->getConnection()->getDatabasePlatform()) .
+				($this->em->hasFilters() ? $this->em->getFilters()->getHash() : '') .
+				$firstAndMaxResult .
+				'&hydrationMode=' . $this->hydrationMode . '&types=' . serialize($this->parsedTypes) . 'DOCTRINE_QUERY_CACHE_SALT',
 		);
 	}
 

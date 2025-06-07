@@ -10,10 +10,10 @@ use Attribute;
 final class Index implements MappingAttribute
 {
 	/**
-	 * @param array<string>|null       $columns
-	 * @param array<string>|null       $fields
-	 * @param array<string>|null       $flags
-	 * @param array<string,mixed>|null $options
+	 * @param array<string>|null        $columns
+	 * @param array<string>|null        $fields
+	 * @param array<string>|null        $flags
+	 * @param array<string, mixed>|null $options
 	 */
 	public function __construct(
 		public readonly string|null $name = null,
@@ -21,6 +21,7 @@ final class Index implements MappingAttribute
 		public readonly array|null $fields = null,
 		public readonly array|null $flags = null,
 		public readonly array|null $options = null,
-	) {
+	)
+	{
 	}
 }

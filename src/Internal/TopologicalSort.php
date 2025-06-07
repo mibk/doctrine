@@ -57,10 +57,10 @@ final class TopologicalSort
 
 	public function addNode(object $node): void
 	{
-		$id                = spl_object_id($node);
-		$this->nodes[$id]  = $node;
+		$id = spl_object_id($node);
+		$this->nodes[$id] = $node;
 		$this->states[$id] = self::NOT_VISITED;
-		$this->edges[$id]  = [];
+		$this->edges[$id] = [];
 	}
 
 	public function hasNode(object $node): bool
@@ -76,7 +76,7 @@ final class TopologicalSort
 	public function addEdge(object $from, object $to, bool $optional): void
 	{
 		$fromId = spl_object_id($from);
-		$toId   = spl_object_id($to);
+		$toId = spl_object_id($to);
 
 		if (isset($this->edges[$fromId][$toId]) && $this->edges[$fromId][$toId] === false) {
 			return; // we already know about this dependency, and it is not optional

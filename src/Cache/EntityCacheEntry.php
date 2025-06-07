@@ -11,13 +11,14 @@ use function array_map;
 class EntityCacheEntry implements CacheEntry
 {
 	/**
-	 * @param class-string        $class The entity class name
-	 * @param array<string,mixed> $data  The entity map data
+	 * @param class-string         $class The entity class name
+	 * @param array<string, mixed> $data  The entity map data
 	 */
 	public function __construct(
 		public readonly string $class,
 		public readonly array $data,
-	) {
+	)
+	{
 	}
 
 	/**
@@ -25,7 +26,7 @@ class EntityCacheEntry implements CacheEntry
 	 *
 	 * This method allows Doctrine\Common\Cache\PhpFileCache compatibility
 	 *
-	 * @param array<string,mixed> $values array containing property values
+	 * @param array<string, mixed> $values array containing property values
 	 */
 	public static function __set_state(array $values): self
 	{
@@ -39,8 +40,8 @@ class EntityCacheEntry implements CacheEntry
 	 */
 	public function resolveAssociationEntries(EntityManagerInterface $em): array
 	{
-		return array_map(static function ($value) use ($em) {
-			if (! ($value instanceof AssociationCacheEntry)) {
+		return array_map(static function($value) use ($em) {
+			if (!($value instanceof AssociationCacheEntry)) {
 				return $value;
 			}
 

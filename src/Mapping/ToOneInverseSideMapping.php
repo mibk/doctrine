@@ -7,8 +7,8 @@ namespace Doctrine\ORM\Mapping;
 abstract class ToOneInverseSideMapping extends InverseSideMapping
 {
 	/**
-	 * @param mixed[]      $mappingArray
-	 * @param class-string $name
+	 * @param         mixed[]      $mappingArray
+	 * @param         class-string $name
 	 * @phpstan-param array{
 	 *     fieldName: string,
 	 *     sourceEntity: class-string,
@@ -32,7 +32,8 @@ abstract class ToOneInverseSideMapping extends InverseSideMapping
 	public static function fromMappingArrayAndName(
 		array $mappingArray,
 		string $name,
-	): static {
+	): static
+	{
 		$mapping = static::fromMappingArray($mappingArray);
 
 		if (isset($mapping->id) && $mapping->id === true) {
@@ -40,7 +41,7 @@ abstract class ToOneInverseSideMapping extends InverseSideMapping
 		}
 
 		if ($mapping->orphanRemoval) {
-			if (! $mapping->isCascadeRemove()) {
+			if (!$mapping->isCascadeRemove()) {
 				$mapping->cascade[] = 'remove';
 			}
 

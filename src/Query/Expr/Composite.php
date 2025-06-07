@@ -13,7 +13,7 @@ use function preg_match;
 /**
  * Expression class for building DQL and parts.
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class Composite extends Base
 {

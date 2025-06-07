@@ -41,7 +41,8 @@ final class ConsoleRunner
 	public static function createApplication(
 		EntityManagerProvider $entityManagerProvider,
 		array $commands = [],
-	): Application {
+	): Application
+	{
 		$version = InstalledVersions::getVersion('doctrine/orm');
 		assert($version !== null);
 

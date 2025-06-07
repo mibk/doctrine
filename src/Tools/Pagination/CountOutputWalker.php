@@ -48,7 +48,7 @@ class CountOutputWalker extends SqlOutputWalker
 	public function __construct(Query $query, ParserResult $parserResult, array $queryComponents)
 	{
 		$this->platform = $query->getEntityManager()->getConnection()->getDatabasePlatform();
-		$this->rsm      = $parserResult->getResultSetMapping();
+		$this->rsm = $parserResult->getResultSetMapping();
 
 		parent::__construct($query, $parserResult, $queryComponents);
 	}
@@ -79,9 +79,9 @@ class CountOutputWalker extends SqlOutputWalker
 			throw new RuntimeException('Cannot count query which selects two FROM components, cannot make distinction');
 		}
 
-		$fromRoot       = reset($from);
-		$rootAlias      = $fromRoot->rangeVariableDeclaration->aliasIdentificationVariable;
-		$rootClass      = $this->getMetadataForDqlAlias($rootAlias);
+		$fromRoot = reset($from);
+		$rootAlias = $fromRoot->rangeVariableDeclaration->aliasIdentificationVariable;
+		$rootClass = $this->getMetadataForDqlAlias($rootAlias);
 		$rootIdentifier = $rootClass->identifier;
 
 		// For every identifier, find out the SQL alias by combing through the ResultSetMapping

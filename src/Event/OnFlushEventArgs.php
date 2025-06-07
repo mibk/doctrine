@@ -10,7 +10,7 @@ use Doctrine\Persistence\Event\ManagerEventArgs;
 /**
  * Provides event arguments for the preFlush event.
  *
- * @link        www.doctrine-project.org
+ * @link www.doctrine-project.org
  *
  * @extends ManagerEventArgs<EntityManagerInterface>
  */

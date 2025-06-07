@@ -25,10 +25,11 @@ abstract class AbstractCollectionPersister implements CollectionPersister
 	 */
 	public function __construct(
 		protected EntityManagerInterface $em,
-	) {
-		$this->uow           = $em->getUnitOfWork();
-		$this->conn          = $em->getConnection();
-		$this->platform      = $this->conn->getDatabasePlatform();
+	)
+	{
+		$this->uow = $em->getUnitOfWork();
+		$this->conn = $em->getConnection();
+		$this->platform = $this->conn->getDatabasePlatform();
 		$this->quoteStrategy = $em->getConfiguration()->getQuoteStrategy();
 	}
 
@@ -45,6 +46,6 @@ abstract class AbstractCollectionPersister implements CollectionPersister
 
 		// If Entity is scheduled for inclusion, it is not in this collection.
 		// We can assure that because it would have return true before on array check
-		return ! ($entityState === UnitOfWork::STATE_MANAGED && $this->uow->isScheduledForInsert($entity));
+		return !($entityState === UnitOfWork::STATE_MANAGED && $this->uow->isScheduledForInsert($entity));
 	}
 }

@@ -9,16 +9,17 @@ namespace Doctrine\ORM\Cache;
  */
 class RegionsConfiguration
 {
-	/** @var array<string,int> */
+	/** @var array<string, int> */
 	private array $lifetimes = [];
 
-	/** @var array<string,int> */
+	/** @var array<string, int> */
 	private array $lockLifetimes = [];
 
 	public function __construct(
 		private int $defaultLifetime = 3600,
 		private int $defaultLockLifetime = 60,
-	) {
+	)
+	{
 	}
 
 	public function getDefaultLifetime(): int

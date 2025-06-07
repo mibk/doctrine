@@ -16,7 +16,7 @@ use function strtolower;
 /**
  * "DATE_ADD" "(" ArithmeticPrimary "," ArithmeticPrimary "," StringPrimary ")"
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class DateAddFunction extends FunctionNode
 {

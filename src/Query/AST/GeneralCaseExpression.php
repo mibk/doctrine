@@ -9,7 +9,7 @@ use Doctrine\ORM\Query\SqlWalker;
 /**
  * GeneralCaseExpression ::= "CASE" WhenClause {WhenClause}* "ELSE" ScalarExpression "END"
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class GeneralCaseExpression extends Node
 {
@@ -17,7 +17,8 @@ class GeneralCaseExpression extends Node
 	public function __construct(
 		public array $whenClauses,
 		public mixed $elseScalarExpression = null,
-	) {
+	)
+	{
 	}
 
 	public function dispatch(SqlWalker $walker): string

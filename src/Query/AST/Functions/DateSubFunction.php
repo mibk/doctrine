@@ -13,7 +13,7 @@ use function strtolower;
 /**
  * "DATE_SUB(date1, interval, unit)"
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class DateSubFunction extends DateAddFunction
 {

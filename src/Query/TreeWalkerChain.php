@@ -30,7 +30,8 @@ class TreeWalkerChain implements TreeWalker
 		private readonly AbstractQuery $query,
 		private readonly ParserResult $parserResult,
 		private array $queryComponents,
-	) {
+	)
+	{
 	}
 
 	/**

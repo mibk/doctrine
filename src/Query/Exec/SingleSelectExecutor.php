@@ -12,7 +12,7 @@ use Doctrine\ORM\Query\SqlWalker;
 /**
  * Executor that executes the SQL statement for simple DQL SELECT statements.
  *
- * @link        www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class SingleSelectExecutor extends AbstractSqlExecutor
 {

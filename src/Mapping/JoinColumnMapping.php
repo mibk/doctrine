@@ -26,11 +26,12 @@ final class JoinColumnMapping implements ArrayAccess
 	public function __construct(
 		public string $name,
 		public string $referencedColumnName,
-	) {
+	)
+	{
 	}
 
 	/**
-	 * @param array<string, mixed> $mappingArray
+	 * @param         array<string, mixed> $mappingArray
 	 * @phpstan-param array{
 	 *     name: string,
 	 *     referencedColumnName: string,

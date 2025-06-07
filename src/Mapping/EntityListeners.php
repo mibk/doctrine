@@ -16,6 +16,7 @@ final class EntityListeners implements MappingAttribute
 	/** @param array<string> $value */
 	public function __construct(
 		public readonly array $value = [],
-	) {
+	)
+	{
 	}
 }

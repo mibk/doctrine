@@ -9,7 +9,7 @@ use Doctrine\ORM\Query\SqlWalker;
 /**
  * SelectClause = "SELECT" ["DISTINCT"] SelectExpression {"," SelectExpression}
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class SelectClause extends Node
 {
@@ -17,7 +17,8 @@ class SelectClause extends Node
 	public function __construct(
 		public array $selectExpressions,
 		public bool $isDistinct,
-	) {
+	)
+	{
 	}
 
 	public function dispatch(SqlWalker $walker): string

@@ -9,7 +9,7 @@ use Doctrine\ORM\Query\SqlWalker;
 /**
  * SelectStatement = SelectClause FromClause [WhereClause] [GroupByClause] [HavingClause] [OrderByClause]
  *
- * @link    www.doctrine-project.org
+ * @link www.doctrine-project.org
  */
 class SelectStatement extends Node
 {
