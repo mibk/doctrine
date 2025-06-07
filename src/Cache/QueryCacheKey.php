@@ -11,13 +11,13 @@ use Doctrine\ORM\Cache;
  */
 class QueryCacheKey extends CacheKey
 {
-    /** @param Cache::MODE_* $cacheMode */
-    public function __construct(
-        string $cacheId,
-        public readonly int $lifetime = 0,
-        public readonly int $cacheMode = Cache::MODE_NORMAL,
-        public readonly TimestampCacheKey|null $timestampKey = null,
-    ) {
-        parent::__construct($cacheId);
-    }
+	/** @param Cache::MODE_* $cacheMode */
+	public function __construct(
+		string $cacheId,
+		public readonly int $lifetime = 0,
+		public readonly int $cacheMode = Cache::MODE_NORMAL,
+		public readonly TimestampCacheKey|null $timestampKey = null,
+	) {
+		parent::__construct($cacheId);
+	}
 }

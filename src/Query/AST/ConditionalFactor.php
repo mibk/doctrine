@@ -13,14 +13,14 @@ use Doctrine\ORM\Query\SqlWalker;
  */
 class ConditionalFactor extends Node implements Phase2OptimizableConditional
 {
-    public function __construct(
-        public ConditionalPrimary $conditionalPrimary,
-        public bool $not = false,
-    ) {
-    }
+	public function __construct(
+		public ConditionalPrimary $conditionalPrimary,
+		public bool $not = false,
+	) {
+	}
 
-    public function dispatch(SqlWalker $walker): string
-    {
-        return $walker->walkConditionalFactor($this);
-    }
+	public function dispatch(SqlWalker $walker): string
+	{
+		return $walker->walkConditionalFactor($this);
+	}
 }

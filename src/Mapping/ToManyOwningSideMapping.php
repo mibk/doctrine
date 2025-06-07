@@ -6,5 +6,5 @@ namespace Doctrine\ORM\Mapping;
 
 abstract class ToManyOwningSideMapping extends OwningSideMapping
 {
-    use ToManyAssociationMappingImplementation;
+	use ToManyAssociationMappingImplementation;
 }

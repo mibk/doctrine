@@ -17,24 +17,24 @@ use Doctrine\ORM\Query\SqlWalker;
  */
 class SingleTableDeleteUpdateExecutor extends AbstractSqlExecutor
 {
-    public function __construct(AST\Node $AST, SqlWalker $sqlWalker)
-    {
-        if ($AST instanceof AST\UpdateStatement) {
-            $this->sqlStatements = $sqlWalker->walkUpdateStatement($AST);
-        } elseif ($AST instanceof AST\DeleteStatement) {
-            $this->sqlStatements = $sqlWalker->walkDeleteStatement($AST);
-        }
-    }
+	public function __construct(AST\Node $AST, SqlWalker $sqlWalker)
+	{
+		if ($AST instanceof AST\UpdateStatement) {
+			$this->sqlStatements = $sqlWalker->walkUpdateStatement($AST);
+		} elseif ($AST instanceof AST\DeleteStatement) {
+			$this->sqlStatements = $sqlWalker->walkDeleteStatement($AST);
+		}
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public function execute(Connection $conn, array $params, array $types): int
-    {
-        if ($conn instanceof PrimaryReadReplicaConnection) {
-            $conn->ensureConnectedToPrimary();
-        }
+	/**
+	 * {@inheritDoc}
+	 */
+	public function execute(Connection $conn, array $params, array $types): int
+	{
+		if ($conn instanceof PrimaryReadReplicaConnection) {
+			$conn->ensureConnectedToPrimary();
+		}
 
-        return $conn->executeStatement($this->sqlStatements, $params, $types);
-    }
+		return $conn->executeStatement($this->sqlStatements, $params, $types);
+	}
 }

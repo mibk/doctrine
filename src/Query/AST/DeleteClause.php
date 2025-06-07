@@ -13,14 +13,14 @@ use Doctrine\ORM\Query\SqlWalker;
  */
 class DeleteClause extends Node
 {
-    public string $aliasIdentificationVariable;
+	public string $aliasIdentificationVariable;
 
-    public function __construct(public string $abstractSchemaName)
-    {
-    }
+	public function __construct(public string $abstractSchemaName)
+	{
+	}
 
-    public function dispatch(SqlWalker $walker): string
-    {
-        return $walker->walkDeleteClause($this);
-    }
+	public function dispatch(SqlWalker $walker): string
+	{
+		return $walker->walkDeleteClause($this);
+	}
 }

@@ -15,91 +15,91 @@ use Doctrine\ORM\Persisters\Entity\EntityPersister;
  */
 class ReadWriteCachedEntityPersister extends AbstractEntityPersister
 {
-    public function __construct(EntityPersister $persister, ConcurrentRegion $region, EntityManagerInterface $em, ClassMetadata $class)
-    {
-        parent::__construct($persister, $region, $em, $class);
-    }
+	public function __construct(EntityPersister $persister, ConcurrentRegion $region, EntityManagerInterface $em, ClassMetadata $class)
+	{
+		parent::__construct($persister, $region, $em, $class);
+	}
 
-    public function afterTransactionComplete(): void
-    {
-        $isChanged = true;
+	public function afterTransactionComplete(): void
+	{
+		$isChanged = true;
 
-        if (isset($this->queuedCache['update'])) {
-            foreach ($this->queuedCache['update'] as $item) {
-                $this->region->evict($item['key']);
+		if (isset($this->queuedCache['update'])) {
+			foreach ($this->queuedCache['update'] as $item) {
+				$this->region->evict($item['key']);
 
-                $isChanged = true;
-            }
-        }
+				$isChanged = true;
+			}
+		}
 
-        if (isset($this->queuedCache['delete'])) {
-            foreach ($this->queuedCache['delete'] as $item) {
-                $this->region->evict($item['key']);
+		if (isset($this->queuedCache['delete'])) {
+			foreach ($this->queuedCache['delete'] as $item) {
+				$this->region->evict($item['key']);
 
-                $isChanged = true;
-            }
-        }
+				$isChanged = true;
+			}
+		}
 
-        if ($isChanged) {
-            $this->timestampRegion->update($this->timestampKey);
-        }
+		if ($isChanged) {
+			$this->timestampRegion->update($this->timestampKey);
+		}
 
-        $this->queuedCache = [];
-    }
+		$this->queuedCache = [];
+	}
 
-    public function afterTransactionRolledBack(): void
-    {
-        if (isset($this->queuedCache['update'])) {
-            foreach ($this->queuedCache['update'] as $item) {
-                $this->region->evict($item['key']);
-            }
-        }
+	public function afterTransactionRolledBack(): void
+	{
+		if (isset($this->queuedCache['update'])) {
+			foreach ($this->queuedCache['update'] as $item) {
+				$this->region->evict($item['key']);
+			}
+		}
 
-        if (isset($this->queuedCache['delete'])) {
-            foreach ($this->queuedCache['delete'] as $item) {
-                $this->region->evict($item['key']);
-            }
-        }
+		if (isset($this->queuedCache['delete'])) {
+			foreach ($this->queuedCache['delete'] as $item) {
+				$this->region->evict($item['key']);
+			}
+		}
 
-        $this->queuedCache = [];
-    }
+		$this->queuedCache = [];
+	}
 
-    public function delete(object $entity): bool
-    {
-        $key     = new EntityCacheKey($this->class->rootEntityName, $this->uow->getEntityIdentifier($entity));
-        $lock    = $this->region->lock($key);
-        $deleted = $this->persister->delete($entity);
+	public function delete(object $entity): bool
+	{
+		$key     = new EntityCacheKey($this->class->rootEntityName, $this->uow->getEntityIdentifier($entity));
+		$lock    = $this->region->lock($key);
+		$deleted = $this->persister->delete($entity);
 
-        if ($deleted) {
-            $this->region->evict($key);
-        }
+		if ($deleted) {
+			$this->region->evict($key);
+		}
 
-        if ($lock === null) {
-            return $deleted;
-        }
+		if ($lock === null) {
+			return $deleted;
+		}
 
-        $this->queuedCache['delete'][] = [
-            'lock'   => $lock,
-            'key'    => $key,
-        ];
+		$this->queuedCache['delete'][] = [
+			'lock'   => $lock,
+			'key'    => $key,
+		];
 
-        return $deleted;
-    }
+		return $deleted;
+	}
 
-    public function update(object $entity): void
-    {
-        $key  = new EntityCacheKey($this->class->rootEntityName, $this->uow->getEntityIdentifier($entity));
-        $lock = $this->region->lock($key);
+	public function update(object $entity): void
+	{
+		$key  = new EntityCacheKey($this->class->rootEntityName, $this->uow->getEntityIdentifier($entity));
+		$lock = $this->region->lock($key);
 
-        $this->persister->update($entity);
+		$this->persister->update($entity);
 
-        if ($lock === null) {
-            return;
-        }
+		if ($lock === null) {
+			return;
+		}
 
-        $this->queuedCache['update'][] = [
-            'lock'   => $lock,
-            'key'    => $key,
-        ];
-    }
+		$this->queuedCache['update'][] = [
+			'lock'   => $lock,
+			'key'    => $key,
+		];
+	}
 }

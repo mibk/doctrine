@@ -14,5 +14,5 @@ use Doctrine\Persistence\Proxy;
  */
 interface InternalProxy extends Proxy
 {
-    public function __setInitialized(bool $initialized): void;
+	public function __setInitialized(bool $initialized): void;
 }

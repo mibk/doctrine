@@ -15,24 +15,24 @@ use function strtoupper;
  */
 class OrderByItem extends Node
 {
-    public string $type;
+	public string $type;
 
-    public function __construct(public mixed $expression)
-    {
-    }
+	public function __construct(public mixed $expression)
+	{
+	}
 
-    public function isAsc(): bool
-    {
-        return strtoupper($this->type) === 'ASC';
-    }
+	public function isAsc(): bool
+	{
+		return strtoupper($this->type) === 'ASC';
+	}
 
-    public function isDesc(): bool
-    {
-        return strtoupper($this->type) === 'DESC';
-    }
+	public function isDesc(): bool
+	{
+		return strtoupper($this->type) === 'DESC';
+	}
 
-    public function dispatch(SqlWalker $walker): string
-    {
-        return $walker->walkOrderByItem($this);
-    }
+	public function dispatch(SqlWalker $walker): string
+	{
+		return $walker->walkOrderByItem($this);
+	}
 }

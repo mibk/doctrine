@@ -24,54 +24,54 @@ use function is_int;
  */
 final class ParameterTypeInferer
 {
-    /**
-     * Infers type of a given value, returning a compatible constant:
-     * - Type (\Doctrine\DBAL\Types\Type::*)
-     * - Connection (\Doctrine\DBAL\Connection::PARAM_*)
-     */
-    public static function inferType(mixed $value): ParameterType|ArrayParameterType|int|string
-    {
-        if (is_int($value)) {
-            return Types::INTEGER;
-        }
+	/**
+	 * Infers type of a given value, returning a compatible constant:
+	 * - Type (\Doctrine\DBAL\Types\Type::*)
+	 * - Connection (\Doctrine\DBAL\Connection::PARAM_*)
+	 */
+	public static function inferType(mixed $value): ParameterType|ArrayParameterType|int|string
+	{
+		if (is_int($value)) {
+			return Types::INTEGER;
+		}
 
-        if (is_bool($value)) {
-            return Types::BOOLEAN;
-        }
+		if (is_bool($value)) {
+			return Types::BOOLEAN;
+		}
 
-        if ($value instanceof DateTimeImmutable) {
-            return Types::DATETIME_IMMUTABLE;
-        }
+		if ($value instanceof DateTimeImmutable) {
+			return Types::DATETIME_IMMUTABLE;
+		}
 
-        if ($value instanceof DateTimeInterface) {
-            return Types::DATETIME_MUTABLE;
-        }
+		if ($value instanceof DateTimeInterface) {
+			return Types::DATETIME_MUTABLE;
+		}
 
-        if ($value instanceof DateInterval) {
-            return Types::DATEINTERVAL;
-        }
+		if ($value instanceof DateInterval) {
+			return Types::DATEINTERVAL;
+		}
 
-        if ($value instanceof BackedEnum) {
-            return is_int($value->value)
-                ? Types::INTEGER
-                : Types::STRING;
-        }
+		if ($value instanceof BackedEnum) {
+			return is_int($value->value)
+				? Types::INTEGER
+				: Types::STRING;
+		}
 
-        if (is_array($value)) {
-            $firstValue = current($value);
-            if ($firstValue instanceof BackedEnum) {
-                $firstValue = $firstValue->value;
-            }
+		if (is_array($value)) {
+			$firstValue = current($value);
+			if ($firstValue instanceof BackedEnum) {
+				$firstValue = $firstValue->value;
+			}
 
-            return is_int($firstValue)
-                ? ArrayParameterType::INTEGER
-                : ArrayParameterType::STRING;
-        }
+			return is_int($firstValue)
+				? ArrayParameterType::INTEGER
+				: ArrayParameterType::STRING;
+		}
 
-        return ParameterType::STRING;
-    }
+		return ParameterType::STRING;
+	}
 
-    private function __construct()
-    {
-    }
+	private function __construct()
+	{
+	}
 }

@@ -9,8 +9,8 @@ use Attribute;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 final class CustomIdGenerator implements MappingAttribute
 {
-    public function __construct(
-        public readonly string|null $class = null,
-    ) {
-    }
+	public function __construct(
+		public readonly string|null $class = null,
+	) {
+	}
 }

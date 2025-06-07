@@ -14,16 +14,16 @@ use Doctrine\ORM\Query\SqlWalker;
  */
 class InstanceOfExpression extends Node
 {
-    /** @param non-empty-list<InputParameter|string> $value */
-    public function __construct(
-        public string $identificationVariable,
-        public array $value,
-        public bool $not = false,
-    ) {
-    }
+	/** @param non-empty-list<InputParameter|string> $value */
+	public function __construct(
+		public string $identificationVariable,
+		public array $value,
+		public bool $not = false,
+	) {
+	}
 
-    public function dispatch(SqlWalker $walker): string
-    {
-        return $walker->walkInstanceOfExpression($this);
-    }
+	public function dispatch(SqlWalker $walker): string
+	{
+		return $walker->walkInstanceOfExpression($this);
+	}
 }

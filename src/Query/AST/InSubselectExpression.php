@@ -8,15 +8,15 @@ use Doctrine\ORM\Query\SqlWalker;
 
 class InSubselectExpression extends Node
 {
-    public function __construct(
-        public ArithmeticExpression $expression,
-        public Subselect $subselect,
-        public bool $not = false,
-    ) {
-    }
+	public function __construct(
+		public ArithmeticExpression $expression,
+		public Subselect $subselect,
+		public bool $not = false,
+	) {
+	}
 
-    public function dispatch(SqlWalker $walker): string
-    {
-        return $walker->walkInSubselectExpression($this);
-    }
+	public function dispatch(SqlWalker $walker): string
+	{
+		return $walker->walkInSubselectExpression($this);
+	}
 }

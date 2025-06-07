@@ -15,35 +15,35 @@ use function spl_object_id;
  */
 final class DefaultRepositoryFactory implements RepositoryFactory
 {
-    /**
-     * The list of EntityRepository instances.
-     *
-     * @var ObjectRepository[]
-     * @phpstan-var array<string, EntityRepository>
-     */
-    private array $repositoryList = [];
+	/**
+	 * The list of EntityRepository instances.
+	 *
+	 * @var ObjectRepository[]
+	 * @phpstan-var array<string, EntityRepository>
+	 */
+	private array $repositoryList = [];
 
-    public function getRepository(EntityManagerInterface $entityManager, string $entityName): EntityRepository
-    {
-        $repositoryHash = $entityManager->getClassMetadata($entityName)->getName() . spl_object_id($entityManager);
+	public function getRepository(EntityManagerInterface $entityManager, string $entityName): EntityRepository
+	{
+		$repositoryHash = $entityManager->getClassMetadata($entityName)->getName() . spl_object_id($entityManager);
 
-        return $this->repositoryList[$repositoryHash] ??= $this->createRepository($entityManager, $entityName);
-    }
+		return $this->repositoryList[$repositoryHash] ??= $this->createRepository($entityManager, $entityName);
+	}
 
-    /**
-     * Create a new repository instance for an entity class.
-     *
-     * @param EntityManagerInterface $entityManager The EntityManager instance.
-     * @param string                 $entityName    The name of the entity.
-     */
-    private function createRepository(
-        EntityManagerInterface $entityManager,
-        string $entityName,
-    ): EntityRepository {
-        $metadata            = $entityManager->getClassMetadata($entityName);
-        $repositoryClassName = $metadata->customRepositoryClassName
-            ?: $entityManager->getConfiguration()->getDefaultRepositoryClassName();
+	/**
+	 * Create a new repository instance for an entity class.
+	 *
+	 * @param EntityManagerInterface $entityManager The EntityManager instance.
+	 * @param string                 $entityName    The name of the entity.
+	 */
+	private function createRepository(
+		EntityManagerInterface $entityManager,
+		string $entityName,
+	): EntityRepository {
+		$metadata            = $entityManager->getClassMetadata($entityName);
+		$repositoryClassName = $metadata->customRepositoryClassName
+			?: $entityManager->getConfiguration()->getDefaultRepositoryClassName();
 
-        return new $repositoryClassName($entityManager, $metadata);
-    }
+		return new $repositoryClassName($entityManager, $metadata);
+	}
 }

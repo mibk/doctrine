@@ -22,87 +22,87 @@ use const CASE_UPPER;
  */
 class UnderscoreNamingStrategy implements NamingStrategy
 {
-    /**
-     * Underscore naming strategy construct.
-     *
-     * @param int $case CASE_LOWER | CASE_UPPER
-     */
-    public function __construct(private int $case = CASE_LOWER)
-    {
-    }
+	/**
+	 * Underscore naming strategy construct.
+	 *
+	 * @param int $case CASE_LOWER | CASE_UPPER
+	 */
+	public function __construct(private int $case = CASE_LOWER)
+	{
+	}
 
-    /** @return int CASE_LOWER | CASE_UPPER */
-    public function getCase(): int
-    {
-        return $this->case;
-    }
+	/** @return int CASE_LOWER | CASE_UPPER */
+	public function getCase(): int
+	{
+		return $this->case;
+	}
 
-    /**
-     * Sets string case CASE_LOWER | CASE_UPPER.
-     * Alphabetic characters converted to lowercase or uppercase.
-     */
-    public function setCase(int $case): void
-    {
-        $this->case = $case;
-    }
+	/**
+	 * Sets string case CASE_LOWER | CASE_UPPER.
+	 * Alphabetic characters converted to lowercase or uppercase.
+	 */
+	public function setCase(int $case): void
+	{
+		$this->case = $case;
+	}
 
-    public function classToTableName(string $className): string
-    {
-        if (str_contains($className, '\\')) {
-            $className = substr($className, strrpos($className, '\\') + 1);
-        }
+	public function classToTableName(string $className): string
+	{
+		if (str_contains($className, '\\')) {
+			$className = substr($className, strrpos($className, '\\') + 1);
+		}
 
-        return $this->underscore($className);
-    }
+		return $this->underscore($className);
+	}
 
-    public function propertyToColumnName(string $propertyName, string $className): string
-    {
-        return $this->underscore($propertyName);
-    }
+	public function propertyToColumnName(string $propertyName, string $className): string
+	{
+		return $this->underscore($propertyName);
+	}
 
-    public function embeddedFieldToColumnName(
-        string $propertyName,
-        string $embeddedColumnName,
-        string $className,
-        string $embeddedClassName,
-    ): string {
-        return $this->underscore($propertyName) . '_' . $embeddedColumnName;
-    }
+	public function embeddedFieldToColumnName(
+		string $propertyName,
+		string $embeddedColumnName,
+		string $className,
+		string $embeddedClassName,
+	): string {
+		return $this->underscore($propertyName) . '_' . $embeddedColumnName;
+	}
 
-    public function referenceColumnName(): string
-    {
-        return $this->case === CASE_UPPER ?  'ID' : 'id';
-    }
+	public function referenceColumnName(): string
+	{
+		return $this->case === CASE_UPPER ?  'ID' : 'id';
+	}
 
-    public function joinColumnName(string $propertyName, string $className): string
-    {
-        return $this->underscore($propertyName) . '_' . $this->referenceColumnName();
-    }
+	public function joinColumnName(string $propertyName, string $className): string
+	{
+		return $this->underscore($propertyName) . '_' . $this->referenceColumnName();
+	}
 
-    public function joinTableName(
-        string $sourceEntity,
-        string $targetEntity,
-        string $propertyName,
-    ): string {
-        return $this->classToTableName($sourceEntity) . '_' . $this->classToTableName($targetEntity);
-    }
+	public function joinTableName(
+		string $sourceEntity,
+		string $targetEntity,
+		string $propertyName,
+	): string {
+		return $this->classToTableName($sourceEntity) . '_' . $this->classToTableName($targetEntity);
+	}
 
-    public function joinKeyColumnName(
-        string $entityName,
-        string|null $referencedColumnName,
-    ): string {
-        return $this->classToTableName($entityName) . '_' .
-                ($referencedColumnName ?: $this->referenceColumnName());
-    }
+	public function joinKeyColumnName(
+		string $entityName,
+		string|null $referencedColumnName,
+	): string {
+		return $this->classToTableName($entityName) . '_' .
+				($referencedColumnName ?: $this->referenceColumnName());
+	}
 
-    private function underscore(string $string): string
-    {
-        $string = preg_replace('/(?<=[a-z0-9])([A-Z])/', '_$1', $string);
+	private function underscore(string $string): string
+	{
+		$string = preg_replace('/(?<=[a-z0-9])([A-Z])/', '_$1', $string);
 
-        if ($this->case === CASE_UPPER) {
-            return strtoupper($string);
-        }
+		if ($this->case === CASE_UPPER) {
+			return strtoupper($string);
+		}
 
-        return strtolower($string);
-    }
+		return strtolower($string);
+	}
 }

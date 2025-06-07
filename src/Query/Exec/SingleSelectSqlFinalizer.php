@@ -18,41 +18,41 @@ use Doctrine\ORM\Utility\LockSqlHelper;
  */
 class SingleSelectSqlFinalizer implements SqlFinalizer
 {
-    use LockSqlHelper;
+	use LockSqlHelper;
 
-    public function __construct(private string $sql)
-    {
-    }
+	public function __construct(private string $sql)
+	{
+	}
 
-    /**
-     * This method exists temporarily to support old SqlWalker interfaces.
-     *
-     * @internal
-     */
-    public function finalizeSql(Query $query): string
-    {
-        $platform = $query->getEntityManager()->getConnection()->getDatabasePlatform();
+	/**
+	 * This method exists temporarily to support old SqlWalker interfaces.
+	 *
+	 * @internal
+	 */
+	public function finalizeSql(Query $query): string
+	{
+		$platform = $query->getEntityManager()->getConnection()->getDatabasePlatform();
 
-        $sql = $platform->modifyLimitQuery($this->sql, $query->getMaxResults(), $query->getFirstResult());
+		$sql = $platform->modifyLimitQuery($this->sql, $query->getMaxResults(), $query->getFirstResult());
 
-        $lockMode = $query->getHint(Query::HINT_LOCK_MODE) ?: LockMode::NONE;
+		$lockMode = $query->getHint(Query::HINT_LOCK_MODE) ?: LockMode::NONE;
 
-        if ($lockMode !== LockMode::NONE && $lockMode !== LockMode::OPTIMISTIC && $lockMode !== LockMode::PESSIMISTIC_READ && $lockMode !== LockMode::PESSIMISTIC_WRITE) {
-            throw QueryException::invalidLockMode();
-        }
+		if ($lockMode !== LockMode::NONE && $lockMode !== LockMode::OPTIMISTIC && $lockMode !== LockMode::PESSIMISTIC_READ && $lockMode !== LockMode::PESSIMISTIC_WRITE) {
+			throw QueryException::invalidLockMode();
+		}
 
-        if ($lockMode === LockMode::PESSIMISTIC_READ) {
-            $sql .= ' ' . $this->getReadLockSQL($platform);
-        } elseif ($lockMode === LockMode::PESSIMISTIC_WRITE) {
-            $sql .= ' ' . $this->getWriteLockSQL($platform);
-        }
+		if ($lockMode === LockMode::PESSIMISTIC_READ) {
+			$sql .= ' ' . $this->getReadLockSQL($platform);
+		} elseif ($lockMode === LockMode::PESSIMISTIC_WRITE) {
+			$sql .= ' ' . $this->getWriteLockSQL($platform);
+		}
 
-        return $sql;
-    }
+		return $sql;
+	}
 
-    /** @return FinalizedSelectExecutor */
-    public function createExecutor(Query $query): AbstractSqlExecutor
-    {
-        return new FinalizedSelectExecutor($this->finalizeSql($query));
-    }
+	/** @return FinalizedSelectExecutor */
+	public function createExecutor(Query $query): AbstractSqlExecutor
+	{
+		return new FinalizedSelectExecutor($this->finalizeSql($query));
+	}
 }

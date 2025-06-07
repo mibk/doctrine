@@ -11,25 +11,25 @@ namespace Doctrine\ORM\Internal\Hydration;
  */
 class ScalarHydrator extends AbstractHydrator
 {
-    /**
-     * {@inheritDoc}
-     */
-    protected function hydrateAllData(): array
-    {
-        $result = [];
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function hydrateAllData(): array
+	{
+		$result = [];
 
-        while ($data = $this->statement()->fetchAssociative()) {
-            $this->hydrateRowData($data, $result);
-        }
+		while ($data = $this->statement()->fetchAssociative()) {
+			$this->hydrateRowData($data, $result);
+		}
 
-        return $result;
-    }
+		return $result;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    protected function hydrateRowData(array $row, array &$result): void
-    {
-        $result[] = $this->gatherScalarRowData($row);
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function hydrateRowData(array $row, array &$result): void
+	{
+		$result[] = $this->gatherScalarRowData($row);
+	}
 }

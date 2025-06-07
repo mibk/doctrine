@@ -15,29 +15,29 @@ use function strtoupper;
  */
 class QuantifiedExpression extends Node
 {
-    public string $type;
+	public string $type;
 
-    public function __construct(public Subselect $subselect)
-    {
-    }
+	public function __construct(public Subselect $subselect)
+	{
+	}
 
-    public function isAll(): bool
-    {
-        return strtoupper($this->type) === 'ALL';
-    }
+	public function isAll(): bool
+	{
+		return strtoupper($this->type) === 'ALL';
+	}
 
-    public function isAny(): bool
-    {
-        return strtoupper($this->type) === 'ANY';
-    }
+	public function isAny(): bool
+	{
+		return strtoupper($this->type) === 'ANY';
+	}
 
-    public function isSome(): bool
-    {
-        return strtoupper($this->type) === 'SOME';
-    }
+	public function isSome(): bool
+	{
+		return strtoupper($this->type) === 'SOME';
+	}
 
-    public function dispatch(SqlWalker $walker): string
-    {
-        return $walker->walkQuantifiedExpression($this);
-    }
+	public function dispatch(SqlWalker $walker): string
+	{
+		return $walker->walkQuantifiedExpression($this);
+	}
 }

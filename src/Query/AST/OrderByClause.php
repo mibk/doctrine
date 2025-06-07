@@ -13,13 +13,13 @@ use Doctrine\ORM\Query\SqlWalker;
  */
 class OrderByClause extends Node
 {
-    /** @param OrderByItem[] $orderByItems */
-    public function __construct(public array $orderByItems)
-    {
-    }
+	/** @param OrderByItem[] $orderByItems */
+	public function __construct(public array $orderByItems)
+	{
+	}
 
-    public function dispatch(SqlWalker $walker): string
-    {
-        return $walker->walkOrderByClause($this);
-    }
+	public function dispatch(SqlWalker $walker): string
+	{
+		return $walker->walkOrderByClause($this);
+	}
 }

@@ -19,57 +19,57 @@ use function sprintf;
  */
 class CreateCommand extends AbstractCommand
 {
-    protected function configure(): void
-    {
-        $this->setName('orm:schema-tool:create')
-             ->setDescription('Processes the schema and either create it directly on EntityManager Storage Connection or generate the SQL output')
-             ->addOption('em', null, InputOption::VALUE_REQUIRED, 'Name of the entity manager to operate on')
-             ->addOption('dump-sql', null, InputOption::VALUE_NONE, 'Instead of trying to apply generated SQLs into EntityManager Storage Connection, output them.')
-             ->setHelp(<<<'EOT'
+	protected function configure(): void
+	{
+		$this->setName('orm:schema-tool:create')
+			 ->setDescription('Processes the schema and either create it directly on EntityManager Storage Connection or generate the SQL output')
+			 ->addOption('em', null, InputOption::VALUE_REQUIRED, 'Name of the entity manager to operate on')
+			 ->addOption('dump-sql', null, InputOption::VALUE_NONE, 'Instead of trying to apply generated SQLs into EntityManager Storage Connection, output them.')
+			 ->setHelp(<<<'EOT'
 Processes the schema and either create it directly on EntityManager Storage Connection or generate the SQL output.
 
 <comment>Hint:</comment> If you have a database with tables that should not be managed
 by the ORM, you can use a DBAL functionality to filter the tables and sequences down
 on a global level:
 
-    $config->setSchemaAssetsFilter(function (string|AbstractAsset $assetName): bool {
-        if ($assetName instanceof AbstractAsset) {
-            $assetName = $assetName->getName();
-        }
+	$config->setSchemaAssetsFilter(function (string|AbstractAsset $assetName): bool {
+		if ($assetName instanceof AbstractAsset) {
+			$assetName = $assetName->getName();
+		}
 
-        return !str_starts_with($assetName, 'audit_');
-    });
+		return !str_starts_with($assetName, 'audit_');
+	});
 EOT);
-    }
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    protected function executeSchemaCommand(InputInterface $input, OutputInterface $output, SchemaTool $schemaTool, array $metadatas, SymfonyStyle $ui): int
-    {
-        $dumpSql = $input->getOption('dump-sql') === true;
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function executeSchemaCommand(InputInterface $input, OutputInterface $output, SchemaTool $schemaTool, array $metadatas, SymfonyStyle $ui): int
+	{
+		$dumpSql = $input->getOption('dump-sql') === true;
 
-        if ($dumpSql) {
-            $sqls = $schemaTool->getCreateSchemaSql($metadatas);
+		if ($dumpSql) {
+			$sqls = $schemaTool->getCreateSchemaSql($metadatas);
 
-            foreach ($sqls as $sql) {
-                $ui->writeln(sprintf('%s;', $sql));
-            }
+			foreach ($sqls as $sql) {
+				$ui->writeln(sprintf('%s;', $sql));
+			}
 
-            return 0;
-        }
+			return 0;
+		}
 
-        $notificationUi = $ui->getErrorStyle();
+		$notificationUi = $ui->getErrorStyle();
 
-        $notificationUi->caution('This operation should not be executed in a production environment!');
+		$notificationUi->caution('This operation should not be executed in a production environment!');
 
-        $notificationUi->text('Creating database schema...');
-        $notificationUi->newLine();
+		$notificationUi->text('Creating database schema...');
+		$notificationUi->newLine();
 
-        $schemaTool->createSchema($metadatas);
+		$schemaTool->createSchema($metadatas);
 
-        $notificationUi->success('Database schema created successfully!');
+		$notificationUi->success('Database schema created successfully!');
 
-        return 0;
-    }
+		return 0;
+	}
 }

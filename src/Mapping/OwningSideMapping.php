@@ -6,23 +6,23 @@ namespace Doctrine\ORM\Mapping;
 
 abstract class OwningSideMapping extends AssociationMapping
 {
-    /**
-     * required for bidirectional associations
-     * The name of the field that completes the bidirectional association on
-     * the inverse side. This key must be specified on the owning side of a
-     * bidirectional association.
-     */
-    public string|null $inversedBy = null;
+	/**
+	 * required for bidirectional associations
+	 * The name of the field that completes the bidirectional association on
+	 * the inverse side. This key must be specified on the owning side of a
+	 * bidirectional association.
+	 */
+	public string|null $inversedBy = null;
 
-    /** @return list<string> */
-    public function __sleep(): array
-    {
-        $serialized = parent::__sleep();
+	/** @return list<string> */
+	public function __sleep(): array
+	{
+		$serialized = parent::__sleep();
 
-        if ($this->inversedBy !== null) {
-            $serialized[] = 'inversedBy';
-        }
+		if ($this->inversedBy !== null) {
+			$serialized[] = 'inversedBy';
+		}
 
-        return $serialized;
-    }
+		return $serialized;
+	}
 }

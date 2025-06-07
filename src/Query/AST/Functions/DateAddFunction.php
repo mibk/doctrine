@@ -20,64 +20,64 @@ use function strtolower;
  */
 class DateAddFunction extends FunctionNode
 {
-    public Node $firstDateExpression;
-    public Node $intervalExpression;
-    public Node $unit;
+	public Node $firstDateExpression;
+	public Node $intervalExpression;
+	public Node $unit;
 
-    public function getSql(SqlWalker $sqlWalker): string
-    {
-        return match (strtolower((string) $this->unit->value)) {
-            'second' => $sqlWalker->getConnection()->getDatabasePlatform()->getDateAddSecondsExpression(
-                $this->firstDateExpression->dispatch($sqlWalker),
-                $this->dispatchIntervalExpression($sqlWalker),
-            ),
-            'minute' => $sqlWalker->getConnection()->getDatabasePlatform()->getDateAddMinutesExpression(
-                $this->firstDateExpression->dispatch($sqlWalker),
-                $this->dispatchIntervalExpression($sqlWalker),
-            ),
-            'hour' => $sqlWalker->getConnection()->getDatabasePlatform()->getDateAddHourExpression(
-                $this->firstDateExpression->dispatch($sqlWalker),
-                $this->dispatchIntervalExpression($sqlWalker),
-            ),
-            'day' => $sqlWalker->getConnection()->getDatabasePlatform()->getDateAddDaysExpression(
-                $this->firstDateExpression->dispatch($sqlWalker),
-                $this->dispatchIntervalExpression($sqlWalker),
-            ),
-            'week' => $sqlWalker->getConnection()->getDatabasePlatform()->getDateAddWeeksExpression(
-                $this->firstDateExpression->dispatch($sqlWalker),
-                $this->dispatchIntervalExpression($sqlWalker),
-            ),
-            'month' => $sqlWalker->getConnection()->getDatabasePlatform()->getDateAddMonthExpression(
-                $this->firstDateExpression->dispatch($sqlWalker),
-                $this->dispatchIntervalExpression($sqlWalker),
-            ),
-            'year' => $sqlWalker->getConnection()->getDatabasePlatform()->getDateAddYearsExpression(
-                $this->firstDateExpression->dispatch($sqlWalker),
-                $this->dispatchIntervalExpression($sqlWalker),
-            ),
-            default => throw QueryException::semanticalError(
-                'DATE_ADD() only supports units of type second, minute, hour, day, week, month and year.',
-            ),
-        };
-    }
+	public function getSql(SqlWalker $sqlWalker): string
+	{
+		return match (strtolower((string) $this->unit->value)) {
+			'second' => $sqlWalker->getConnection()->getDatabasePlatform()->getDateAddSecondsExpression(
+				$this->firstDateExpression->dispatch($sqlWalker),
+				$this->dispatchIntervalExpression($sqlWalker),
+			),
+			'minute' => $sqlWalker->getConnection()->getDatabasePlatform()->getDateAddMinutesExpression(
+				$this->firstDateExpression->dispatch($sqlWalker),
+				$this->dispatchIntervalExpression($sqlWalker),
+			),
+			'hour' => $sqlWalker->getConnection()->getDatabasePlatform()->getDateAddHourExpression(
+				$this->firstDateExpression->dispatch($sqlWalker),
+				$this->dispatchIntervalExpression($sqlWalker),
+			),
+			'day' => $sqlWalker->getConnection()->getDatabasePlatform()->getDateAddDaysExpression(
+				$this->firstDateExpression->dispatch($sqlWalker),
+				$this->dispatchIntervalExpression($sqlWalker),
+			),
+			'week' => $sqlWalker->getConnection()->getDatabasePlatform()->getDateAddWeeksExpression(
+				$this->firstDateExpression->dispatch($sqlWalker),
+				$this->dispatchIntervalExpression($sqlWalker),
+			),
+			'month' => $sqlWalker->getConnection()->getDatabasePlatform()->getDateAddMonthExpression(
+				$this->firstDateExpression->dispatch($sqlWalker),
+				$this->dispatchIntervalExpression($sqlWalker),
+			),
+			'year' => $sqlWalker->getConnection()->getDatabasePlatform()->getDateAddYearsExpression(
+				$this->firstDateExpression->dispatch($sqlWalker),
+				$this->dispatchIntervalExpression($sqlWalker),
+			),
+			default => throw QueryException::semanticalError(
+				'DATE_ADD() only supports units of type second, minute, hour, day, week, month and year.',
+			),
+		};
+	}
 
-    /** @throws ASTException */
-    private function dispatchIntervalExpression(SqlWalker $sqlWalker): string
-    {
-        return $this->intervalExpression->dispatch($sqlWalker);
-    }
+	/** @throws ASTException */
+	private function dispatchIntervalExpression(SqlWalker $sqlWalker): string
+	{
+		return $this->intervalExpression->dispatch($sqlWalker);
+	}
 
-    public function parse(Parser $parser): void
-    {
-        $parser->match(TokenType::T_IDENTIFIER);
-        $parser->match(TokenType::T_OPEN_PARENTHESIS);
+	public function parse(Parser $parser): void
+	{
+		$parser->match(TokenType::T_IDENTIFIER);
+		$parser->match(TokenType::T_OPEN_PARENTHESIS);
 
-        $this->firstDateExpression = $parser->ArithmeticPrimary();
-        $parser->match(TokenType::T_COMMA);
-        $this->intervalExpression = $parser->ArithmeticPrimary();
-        $parser->match(TokenType::T_COMMA);
-        $this->unit = $parser->StringPrimary();
+		$this->firstDateExpression = $parser->ArithmeticPrimary();
+		$parser->match(TokenType::T_COMMA);
+		$this->intervalExpression = $parser->ArithmeticPrimary();
+		$parser->match(TokenType::T_COMMA);
+		$this->unit = $parser->StringPrimary();
 
-        $parser->match(TokenType::T_CLOSE_PARENTHESIS);
-    }
+		$parser->match(TokenType::T_CLOSE_PARENTHESIS);
+	}
 }

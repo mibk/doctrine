@@ -16,71 +16,71 @@ use Generator;
  */
 class TreeWalkerChain implements TreeWalker
 {
-    /**
-     * The tree walkers.
-     *
-     * @var list<class-string<TreeWalker>>
-     */
-    private array $walkers = [];
+	/**
+	 * The tree walkers.
+	 *
+	 * @var list<class-string<TreeWalker>>
+	 */
+	private array $walkers = [];
 
-    /**
-     * {@inheritDoc}
-     */
-    public function __construct(
-        private readonly AbstractQuery $query,
-        private readonly ParserResult $parserResult,
-        private array $queryComponents,
-    ) {
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	public function __construct(
+		private readonly AbstractQuery $query,
+		private readonly ParserResult $parserResult,
+		private array $queryComponents,
+	) {
+	}
 
-    /**
-     * Returns the internal queryComponents array.
-     *
-     * {@inheritDoc}
-     */
-    public function getQueryComponents(): array
-    {
-        return $this->queryComponents;
-    }
+	/**
+	 * Returns the internal queryComponents array.
+	 *
+	 * {@inheritDoc}
+	 */
+	public function getQueryComponents(): array
+	{
+		return $this->queryComponents;
+	}
 
-    /**
-     * Adds a tree walker to the chain.
-     *
-     * @param class-string<TreeWalker> $walkerClass The class of the walker to instantiate.
-     */
-    public function addTreeWalker(string $walkerClass): void
-    {
-        $this->walkers[] = $walkerClass;
-    }
+	/**
+	 * Adds a tree walker to the chain.
+	 *
+	 * @param class-string<TreeWalker> $walkerClass The class of the walker to instantiate.
+	 */
+	public function addTreeWalker(string $walkerClass): void
+	{
+		$this->walkers[] = $walkerClass;
+	}
 
-    public function walkSelectStatement(AST\SelectStatement $selectStatement): void
-    {
-        foreach ($this->getWalkers() as $walker) {
-            $walker->walkSelectStatement($selectStatement);
+	public function walkSelectStatement(AST\SelectStatement $selectStatement): void
+	{
+		foreach ($this->getWalkers() as $walker) {
+			$walker->walkSelectStatement($selectStatement);
 
-            $this->queryComponents = $walker->getQueryComponents();
-        }
-    }
+			$this->queryComponents = $walker->getQueryComponents();
+		}
+	}
 
-    public function walkUpdateStatement(AST\UpdateStatement $updateStatement): void
-    {
-        foreach ($this->getWalkers() as $walker) {
-            $walker->walkUpdateStatement($updateStatement);
-        }
-    }
+	public function walkUpdateStatement(AST\UpdateStatement $updateStatement): void
+	{
+		foreach ($this->getWalkers() as $walker) {
+			$walker->walkUpdateStatement($updateStatement);
+		}
+	}
 
-    public function walkDeleteStatement(AST\DeleteStatement $deleteStatement): void
-    {
-        foreach ($this->getWalkers() as $walker) {
-            $walker->walkDeleteStatement($deleteStatement);
-        }
-    }
+	public function walkDeleteStatement(AST\DeleteStatement $deleteStatement): void
+	{
+		foreach ($this->getWalkers() as $walker) {
+			$walker->walkDeleteStatement($deleteStatement);
+		}
+	}
 
-    /** @phpstan-return Generator<int, TreeWalker> */
-    private function getWalkers(): Generator
-    {
-        foreach ($this->walkers as $walkerClass) {
-            yield new $walkerClass($this->query, $this->parserResult, $this->queryComponents);
-        }
-    }
+	/** @phpstan-return Generator<int, TreeWalker> */
+	private function getWalkers(): Generator
+	{
+		foreach ($this->walkers as $walkerClass) {
+			yield new $walkerClass($this->query, $this->parserResult, $this->queryComponents);
+		}
+	}
 }

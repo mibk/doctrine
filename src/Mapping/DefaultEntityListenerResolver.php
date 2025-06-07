@@ -11,30 +11,30 @@ use function trim;
  */
 class DefaultEntityListenerResolver implements EntityListenerResolver
 {
-    /** @var array<class-string, object> Map to store entity listener instances. */
-    private array $instances = [];
+	/** @var array<class-string, object> Map to store entity listener instances. */
+	private array $instances = [];
 
-    public function clear(string|null $className = null): void
-    {
-        if ($className === null) {
-            $this->instances = [];
+	public function clear(string|null $className = null): void
+	{
+		if ($className === null) {
+			$this->instances = [];
 
-            return;
-        }
+			return;
+		}
 
-        $className = trim($className, '\\');
-        unset($this->instances[$className]);
-    }
+		$className = trim($className, '\\');
+		unset($this->instances[$className]);
+	}
 
-    public function register(object $object): void
-    {
-        $this->instances[$object::class] = $object;
-    }
+	public function register(object $object): void
+	{
+		$this->instances[$object::class] = $object;
+	}
 
-    public function resolve(string $className): object
-    {
-        $className = trim($className, '\\');
+	public function resolve(string $className): object
+	{
+		$className = trim($className, '\\');
 
-        return $this->instances[$className] ??= new $className();
-    }
+		return $this->instances[$className] ??= new $className();
+	}
 }

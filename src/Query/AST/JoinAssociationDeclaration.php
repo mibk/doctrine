@@ -13,15 +13,15 @@ use Doctrine\ORM\Query\SqlWalker;
  */
 class JoinAssociationDeclaration extends Node
 {
-    public function __construct(
-        public JoinAssociationPathExpression $joinAssociationPathExpression,
-        public string $aliasIdentificationVariable,
-        public IndexBy|null $indexBy,
-    ) {
-    }
+	public function __construct(
+		public JoinAssociationPathExpression $joinAssociationPathExpression,
+		public string $aliasIdentificationVariable,
+		public IndexBy|null $indexBy,
+	) {
+	}
 
-    public function dispatch(SqlWalker $walker): string
-    {
-        return $walker->walkJoinAssociationDeclaration($this);
-    }
+	public function dispatch(SqlWalker $walker): string
+	{
+		return $walker->walkJoinAssociationDeclaration($this);
+	}
 }

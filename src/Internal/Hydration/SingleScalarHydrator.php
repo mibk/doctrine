@@ -16,25 +16,25 @@ use function key;
  */
 class SingleScalarHydrator extends AbstractHydrator
 {
-    protected function hydrateAllData(): mixed
-    {
-        $data    = $this->statement()->fetchAllAssociative();
-        $numRows = count($data);
+	protected function hydrateAllData(): mixed
+	{
+		$data    = $this->statement()->fetchAllAssociative();
+		$numRows = count($data);
 
-        if ($numRows === 0) {
-            throw new NoResultException();
-        }
+		if ($numRows === 0) {
+			throw new NoResultException();
+		}
 
-        if ($numRows > 1) {
-            throw new NonUniqueResultException('The query returned multiple rows. Change the query or use a different result function like getScalarResult().');
-        }
+		if ($numRows > 1) {
+			throw new NonUniqueResultException('The query returned multiple rows. Change the query or use a different result function like getScalarResult().');
+		}
 
-        $result = $this->gatherScalarRowData($data[key($data)]);
+		$result = $this->gatherScalarRowData($data[key($data)]);
 
-        if (count($result) > 1) {
-            throw new NonUniqueResultException('The query returned a row containing multiple columns. Change the query or use a different result function like getScalarResult().');
-        }
+		if (count($result) > 1) {
+			throw new NonUniqueResultException('The query returned a row containing multiple columns. Change the query or use a different result function like getScalarResult().');
+		}
 
-        return array_shift($result);
-    }
+		return array_shift($result);
+	}
 }

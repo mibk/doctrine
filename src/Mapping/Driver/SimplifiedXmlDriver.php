@@ -11,15 +11,15 @@ use Doctrine\Persistence\Mapping\Driver\SymfonyFileLocator;
  */
 class SimplifiedXmlDriver extends XmlDriver
 {
-    public const DEFAULT_FILE_EXTENSION = '.orm.xml';
+	public const DEFAULT_FILE_EXTENSION = '.orm.xml';
 
-    /**
-     * {@inheritDoc}
-     */
-    public function __construct($prefixes, $fileExtension = self::DEFAULT_FILE_EXTENSION, bool $isXsdValidationEnabled = true)
-    {
-        $locator = new SymfonyFileLocator((array) $prefixes, $fileExtension);
+	/**
+	 * {@inheritDoc}
+	 */
+	public function __construct($prefixes, $fileExtension = self::DEFAULT_FILE_EXTENSION, bool $isXsdValidationEnabled = true)
+	{
+		$locator = new SymfonyFileLocator((array) $prefixes, $fileExtension);
 
-        parent::__construct($locator, $fileExtension, $isXsdValidationEnabled);
-    }
+		parent::__construct($locator, $fileExtension, $isXsdValidationEnabled);
+	}
 }

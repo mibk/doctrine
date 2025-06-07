@@ -20,161 +20,161 @@ use function str_starts_with;
  */
 class QueryExpressionVisitor extends ExpressionVisitor
 {
-    private const OPERATOR_MAP = [
-        Comparison::GT => Expr\Comparison::GT,
-        Comparison::GTE => Expr\Comparison::GTE,
-        Comparison::LT  => Expr\Comparison::LT,
-        Comparison::LTE => Expr\Comparison::LTE,
-    ];
+	private const OPERATOR_MAP = [
+		Comparison::GT => Expr\Comparison::GT,
+		Comparison::GTE => Expr\Comparison::GTE,
+		Comparison::LT  => Expr\Comparison::LT,
+		Comparison::LTE => Expr\Comparison::LTE,
+	];
 
-    private readonly Expr $expr;
+	private readonly Expr $expr;
 
-    /** @var list<mixed> */
-    private array $parameters = [];
+	/** @var list<mixed> */
+	private array $parameters = [];
 
-    /** @param mixed[] $queryAliases */
-    public function __construct(
-        private readonly array $queryAliases,
-    ) {
-        $this->expr = new Expr();
-    }
+	/** @param mixed[] $queryAliases */
+	public function __construct(
+		private readonly array $queryAliases,
+	) {
+		$this->expr = new Expr();
+	}
 
-    /**
-     * Gets bound parameters.
-     * Filled after {@link dispach()}.
-     *
-     * @return ArrayCollection<int, mixed>
-     */
-    public function getParameters(): ArrayCollection
-    {
-        return new ArrayCollection($this->parameters);
-    }
+	/**
+	 * Gets bound parameters.
+	 * Filled after {@link dispach()}.
+	 *
+	 * @return ArrayCollection<int, mixed>
+	 */
+	public function getParameters(): ArrayCollection
+	{
+		return new ArrayCollection($this->parameters);
+	}
 
-    public function clearParameters(): void
-    {
-        $this->parameters = [];
-    }
+	public function clearParameters(): void
+	{
+		$this->parameters = [];
+	}
 
-    /**
-     * Converts Criteria expression to Query one based on static map.
-     */
-    private static function convertComparisonOperator(string $criteriaOperator): string|null
-    {
-        return self::OPERATOR_MAP[$criteriaOperator] ?? null;
-    }
+	/**
+	 * Converts Criteria expression to Query one based on static map.
+	 */
+	private static function convertComparisonOperator(string $criteriaOperator): string|null
+	{
+		return self::OPERATOR_MAP[$criteriaOperator] ?? null;
+	}
 
-    public function walkCompositeExpression(CompositeExpression $expr): mixed
-    {
-        $expressionList = [];
+	public function walkCompositeExpression(CompositeExpression $expr): mixed
+	{
+		$expressionList = [];
 
-        foreach ($expr->getExpressionList() as $child) {
-            $expressionList[] = $this->dispatch($child);
-        }
+		foreach ($expr->getExpressionList() as $child) {
+			$expressionList[] = $this->dispatch($child);
+		}
 
-        return match ($expr->getType()) {
-            CompositeExpression::TYPE_AND => new Expr\Andx($expressionList),
-            CompositeExpression::TYPE_OR => new Expr\Orx($expressionList),
-            CompositeExpression::TYPE_NOT => $this->expr->not($expressionList[0]),
-            default => throw new RuntimeException('Unknown composite ' . $expr->getType()),
-        };
-    }
+		return match ($expr->getType()) {
+			CompositeExpression::TYPE_AND => new Expr\Andx($expressionList),
+			CompositeExpression::TYPE_OR => new Expr\Orx($expressionList),
+			CompositeExpression::TYPE_NOT => $this->expr->not($expressionList[0]),
+			default => throw new RuntimeException('Unknown composite ' . $expr->getType()),
+		};
+	}
 
-    public function walkComparison(Comparison $comparison): mixed
-    {
-        if (! isset($this->queryAliases[0])) {
-            throw new QueryException('No aliases are set before invoking walkComparison().');
-        }
+	public function walkComparison(Comparison $comparison): mixed
+	{
+		if (! isset($this->queryAliases[0])) {
+			throw new QueryException('No aliases are set before invoking walkComparison().');
+		}
 
-        $field = $this->queryAliases[0] . '.' . $comparison->getField();
+		$field = $this->queryAliases[0] . '.' . $comparison->getField();
 
-        foreach ($this->queryAliases as $alias) {
-            if (str_starts_with($comparison->getField() . '.', $alias . '.')) {
-                $field = $comparison->getField();
-                break;
-            }
-        }
+		foreach ($this->queryAliases as $alias) {
+			if (str_starts_with($comparison->getField() . '.', $alias . '.')) {
+				$field = $comparison->getField();
+				break;
+			}
+		}
 
-        $parameterName = str_replace('.', '_', $comparison->getField());
+		$parameterName = str_replace('.', '_', $comparison->getField());
 
-        foreach ($this->parameters as $parameter) {
-            if ($parameter->getName() === $parameterName) {
-                $parameterName .= '_' . count($this->parameters);
-                break;
-            }
-        }
+		foreach ($this->parameters as $parameter) {
+			if ($parameter->getName() === $parameterName) {
+				$parameterName .= '_' . count($this->parameters);
+				break;
+			}
+		}
 
-        $parameter   = new Parameter($parameterName, $this->walkValue($comparison->getValue()));
-        $placeholder = ':' . $parameterName;
+		$parameter   = new Parameter($parameterName, $this->walkValue($comparison->getValue()));
+		$placeholder = ':' . $parameterName;
 
-        switch ($comparison->getOperator()) {
-            case Comparison::IN:
-                $this->parameters[] = $parameter;
+		switch ($comparison->getOperator()) {
+			case Comparison::IN:
+				$this->parameters[] = $parameter;
 
-                return $this->expr->in($field, $placeholder);
+				return $this->expr->in($field, $placeholder);
 
-            case Comparison::NIN:
-                $this->parameters[] = $parameter;
+			case Comparison::NIN:
+				$this->parameters[] = $parameter;
 
-                return $this->expr->notIn($field, $placeholder);
+				return $this->expr->notIn($field, $placeholder);
 
-            case Comparison::EQ:
-            case Comparison::IS:
-                if ($this->walkValue($comparison->getValue()) === null) {
-                    return $this->expr->isNull($field);
-                }
+			case Comparison::EQ:
+			case Comparison::IS:
+				if ($this->walkValue($comparison->getValue()) === null) {
+					return $this->expr->isNull($field);
+				}
 
-                $this->parameters[] = $parameter;
+				$this->parameters[] = $parameter;
 
-                return $this->expr->eq($field, $placeholder);
+				return $this->expr->eq($field, $placeholder);
 
-            case Comparison::NEQ:
-                if ($this->walkValue($comparison->getValue()) === null) {
-                    return $this->expr->isNotNull($field);
-                }
+			case Comparison::NEQ:
+				if ($this->walkValue($comparison->getValue()) === null) {
+					return $this->expr->isNotNull($field);
+				}
 
-                $this->parameters[] = $parameter;
+				$this->parameters[] = $parameter;
 
-                return $this->expr->neq($field, $placeholder);
+				return $this->expr->neq($field, $placeholder);
 
-            case Comparison::CONTAINS:
-                $parameter->setValue('%' . $parameter->getValue() . '%', $parameter->getType());
-                $this->parameters[] = $parameter;
+			case Comparison::CONTAINS:
+				$parameter->setValue('%' . $parameter->getValue() . '%', $parameter->getType());
+				$this->parameters[] = $parameter;
 
-                return $this->expr->like($field, $placeholder);
+				return $this->expr->like($field, $placeholder);
 
-            case Comparison::MEMBER_OF:
-                return $this->expr->isMemberOf($comparison->getField(), $comparison->getValue()->getValue());
+			case Comparison::MEMBER_OF:
+				return $this->expr->isMemberOf($comparison->getField(), $comparison->getValue()->getValue());
 
-            case Comparison::STARTS_WITH:
-                $parameter->setValue($parameter->getValue() . '%', $parameter->getType());
-                $this->parameters[] = $parameter;
+			case Comparison::STARTS_WITH:
+				$parameter->setValue($parameter->getValue() . '%', $parameter->getType());
+				$this->parameters[] = $parameter;
 
-                return $this->expr->like($field, $placeholder);
+				return $this->expr->like($field, $placeholder);
 
-            case Comparison::ENDS_WITH:
-                $parameter->setValue('%' . $parameter->getValue(), $parameter->getType());
-                $this->parameters[] = $parameter;
+			case Comparison::ENDS_WITH:
+				$parameter->setValue('%' . $parameter->getValue(), $parameter->getType());
+				$this->parameters[] = $parameter;
 
-                return $this->expr->like($field, $placeholder);
+				return $this->expr->like($field, $placeholder);
 
-            default:
-                $operator = self::convertComparisonOperator($comparison->getOperator());
-                if ($operator) {
-                    $this->parameters[] = $parameter;
+			default:
+				$operator = self::convertComparisonOperator($comparison->getOperator());
+				if ($operator) {
+					$this->parameters[] = $parameter;
 
-                    return new Expr\Comparison(
-                        $field,
-                        $operator,
-                        $placeholder,
-                    );
-                }
+					return new Expr\Comparison(
+						$field,
+						$operator,
+						$placeholder,
+					);
+				}
 
-                throw new RuntimeException('Unknown comparison operator: ' . $comparison->getOperator());
-        }
-    }
+				throw new RuntimeException('Unknown comparison operator: ' . $comparison->getOperator());
+		}
+	}
 
-    public function walkValue(Value $value): mixed
-    {
-        return $value->getValue();
-    }
+	public function walkValue(Value $value): mixed
+	{
+		return $value->getValue();
+	}
 }

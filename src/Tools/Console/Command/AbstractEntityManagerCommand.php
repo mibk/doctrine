@@ -11,15 +11,15 @@ use Symfony\Component\Console\Input\InputInterface;
 
 abstract class AbstractEntityManagerCommand extends Command
 {
-    public function __construct(private readonly EntityManagerProvider $entityManagerProvider)
-    {
-        parent::__construct();
-    }
+	public function __construct(private readonly EntityManagerProvider $entityManagerProvider)
+	{
+		parent::__construct();
+	}
 
-    final protected function getEntityManager(InputInterface $input): EntityManagerInterface
-    {
-        return $input->getOption('em') === null
-            ? $this->entityManagerProvider->getDefaultManager()
-            : $this->entityManagerProvider->getManager($input->getOption('em'));
-    }
+	final protected function getEntityManager(InputInterface $input): EntityManagerInterface
+	{
+		return $input->getOption('em') === null
+			? $this->entityManagerProvider->getDefaultManager()
+			: $this->entityManagerProvider->getManager($input->getOption('em'));
+	}
 }

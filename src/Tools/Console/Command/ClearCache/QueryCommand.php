@@ -20,35 +20,35 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 class QueryCommand extends AbstractEntityManagerCommand
 {
-    protected function configure(): void
-    {
-        $this->setName('orm:clear-cache:query')
-             ->setDescription('Clear all query cache of the various cache drivers')
-             ->addOption('em', null, InputOption::VALUE_REQUIRED, 'Name of the entity manager to operate on')
-             ->setHelp('The <info>%command.name%</info> command is meant to clear the query cache of associated Entity Manager.');
-    }
+	protected function configure(): void
+	{
+		$this->setName('orm:clear-cache:query')
+			 ->setDescription('Clear all query cache of the various cache drivers')
+			 ->addOption('em', null, InputOption::VALUE_REQUIRED, 'Name of the entity manager to operate on')
+			 ->setHelp('The <info>%command.name%</info> command is meant to clear the query cache of associated Entity Manager.');
+	}
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $ui = (new SymfonyStyle($input, $output))->getErrorStyle();
+	protected function execute(InputInterface $input, OutputInterface $output): int
+	{
+		$ui = (new SymfonyStyle($input, $output))->getErrorStyle();
 
-        $em    = $this->getEntityManager($input);
-        $cache = $em->getConfiguration()->getQueryCache();
+		$em    = $this->getEntityManager($input);
+		$cache = $em->getConfiguration()->getQueryCache();
 
-        if (! $cache) {
-            throw new InvalidArgumentException('No Query cache driver is configured on given EntityManager.');
-        }
+		if (! $cache) {
+			throw new InvalidArgumentException('No Query cache driver is configured on given EntityManager.');
+		}
 
-        if ($cache instanceof ApcuAdapter) {
-            throw new LogicException('Cannot clear APCu Cache from Console, it\'s shared in the Webserver memory and not accessible from the CLI.');
-        }
+		if ($cache instanceof ApcuAdapter) {
+			throw new LogicException('Cannot clear APCu Cache from Console, it\'s shared in the Webserver memory and not accessible from the CLI.');
+		}
 
-        $ui->comment('Clearing <info>all</info> Query cache entries');
+		$ui->comment('Clearing <info>all</info> Query cache entries');
 
-        $message = $cache->clear() ? 'Successfully deleted cache entries.' : 'No cache entries were deleted.';
+		$message = $cache->clear() ? 'Successfully deleted cache entries.' : 'No cache entries were deleted.';
 
-        $ui->success($message);
+		$ui->success($message);
 
-        return 0;
-    }
+		return 0;
+	}
 }

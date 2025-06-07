@@ -14,22 +14,22 @@ use Doctrine\DBAL\Platforms\SQLServerPlatform;
 /** @internal */
 trait LockSqlHelper
 {
-    private function getReadLockSQL(AbstractPlatform $platform): string
-    {
-        return match (true) {
-            $platform instanceof AbstractMySQLPlatform => 'LOCK IN SHARE MODE',
-            $platform instanceof PostgreSQLPlatform => 'FOR SHARE',
-            default => $this->getWriteLockSQL($platform),
-        };
-    }
+	private function getReadLockSQL(AbstractPlatform $platform): string
+	{
+		return match (true) {
+			$platform instanceof AbstractMySQLPlatform => 'LOCK IN SHARE MODE',
+			$platform instanceof PostgreSQLPlatform => 'FOR SHARE',
+			default => $this->getWriteLockSQL($platform),
+		};
+	}
 
-    private function getWriteLockSQL(AbstractPlatform $platform): string
-    {
-        return match (true) {
-            $platform instanceof DB2Platform => 'WITH RR USE AND KEEP UPDATE LOCKS',
-            $platform instanceof SQLitePlatform,
-            $platform instanceof SQLServerPlatform => '',
-            default => 'FOR UPDATE',
-        };
-    }
+	private function getWriteLockSQL(AbstractPlatform $platform): string
+	{
+		return match (true) {
+			$platform instanceof DB2Platform => 'WITH RR USE AND KEEP UPDATE LOCKS',
+			$platform instanceof SQLitePlatform,
+			$platform instanceof SQLServerPlatform => '',
+			default => 'FOR UPDATE',
+		};
+	}
 }

@@ -39,87 +39,87 @@ use function sprintf;
  */
 class CountOutputWalker extends SqlOutputWalker
 {
-    private readonly AbstractPlatform $platform;
-    private readonly ResultSetMapping $rsm;
+	private readonly AbstractPlatform $platform;
+	private readonly ResultSetMapping $rsm;
 
-    /**
-     * {@inheritDoc}
-     */
-    public function __construct(Query $query, ParserResult $parserResult, array $queryComponents)
-    {
-        $this->platform = $query->getEntityManager()->getConnection()->getDatabasePlatform();
-        $this->rsm      = $parserResult->getResultSetMapping();
+	/**
+	 * {@inheritDoc}
+	 */
+	public function __construct(Query $query, ParserResult $parserResult, array $queryComponents)
+	{
+		$this->platform = $query->getEntityManager()->getConnection()->getDatabasePlatform();
+		$this->rsm      = $parserResult->getResultSetMapping();
 
-        parent::__construct($query, $parserResult, $queryComponents);
-    }
+		parent::__construct($query, $parserResult, $queryComponents);
+	}
 
-    protected function createSqlForFinalizer(SelectStatement $selectStatement): string
-    {
-        if ($this->platform instanceof SQLServerPlatform) {
-            $selectStatement->orderByClause = null;
-        }
+	protected function createSqlForFinalizer(SelectStatement $selectStatement): string
+	{
+		if ($this->platform instanceof SQLServerPlatform) {
+			$selectStatement->orderByClause = null;
+		}
 
-        $sql = parent::createSqlForFinalizer($selectStatement);
+		$sql = parent::createSqlForFinalizer($selectStatement);
 
-        if ($selectStatement->groupByClause) {
-            return sprintf(
-                'SELECT COUNT(*) AS dctrn_count FROM (%s) dctrn_table',
-                $sql,
-            );
-        }
+		if ($selectStatement->groupByClause) {
+			return sprintf(
+				'SELECT COUNT(*) AS dctrn_count FROM (%s) dctrn_table',
+				$sql,
+			);
+		}
 
-        // Find out the SQL alias of the identifier column of the root entity
-        // It may be possible to make this work with multiple root entities but that
-        // would probably require issuing multiple queries or doing a UNION SELECT
-        // so for now, It's not supported.
+		// Find out the SQL alias of the identifier column of the root entity
+		// It may be possible to make this work with multiple root entities but that
+		// would probably require issuing multiple queries or doing a UNION SELECT
+		// so for now, It's not supported.
 
-        // Get the root entity and alias from the AST fromClause
-        $from = $selectStatement->fromClause->identificationVariableDeclarations;
-        if (count($from) > 1) {
-            throw new RuntimeException('Cannot count query which selects two FROM components, cannot make distinction');
-        }
+		// Get the root entity and alias from the AST fromClause
+		$from = $selectStatement->fromClause->identificationVariableDeclarations;
+		if (count($from) > 1) {
+			throw new RuntimeException('Cannot count query which selects two FROM components, cannot make distinction');
+		}
 
-        $fromRoot       = reset($from);
-        $rootAlias      = $fromRoot->rangeVariableDeclaration->aliasIdentificationVariable;
-        $rootClass      = $this->getMetadataForDqlAlias($rootAlias);
-        $rootIdentifier = $rootClass->identifier;
+		$fromRoot       = reset($from);
+		$rootAlias      = $fromRoot->rangeVariableDeclaration->aliasIdentificationVariable;
+		$rootClass      = $this->getMetadataForDqlAlias($rootAlias);
+		$rootIdentifier = $rootClass->identifier;
 
-        // For every identifier, find out the SQL alias by combing through the ResultSetMapping
-        $sqlIdentifier = [];
-        foreach ($rootIdentifier as $property) {
-            if (isset($rootClass->fieldMappings[$property])) {
-                foreach (array_keys($this->rsm->fieldMappings, $property, true) as $alias) {
-                    if ($this->rsm->columnOwnerMap[$alias] === $rootAlias) {
-                        $sqlIdentifier[$property] = $alias;
-                    }
-                }
-            }
+		// For every identifier, find out the SQL alias by combing through the ResultSetMapping
+		$sqlIdentifier = [];
+		foreach ($rootIdentifier as $property) {
+			if (isset($rootClass->fieldMappings[$property])) {
+				foreach (array_keys($this->rsm->fieldMappings, $property, true) as $alias) {
+					if ($this->rsm->columnOwnerMap[$alias] === $rootAlias) {
+						$sqlIdentifier[$property] = $alias;
+					}
+				}
+			}
 
-            if (isset($rootClass->associationMappings[$property])) {
-                $association = $rootClass->associationMappings[$property];
-                assert($association->isToOneOwningSide());
-                $joinColumn = $association->joinColumns[0]->name;
+			if (isset($rootClass->associationMappings[$property])) {
+				$association = $rootClass->associationMappings[$property];
+				assert($association->isToOneOwningSide());
+				$joinColumn = $association->joinColumns[0]->name;
 
-                foreach (array_keys($this->rsm->metaMappings, $joinColumn, true) as $alias) {
-                    if ($this->rsm->columnOwnerMap[$alias] === $rootAlias) {
-                        $sqlIdentifier[$property] = $alias;
-                    }
-                }
-            }
-        }
+				foreach (array_keys($this->rsm->metaMappings, $joinColumn, true) as $alias) {
+					if ($this->rsm->columnOwnerMap[$alias] === $rootAlias) {
+						$sqlIdentifier[$property] = $alias;
+					}
+				}
+			}
+		}
 
-        if (count($rootIdentifier) !== count($sqlIdentifier)) {
-            throw new RuntimeException(sprintf(
-                'Not all identifier properties can be found in the ResultSetMapping: %s',
-                implode(', ', array_diff($rootIdentifier, array_keys($sqlIdentifier))),
-            ));
-        }
+		if (count($rootIdentifier) !== count($sqlIdentifier)) {
+			throw new RuntimeException(sprintf(
+				'Not all identifier properties can be found in the ResultSetMapping: %s',
+				implode(', ', array_diff($rootIdentifier, array_keys($sqlIdentifier))),
+			));
+		}
 
-        // Build the counter query
-        return sprintf(
-            'SELECT COUNT(*) AS dctrn_count FROM (SELECT DISTINCT %s FROM (%s) dctrn_result) dctrn_table',
-            implode(', ', $sqlIdentifier),
-            $sql,
-        );
-    }
+		// Build the counter query
+		return sprintf(
+			'SELECT COUNT(*) AS dctrn_count FROM (SELECT DISTINCT %s FROM (%s) dctrn_result) dctrn_table',
+			implode(', ', $sqlIdentifier),
+			$sql,
+		);
+	}
 }

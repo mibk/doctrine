@@ -18,96 +18,96 @@ use function assert;
  */
 class SizeFunction extends FunctionNode
 {
-    public PathExpression $collectionPathExpression;
+	public PathExpression $collectionPathExpression;
 
-    /**
-     * @inheritdoc
-     * @todo If the collection being counted is already joined, the SQL can be simpler (more efficient).
-     */
-    public function getSql(SqlWalker $sqlWalker): string
-    {
-        assert($this->collectionPathExpression->field !== null);
-        $entityManager = $sqlWalker->getEntityManager();
-        $platform      = $entityManager->getConnection()->getDatabasePlatform();
-        $quoteStrategy = $entityManager->getConfiguration()->getQuoteStrategy();
-        $dqlAlias      = $this->collectionPathExpression->identificationVariable;
-        $assocField    = $this->collectionPathExpression->field;
+	/**
+	 * @inheritdoc
+	 * @todo If the collection being counted is already joined, the SQL can be simpler (more efficient).
+	 */
+	public function getSql(SqlWalker $sqlWalker): string
+	{
+		assert($this->collectionPathExpression->field !== null);
+		$entityManager = $sqlWalker->getEntityManager();
+		$platform      = $entityManager->getConnection()->getDatabasePlatform();
+		$quoteStrategy = $entityManager->getConfiguration()->getQuoteStrategy();
+		$dqlAlias      = $this->collectionPathExpression->identificationVariable;
+		$assocField    = $this->collectionPathExpression->field;
 
-        $class = $sqlWalker->getMetadataForDqlAlias($dqlAlias);
-        $assoc = $class->associationMappings[$assocField];
-        $sql   = 'SELECT COUNT(*) FROM ';
+		$class = $sqlWalker->getMetadataForDqlAlias($dqlAlias);
+		$assoc = $class->associationMappings[$assocField];
+		$sql   = 'SELECT COUNT(*) FROM ';
 
-        if ($assoc->isOneToMany()) {
-            $targetClass      = $entityManager->getClassMetadata($assoc->targetEntity);
-            $targetTableAlias = $sqlWalker->getSQLTableAlias($targetClass->getTableName());
-            $sourceTableAlias = $sqlWalker->getSQLTableAlias($class->getTableName(), $dqlAlias);
+		if ($assoc->isOneToMany()) {
+			$targetClass      = $entityManager->getClassMetadata($assoc->targetEntity);
+			$targetTableAlias = $sqlWalker->getSQLTableAlias($targetClass->getTableName());
+			$sourceTableAlias = $sqlWalker->getSQLTableAlias($class->getTableName(), $dqlAlias);
 
-            $sql .= $quoteStrategy->getTableName($targetClass, $platform) . ' ' . $targetTableAlias . ' WHERE ';
+			$sql .= $quoteStrategy->getTableName($targetClass, $platform) . ' ' . $targetTableAlias . ' WHERE ';
 
-            $owningAssoc = $targetClass->associationMappings[$assoc->mappedBy];
-            assert($owningAssoc->isManyToOne());
+			$owningAssoc = $targetClass->associationMappings[$assoc->mappedBy];
+			assert($owningAssoc->isManyToOne());
 
-            $first = true;
+			$first = true;
 
-            foreach ($owningAssoc->targetToSourceKeyColumns as $targetColumn => $sourceColumn) {
-                if ($first) {
-                    $first = false;
-                } else {
-                    $sql .= ' AND ';
-                }
+			foreach ($owningAssoc->targetToSourceKeyColumns as $targetColumn => $sourceColumn) {
+				if ($first) {
+					$first = false;
+				} else {
+					$sql .= ' AND ';
+				}
 
-                $sql .= $targetTableAlias . '.' . $sourceColumn
-                      . ' = '
-                      . $sourceTableAlias . '.' . $quoteStrategy->getColumnName($class->fieldNames[$targetColumn], $class, $platform);
-            }
-        } else { // many-to-many
-            assert($assoc->isManyToMany());
-            $owningAssoc = $entityManager->getMetadataFactory()->getOwningSide($assoc);
-            $joinTable   = $owningAssoc->joinTable;
+				$sql .= $targetTableAlias . '.' . $sourceColumn
+					  . ' = '
+					  . $sourceTableAlias . '.' . $quoteStrategy->getColumnName($class->fieldNames[$targetColumn], $class, $platform);
+			}
+		} else { // many-to-many
+			assert($assoc->isManyToMany());
+			$owningAssoc = $entityManager->getMetadataFactory()->getOwningSide($assoc);
+			$joinTable   = $owningAssoc->joinTable;
 
-            // SQL table aliases
-            $joinTableAlias   = $sqlWalker->getSQLTableAlias($joinTable->name);
-            $sourceTableAlias = $sqlWalker->getSQLTableAlias($class->getTableName(), $dqlAlias);
+			// SQL table aliases
+			$joinTableAlias   = $sqlWalker->getSQLTableAlias($joinTable->name);
+			$sourceTableAlias = $sqlWalker->getSQLTableAlias($class->getTableName(), $dqlAlias);
 
-            // join to target table
-            $targetClass = $entityManager->getClassMetadata($assoc->targetEntity);
-            $sql        .= $quoteStrategy->getJoinTableName($owningAssoc, $targetClass, $platform) . ' ' . $joinTableAlias . ' WHERE ';
+			// join to target table
+			$targetClass = $entityManager->getClassMetadata($assoc->targetEntity);
+			$sql        .= $quoteStrategy->getJoinTableName($owningAssoc, $targetClass, $platform) . ' ' . $joinTableAlias . ' WHERE ';
 
-            $joinColumns = $assoc->isOwningSide()
-                ? $joinTable->joinColumns
-                : $joinTable->inverseJoinColumns;
+			$joinColumns = $assoc->isOwningSide()
+				? $joinTable->joinColumns
+				: $joinTable->inverseJoinColumns;
 
-            $first = true;
+			$first = true;
 
-            foreach ($joinColumns as $joinColumn) {
-                if ($first) {
-                    $first = false;
-                } else {
-                    $sql .= ' AND ';
-                }
+			foreach ($joinColumns as $joinColumn) {
+				if ($first) {
+					$first = false;
+				} else {
+					$sql .= ' AND ';
+				}
 
-                $sourceColumnName = $quoteStrategy->getColumnName(
-                    $class->fieldNames[$joinColumn->referencedColumnName],
-                    $class,
-                    $platform,
-                );
+				$sourceColumnName = $quoteStrategy->getColumnName(
+					$class->fieldNames[$joinColumn->referencedColumnName],
+					$class,
+					$platform,
+				);
 
-                $sql .= $joinTableAlias . '.' . $joinColumn->name
-                      . ' = '
-                      . $sourceTableAlias . '.' . $sourceColumnName;
-            }
-        }
+				$sql .= $joinTableAlias . '.' . $joinColumn->name
+					  . ' = '
+					  . $sourceTableAlias . '.' . $sourceColumnName;
+			}
+		}
 
-        return '(' . $sql . ')';
-    }
+		return '(' . $sql . ')';
+	}
 
-    public function parse(Parser $parser): void
-    {
-        $parser->match(TokenType::T_IDENTIFIER);
-        $parser->match(TokenType::T_OPEN_PARENTHESIS);
+	public function parse(Parser $parser): void
+	{
+		$parser->match(TokenType::T_IDENTIFIER);
+		$parser->match(TokenType::T_OPEN_PARENTHESIS);
 
-        $this->collectionPathExpression = $parser->CollectionValuedPathExpression();
+		$this->collectionPathExpression = $parser->CollectionValuedPathExpression();
 
-        $parser->match(TokenType::T_CLOSE_PARENTHESIS);
-    }
+		$parser->match(TokenType::T_CLOSE_PARENTHESIS);
+	}
 }

@@ -13,16 +13,16 @@ use Doctrine\ORM\Query\SqlWalker;
  */
 class SimpleCaseExpression extends Node
 {
-    /** @param mixed[] $simpleWhenClauses */
-    public function __construct(
-        public PathExpression|null $caseOperand = null,
-        public array $simpleWhenClauses = [],
-        public mixed $elseScalarExpression = null,
-    ) {
-    }
+	/** @param mixed[] $simpleWhenClauses */
+	public function __construct(
+		public PathExpression|null $caseOperand = null,
+		public array $simpleWhenClauses = [],
+		public mixed $elseScalarExpression = null,
+	) {
+	}
 
-    public function dispatch(SqlWalker $walker): string
-    {
-        return $walker->walkSimpleCaseExpression($this);
-    }
+	public function dispatch(SqlWalker $walker): string
+	{
+		return $walker->walkSimpleCaseExpression($this);
+	}
 }

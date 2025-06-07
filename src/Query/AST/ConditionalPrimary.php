@@ -13,22 +13,22 @@ use Doctrine\ORM\Query\SqlWalker;
  */
 class ConditionalPrimary extends Node implements Phase2OptimizableConditional
 {
-    public Node|null $simpleConditionalExpression = null;
+	public Node|null $simpleConditionalExpression = null;
 
-    public ConditionalExpression|Phase2OptimizableConditional|null $conditionalExpression = null;
+	public ConditionalExpression|Phase2OptimizableConditional|null $conditionalExpression = null;
 
-    public function isSimpleConditionalExpression(): bool
-    {
-        return (bool) $this->simpleConditionalExpression;
-    }
+	public function isSimpleConditionalExpression(): bool
+	{
+		return (bool) $this->simpleConditionalExpression;
+	}
 
-    public function isConditionalExpression(): bool
-    {
-        return (bool) $this->conditionalExpression;
-    }
+	public function isConditionalExpression(): bool
+	{
+		return (bool) $this->conditionalExpression;
+	}
 
-    public function dispatch(SqlWalker $walker): string
-    {
-        return $walker->walkConditionalPrimary($this);
-    }
+	public function dispatch(SqlWalker $walker): string
+	{
+		return $walker->walkConditionalPrimary($this);
+	}
 }

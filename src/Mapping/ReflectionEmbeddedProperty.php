@@ -18,44 +18,44 @@ use ReflectionProperty;
  */
 final class ReflectionEmbeddedProperty extends ReflectionProperty
 {
-    private Instantiator|null $instantiator = null;
+	private Instantiator|null $instantiator = null;
 
-    /**
-     * @param ReflectionProperty $parentProperty reflection property of the class where the embedded object has to be put
-     * @param ReflectionProperty $childProperty  reflection property of the embedded object
-     * @phpstan-param class-string $embeddedClass
-     */
-    public function __construct(
-        private readonly ReflectionProperty $parentProperty,
-        private readonly ReflectionProperty $childProperty,
-        private readonly string $embeddedClass,
-    ) {
-        parent::__construct($childProperty->getDeclaringClass()->name, $childProperty->getName());
-    }
+	/**
+	 * @param ReflectionProperty $parentProperty reflection property of the class where the embedded object has to be put
+	 * @param ReflectionProperty $childProperty  reflection property of the embedded object
+	 * @phpstan-param class-string $embeddedClass
+	 */
+	public function __construct(
+		private readonly ReflectionProperty $parentProperty,
+		private readonly ReflectionProperty $childProperty,
+		private readonly string $embeddedClass,
+	) {
+		parent::__construct($childProperty->getDeclaringClass()->name, $childProperty->getName());
+	}
 
-    public function getValue(object|null $object = null): mixed
-    {
-        $embeddedObject = $this->parentProperty->getValue($object);
+	public function getValue(object|null $object = null): mixed
+	{
+		$embeddedObject = $this->parentProperty->getValue($object);
 
-        if ($embeddedObject === null) {
-            return null;
-        }
+		if ($embeddedObject === null) {
+			return null;
+		}
 
-        return $this->childProperty->getValue($embeddedObject);
-    }
+		return $this->childProperty->getValue($embeddedObject);
+	}
 
-    public function setValue(mixed $object, mixed $value = null): void
-    {
-        $embeddedObject = $this->parentProperty->getValue($object);
+	public function setValue(mixed $object, mixed $value = null): void
+	{
+		$embeddedObject = $this->parentProperty->getValue($object);
 
-        if ($embeddedObject === null) {
-            $this->instantiator ??= new Instantiator();
+		if ($embeddedObject === null) {
+			$this->instantiator ??= new Instantiator();
 
-            $embeddedObject = $this->instantiator->instantiate($this->embeddedClass);
+			$embeddedObject = $this->instantiator->instantiate($this->embeddedClass);
 
-            $this->parentProperty->setValue($object, $embeddedObject);
-        }
+			$this->parentProperty->setValue($object, $embeddedObject);
+		}
 
-        $this->childProperty->setValue($embeddedObject, $value);
-    }
+		$this->childProperty->setValue($embeddedObject, $value);
+	}
 }

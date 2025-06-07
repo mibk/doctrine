@@ -13,14 +13,14 @@ use Doctrine\ORM\Query\SqlWalker;
  */
 class WhenClause extends Node
 {
-    public function __construct(
-        public ConditionalExpression|Phase2OptimizableConditional $caseConditionExpression,
-        public mixed $thenScalarExpression = null,
-    ) {
-    }
+	public function __construct(
+		public ConditionalExpression|Phase2OptimizableConditional $caseConditionExpression,
+		public mixed $thenScalarExpression = null,
+	) {
+	}
 
-    public function dispatch(SqlWalker $walker): string
-    {
-        return $walker->walkWhenClauseExpression($this);
-    }
+	public function dispatch(SqlWalker $walker): string
+	{
+		return $walker->walkWhenClauseExpression($this);
+	}
 }

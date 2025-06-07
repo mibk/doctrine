@@ -6,5 +6,5 @@ namespace Doctrine\ORM\Mapping;
 
 abstract class ToManyInverseSideMapping extends InverseSideMapping implements ToManyAssociationMapping
 {
-    use ToManyAssociationMappingImplementation;
+	use ToManyAssociationMappingImplementation;
 }

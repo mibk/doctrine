@@ -13,13 +13,13 @@ use Doctrine\ORM\Query\SqlWalker;
  */
 class ArithmeticTerm extends Node
 {
-    /** @param mixed[] $arithmeticFactors */
-    public function __construct(public array $arithmeticFactors)
-    {
-    }
+	/** @param mixed[] $arithmeticFactors */
+	public function __construct(public array $arithmeticFactors)
+	{
+	}
 
-    public function dispatch(SqlWalker $walker): string
-    {
-        return $walker->walkArithmeticTerm($this);
-    }
+	public function dispatch(SqlWalker $walker): string
+	{
+		return $walker->walkArithmeticTerm($this);
+	}
 }

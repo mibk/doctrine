@@ -17,33 +17,33 @@ use function sprintf;
 /** @internal */
 final class ReflectionReadonlyProperty extends ReflectionProperty
 {
-    public function __construct(
-        private readonly ReflectionProperty $wrappedProperty,
-    ) {
-        if (! $wrappedProperty->isReadOnly()) {
-            throw new InvalidArgumentException('Given property is not readonly.');
-        }
+	public function __construct(
+		private readonly ReflectionProperty $wrappedProperty,
+	) {
+		if (! $wrappedProperty->isReadOnly()) {
+			throw new InvalidArgumentException('Given property is not readonly.');
+		}
 
-        parent::__construct($wrappedProperty->class, $wrappedProperty->name);
-    }
+		parent::__construct($wrappedProperty->class, $wrappedProperty->name);
+	}
 
-    public function getValue(object|null $object = null): mixed
-    {
-        return $this->wrappedProperty->getValue(...func_get_args());
-    }
+	public function getValue(object|null $object = null): mixed
+	{
+		return $this->wrappedProperty->getValue(...func_get_args());
+	}
 
-    public function setValue(mixed $objectOrValue, mixed $value = null): void
-    {
-        if (func_num_args() < 2 || $objectOrValue === null || ! $this->isInitialized($objectOrValue)) {
-            $this->wrappedProperty->setValue(...func_get_args());
+	public function setValue(mixed $objectOrValue, mixed $value = null): void
+	{
+		if (func_num_args() < 2 || $objectOrValue === null || ! $this->isInitialized($objectOrValue)) {
+			$this->wrappedProperty->setValue(...func_get_args());
 
-            return;
-        }
+			return;
+		}
 
-        assert(is_object($objectOrValue));
+		assert(is_object($objectOrValue));
 
-        if (parent::getValue($objectOrValue) !== $value) {
-            throw new LogicException(sprintf('Attempting to change readonly property %s::$%s.', $this->class, $this->name));
-        }
-    }
+		if (parent::getValue($objectOrValue) !== $value) {
+			throw new LogicException(sprintf('Attempting to change readonly property %s::$%s.', $this->class, $this->name));
+		}
+	}
 }

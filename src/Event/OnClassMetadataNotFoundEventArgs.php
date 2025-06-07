@@ -19,31 +19,31 @@ use Doctrine\Persistence\ObjectManager;
  */
 class OnClassMetadataNotFoundEventArgs extends ManagerEventArgs
 {
-    private ClassMetadata|null $foundMetadata = null;
+	private ClassMetadata|null $foundMetadata = null;
 
-    /** @param EntityManagerInterface $objectManager */
-    public function __construct(
-        private readonly string $className,
-        ObjectManager $objectManager,
-    ) {
-        parent::__construct($objectManager);
-    }
+	/** @param EntityManagerInterface $objectManager */
+	public function __construct(
+		private readonly string $className,
+		ObjectManager $objectManager,
+	) {
+		parent::__construct($objectManager);
+	}
 
-    public function setFoundMetadata(ClassMetadata|null $classMetadata): void
-    {
-        $this->foundMetadata = $classMetadata;
-    }
+	public function setFoundMetadata(ClassMetadata|null $classMetadata): void
+	{
+		$this->foundMetadata = $classMetadata;
+	}
 
-    public function getFoundMetadata(): ClassMetadata|null
-    {
-        return $this->foundMetadata;
-    }
+	public function getFoundMetadata(): ClassMetadata|null
+	{
+		return $this->foundMetadata;
+	}
 
-    /**
-     * Retrieve class name for which a failed metadata fetch attempt was executed
-     */
-    public function getClassName(): string
-    {
-        return $this->className;
-    }
+	/**
+	 * Retrieve class name for which a failed metadata fetch attempt was executed
+	 */
+	public function getClassName(): string
+	{
+		return $this->className;
+	}
 }

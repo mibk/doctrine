@@ -19,54 +19,54 @@ use function reset;
  */
 class CountWalker extends TreeWalkerAdapter
 {
-    /**
-     * Distinct mode hint name.
-     */
-    public const HINT_DISTINCT = 'doctrine_paginator.distinct';
+	/**
+	 * Distinct mode hint name.
+	 */
+	public const HINT_DISTINCT = 'doctrine_paginator.distinct';
 
-    public function walkSelectStatement(SelectStatement $selectStatement): void
-    {
-        if ($selectStatement->havingClause) {
-            throw new RuntimeException('Cannot count query that uses a HAVING clause. Use the output walkers for pagination');
-        }
+	public function walkSelectStatement(SelectStatement $selectStatement): void
+	{
+		if ($selectStatement->havingClause) {
+			throw new RuntimeException('Cannot count query that uses a HAVING clause. Use the output walkers for pagination');
+		}
 
-        // Get the root entity and alias from the AST fromClause
-        $from = $selectStatement->fromClause->identificationVariableDeclarations;
+		// Get the root entity and alias from the AST fromClause
+		$from = $selectStatement->fromClause->identificationVariableDeclarations;
 
-        if (count($from) > 1) {
-            throw new RuntimeException('Cannot count query which selects two FROM components, cannot make distinction');
-        }
+		if (count($from) > 1) {
+			throw new RuntimeException('Cannot count query which selects two FROM components, cannot make distinction');
+		}
 
-        $distinct = $this->_getQuery()->getHint(self::HINT_DISTINCT);
+		$distinct = $this->_getQuery()->getHint(self::HINT_DISTINCT);
 
-        $countPathExpressionOrLiteral = '*';
-        if ($distinct) {
-            $fromRoot            = reset($from);
-            $rootAlias           = $fromRoot->rangeVariableDeclaration->aliasIdentificationVariable;
-            $rootClass           = $this->getMetadataForDqlAlias($rootAlias);
-            $identifierFieldName = $rootClass->getSingleIdentifierFieldName();
+		$countPathExpressionOrLiteral = '*';
+		if ($distinct) {
+			$fromRoot            = reset($from);
+			$rootAlias           = $fromRoot->rangeVariableDeclaration->aliasIdentificationVariable;
+			$rootClass           = $this->getMetadataForDqlAlias($rootAlias);
+			$identifierFieldName = $rootClass->getSingleIdentifierFieldName();
 
-            $pathType = PathExpression::TYPE_STATE_FIELD;
-            if (isset($rootClass->associationMappings[$identifierFieldName])) {
-                $pathType = PathExpression::TYPE_SINGLE_VALUED_ASSOCIATION;
-            }
+			$pathType = PathExpression::TYPE_STATE_FIELD;
+			if (isset($rootClass->associationMappings[$identifierFieldName])) {
+				$pathType = PathExpression::TYPE_SINGLE_VALUED_ASSOCIATION;
+			}
 
-            $countPathExpressionOrLiteral       = new PathExpression(
-                PathExpression::TYPE_STATE_FIELD | PathExpression::TYPE_SINGLE_VALUED_ASSOCIATION,
-                $rootAlias,
-                $identifierFieldName,
-            );
-            $countPathExpressionOrLiteral->type = $pathType;
-        }
+			$countPathExpressionOrLiteral       = new PathExpression(
+				PathExpression::TYPE_STATE_FIELD | PathExpression::TYPE_SINGLE_VALUED_ASSOCIATION,
+				$rootAlias,
+				$identifierFieldName,
+			);
+			$countPathExpressionOrLiteral->type = $pathType;
+		}
 
-        $selectStatement->selectClause->selectExpressions = [
-            new SelectExpression(
-                new AggregateExpression('count', $countPathExpressionOrLiteral, $distinct),
-                null,
-            ),
-        ];
+		$selectStatement->selectClause->selectExpressions = [
+			new SelectExpression(
+				new AggregateExpression('count', $countPathExpressionOrLiteral, $distinct),
+				null,
+			),
+		];
 
-        // ORDER BY is not needed, only increases query execution through unnecessary sorting.
-        $selectStatement->orderByClause = null;
-    }
+		// ORDER BY is not needed, only increases query execution through unnecessary sorting.
+		$selectStatement->orderByClause = null;
+	}
 }

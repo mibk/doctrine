@@ -16,18 +16,18 @@ use function func_num_args;
  */
 class NewObjectExpression extends Node
 {
-    /**
-     * @param class-string $className
-     * @param mixed[]      $args
-     */
-    public function __construct(public string $className, public array $args)
-    {
-    }
+	/**
+	 * @param class-string $className
+	 * @param mixed[]      $args
+	 */
+	public function __construct(public string $className, public array $args)
+	{
+	}
 
-    public function dispatch(SqlWalker $walker /*, string|null $parentAlias = null */): string
-    {
-        $parentAlias = func_num_args() > 1 ? func_get_arg(1) : null;
+	public function dispatch(SqlWalker $walker /*, string|null $parentAlias = null */): string
+	{
+		$parentAlias = func_num_args() > 1 ? func_get_arg(1) : null;
 
-        return $walker->walkNewObject($this, $parentAlias);
-    }
+		return $walker->walkNewObject($this, $parentAlias);
+	}
 }

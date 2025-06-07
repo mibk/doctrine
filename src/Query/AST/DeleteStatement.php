@@ -13,14 +13,14 @@ use Doctrine\ORM\Query\SqlWalker;
  */
 class DeleteStatement extends Node
 {
-    public WhereClause|null $whereClause = null;
+	public WhereClause|null $whereClause = null;
 
-    public function __construct(public DeleteClause $deleteClause)
-    {
-    }
+	public function __construct(public DeleteClause $deleteClause)
+	{
+	}
 
-    public function dispatch(SqlWalker $walker): string
-    {
-        return $walker->walkDeleteStatement($this);
-    }
+	public function dispatch(SqlWalker $walker): string
+	{
+		return $walker->walkDeleteStatement($this);
+	}
 }

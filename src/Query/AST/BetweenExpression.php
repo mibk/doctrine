@@ -8,16 +8,16 @@ use Doctrine\ORM\Query\SqlWalker;
 
 class BetweenExpression extends Node
 {
-    public function __construct(
-        public ArithmeticExpression $expression,
-        public ArithmeticExpression $leftBetweenExpression,
-        public ArithmeticExpression $rightBetweenExpression,
-        public bool $not = false,
-    ) {
-    }
+	public function __construct(
+		public ArithmeticExpression $expression,
+		public ArithmeticExpression $leftBetweenExpression,
+		public ArithmeticExpression $rightBetweenExpression,
+		public bool $not = false,
+	) {
+	}
 
-    public function dispatch(SqlWalker $walker): string
-    {
-        return $walker->walkBetweenExpression($this);
-    }
+	public function dispatch(SqlWalker $walker): string
+	{
+		return $walker->walkBetweenExpression($this);
+	}
 }

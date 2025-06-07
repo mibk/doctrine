@@ -9,8 +9,8 @@ use LogicException;
 
 final class RowNumberOverFunctionNotEnabled extends LogicException implements ORMException
 {
-    public static function create(): self
-    {
-        return new self('The RowNumberOverFunction is not intended for, nor is it enabled for use in DQL.');
-    }
+	public static function create(): self
+	{
+		return new self('The RowNumberOverFunction is not intended for, nor is it enabled for use in DQL.');
+	}
 }

@@ -19,58 +19,58 @@ use function ksort;
  */
 class NativeQuery extends AbstractQuery
 {
-    private string $sql;
+	private string $sql;
 
-    /** @return $this */
-    public function setSQL(string $sql): self
-    {
-        $this->sql = $sql;
+	/** @return $this */
+	public function setSQL(string $sql): self
+	{
+		$this->sql = $sql;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    public function getSQL(): string
-    {
-        return $this->sql;
-    }
+	public function getSQL(): string
+	{
+		return $this->sql;
+	}
 
-    protected function _doExecute(): Result|int
-    {
-        $parameters = [];
-        $types      = [];
+	protected function _doExecute(): Result|int
+	{
+		$parameters = [];
+		$types      = [];
 
-        foreach ($this->getParameters() as $parameter) {
-            $name = $parameter->getName();
+		foreach ($this->getParameters() as $parameter) {
+			$name = $parameter->getName();
 
-            if ($parameter->typeWasSpecified()) {
-                $parameters[$name] = $parameter->getValue();
-                $types[$name]      = $parameter->getType();
+			if ($parameter->typeWasSpecified()) {
+				$parameters[$name] = $parameter->getValue();
+				$types[$name]      = $parameter->getType();
 
-                continue;
-            }
+				continue;
+			}
 
-            $value = $this->processParameterValue($parameter->getValue());
-            $type  = $parameter->getValue() === $value
-                ? $parameter->getType()
-                : ParameterTypeInferer::inferType($value);
+			$value = $this->processParameterValue($parameter->getValue());
+			$type  = $parameter->getValue() === $value
+				? $parameter->getType()
+				: ParameterTypeInferer::inferType($value);
 
-            $parameters[$name] = $value;
-            $types[$name]      = $type;
-        }
+			$parameters[$name] = $value;
+			$types[$name]      = $type;
+		}
 
-        if ($parameters && is_int(key($parameters))) {
-            ksort($parameters);
-            ksort($types);
+		if ($parameters && is_int(key($parameters))) {
+			ksort($parameters);
+			ksort($types);
 
-            $parameters = array_values($parameters);
-            $types      = array_values($types);
-        }
+			$parameters = array_values($parameters);
+			$types      = array_values($types);
+		}
 
-        return $this->em->getConnection()->executeQuery(
-            $this->sql,
-            $parameters,
-            $types,
-            $this->queryCacheProfile,
-        );
-    }
+		return $this->em->getConnection()->executeQuery(
+			$this->sql,
+			$parameters,
+			$types,
+			$this->queryCacheProfile,
+		);
+	}
 }

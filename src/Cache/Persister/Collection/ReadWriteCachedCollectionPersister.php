@@ -15,89 +15,89 @@ use function spl_object_id;
 
 class ReadWriteCachedCollectionPersister extends AbstractCollectionPersister
 {
-    public function __construct(
-        CollectionPersister $persister,
-        ConcurrentRegion $region,
-        EntityManagerInterface $em,
-        AssociationMapping $association,
-    ) {
-        parent::__construct($persister, $region, $em, $association);
-    }
+	public function __construct(
+		CollectionPersister $persister,
+		ConcurrentRegion $region,
+		EntityManagerInterface $em,
+		AssociationMapping $association,
+	) {
+		parent::__construct($persister, $region, $em, $association);
+	}
 
-    public function afterTransactionComplete(): void
-    {
-        if (isset($this->queuedCache['update'])) {
-            foreach ($this->queuedCache['update'] as $item) {
-                $this->region->evict($item['key']);
-            }
-        }
+	public function afterTransactionComplete(): void
+	{
+		if (isset($this->queuedCache['update'])) {
+			foreach ($this->queuedCache['update'] as $item) {
+				$this->region->evict($item['key']);
+			}
+		}
 
-        if (isset($this->queuedCache['delete'])) {
-            foreach ($this->queuedCache['delete'] as $item) {
-                $this->region->evict($item['key']);
-            }
-        }
+		if (isset($this->queuedCache['delete'])) {
+			foreach ($this->queuedCache['delete'] as $item) {
+				$this->region->evict($item['key']);
+			}
+		}
 
-        $this->queuedCache = [];
-    }
+		$this->queuedCache = [];
+	}
 
-    public function afterTransactionRolledBack(): void
-    {
-        if (isset($this->queuedCache['update'])) {
-            foreach ($this->queuedCache['update'] as $item) {
-                $this->region->evict($item['key']);
-            }
-        }
+	public function afterTransactionRolledBack(): void
+	{
+		if (isset($this->queuedCache['update'])) {
+			foreach ($this->queuedCache['update'] as $item) {
+				$this->region->evict($item['key']);
+			}
+		}
 
-        if (isset($this->queuedCache['delete'])) {
-            foreach ($this->queuedCache['delete'] as $item) {
-                $this->region->evict($item['key']);
-            }
-        }
+		if (isset($this->queuedCache['delete'])) {
+			foreach ($this->queuedCache['delete'] as $item) {
+				$this->region->evict($item['key']);
+			}
+		}
 
-        $this->queuedCache = [];
-    }
+		$this->queuedCache = [];
+	}
 
-    public function delete(PersistentCollection $collection): void
-    {
-        $ownerId = $this->uow->getEntityIdentifier($collection->getOwner());
-        $key     = new CollectionCacheKey($this->sourceEntity->rootEntityName, $this->association->fieldName, $ownerId, $this->filters->getHash());
-        $lock    = $this->region->lock($key);
+	public function delete(PersistentCollection $collection): void
+	{
+		$ownerId = $this->uow->getEntityIdentifier($collection->getOwner());
+		$key     = new CollectionCacheKey($this->sourceEntity->rootEntityName, $this->association->fieldName, $ownerId, $this->filters->getHash());
+		$lock    = $this->region->lock($key);
 
-        $this->persister->delete($collection);
+		$this->persister->delete($collection);
 
-        if ($lock === null) {
-            return;
-        }
+		if ($lock === null) {
+			return;
+		}
 
-        $this->queuedCache['delete'][spl_object_id($collection)] = [
-            'key'   => $key,
-            'lock'  => $lock,
-        ];
-    }
+		$this->queuedCache['delete'][spl_object_id($collection)] = [
+			'key'   => $key,
+			'lock'  => $lock,
+		];
+	}
 
-    public function update(PersistentCollection $collection): void
-    {
-        $isInitialized = $collection->isInitialized();
-        $isDirty       = $collection->isDirty();
+	public function update(PersistentCollection $collection): void
+	{
+		$isInitialized = $collection->isInitialized();
+		$isDirty       = $collection->isDirty();
 
-        if (! $isInitialized && ! $isDirty) {
-            return;
-        }
+		if (! $isInitialized && ! $isDirty) {
+			return;
+		}
 
-        $this->persister->update($collection);
+		$this->persister->update($collection);
 
-        $ownerId = $this->uow->getEntityIdentifier($collection->getOwner());
-        $key     = new CollectionCacheKey($this->sourceEntity->rootEntityName, $this->association->fieldName, $ownerId, $this->filters->getHash());
-        $lock    = $this->region->lock($key);
+		$ownerId = $this->uow->getEntityIdentifier($collection->getOwner());
+		$key     = new CollectionCacheKey($this->sourceEntity->rootEntityName, $this->association->fieldName, $ownerId, $this->filters->getHash());
+		$lock    = $this->region->lock($key);
 
-        if ($lock === null) {
-            return;
-        }
+		if ($lock === null) {
+			return;
+		}
 
-        $this->queuedCache['update'][spl_object_id($collection)] = [
-            'key'   => $key,
-            'lock'  => $lock,
-        ];
-    }
+		$this->queuedCache['update'][spl_object_id($collection)] = [
+			'key'   => $key,
+			'lock'  => $lock,
+		];
+	}
 }

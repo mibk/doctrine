@@ -13,12 +13,12 @@ use Doctrine\ORM\Query\SqlWalker;
  */
 class WhereClause extends Node
 {
-    public function __construct(public ConditionalExpression|Phase2OptimizableConditional $conditionalExpression)
-    {
-    }
+	public function __construct(public ConditionalExpression|Phase2OptimizableConditional $conditionalExpression)
+	{
+	}
 
-    public function dispatch(SqlWalker $walker): string
-    {
-        return $walker->walkWhereClause($this);
-    }
+	public function dispatch(SqlWalker $walker): string
+	{
+		return $walker->walkWhereClause($this);
+	}
 }

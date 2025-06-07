@@ -15,16 +15,16 @@ use function strtoupper;
 /** @internal */
 trait SQLResultCasing
 {
-    private function getSQLResultCasing(AbstractPlatform $platform, string $column): string
-    {
-        if ($platform instanceof DB2Platform || $platform instanceof OraclePlatform) {
-            return strtoupper($column);
-        }
+	private function getSQLResultCasing(AbstractPlatform $platform, string $column): string
+	{
+		if ($platform instanceof DB2Platform || $platform instanceof OraclePlatform) {
+			return strtoupper($column);
+		}
 
-        if ($platform instanceof PostgreSQLPlatform) {
-            return strtolower($column);
-        }
+		if ($platform instanceof PostgreSQLPlatform) {
+			return strtolower($column);
+		}
 
-        return $column;
-    }
+		return $column;
+	}
 }

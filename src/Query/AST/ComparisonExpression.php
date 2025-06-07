@@ -18,15 +18,15 @@ use Doctrine\ORM\Query\SqlWalker;
  */
 class ComparisonExpression extends Node
 {
-    public function __construct(
-        public Node|string $leftExpression,
-        public string $operator,
-        public Node|string $rightExpression,
-    ) {
-    }
+	public function __construct(
+		public Node|string $leftExpression,
+		public string $operator,
+		public Node|string $rightExpression,
+	) {
+	}
 
-    public function dispatch(SqlWalker $walker): string
-    {
-        return $walker->walkComparisonExpression($this);
-    }
+	public function dispatch(SqlWalker $walker): string
+	{
+		return $walker->walkComparisonExpression($this);
+	}
 }

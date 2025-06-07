@@ -19,57 +19,57 @@ use function assert;
  */
 class DefaultCollectionHydrator implements CollectionHydrator
 {
-    private readonly UnitOfWork $uow;
+	private readonly UnitOfWork $uow;
 
-    /** @var array<string,mixed> */
-    private static array $hints = [Query::HINT_CACHE_ENABLED => true];
+	/** @var array<string,mixed> */
+	private static array $hints = [Query::HINT_CACHE_ENABLED => true];
 
-    public function __construct(
-        private readonly EntityManagerInterface $em,
-    ) {
-        $this->uow = $em->getUnitOfWork();
-    }
+	public function __construct(
+		private readonly EntityManagerInterface $em,
+	) {
+		$this->uow = $em->getUnitOfWork();
+	}
 
-    public function buildCacheEntry(ClassMetadata $metadata, CollectionCacheKey $key, array|Collection $collection): CollectionCacheEntry
-    {
-        $data = [];
+	public function buildCacheEntry(ClassMetadata $metadata, CollectionCacheKey $key, array|Collection $collection): CollectionCacheEntry
+	{
+		$data = [];
 
-        foreach ($collection as $index => $entity) {
-            $data[$index] = new EntityCacheKey($metadata->rootEntityName, $this->uow->getEntityIdentifier($entity));
-        }
+		foreach ($collection as $index => $entity) {
+			$data[$index] = new EntityCacheKey($metadata->rootEntityName, $this->uow->getEntityIdentifier($entity));
+		}
 
-        return new CollectionCacheEntry($data);
-    }
+		return new CollectionCacheEntry($data);
+	}
 
-    public function loadCacheEntry(ClassMetadata $metadata, CollectionCacheKey $key, CollectionCacheEntry $entry, PersistentCollection $collection): array|null
-    {
-        $assoc           = $metadata->associationMappings[$key->association];
-        $targetPersister = $this->uow->getEntityPersister($assoc->targetEntity);
-        assert($targetPersister instanceof CachedPersister);
-        $targetRegion = $targetPersister->getCacheRegion();
-        $list         = [];
+	public function loadCacheEntry(ClassMetadata $metadata, CollectionCacheKey $key, CollectionCacheEntry $entry, PersistentCollection $collection): array|null
+	{
+		$assoc           = $metadata->associationMappings[$key->association];
+		$targetPersister = $this->uow->getEntityPersister($assoc->targetEntity);
+		assert($targetPersister instanceof CachedPersister);
+		$targetRegion = $targetPersister->getCacheRegion();
+		$list         = [];
 
-        /** @var EntityCacheEntry[]|null $entityEntries */
-        $entityEntries = $targetRegion->getMultiple($entry);
+		/** @var EntityCacheEntry[]|null $entityEntries */
+		$entityEntries = $targetRegion->getMultiple($entry);
 
-        if ($entityEntries === null) {
-            return null;
-        }
+		if ($entityEntries === null) {
+			return null;
+		}
 
-        foreach ($entityEntries as $index => $entityEntry) {
-            $entity = $this->uow->createEntity(
-                $entityEntry->class,
-                $entityEntry->resolveAssociationEntries($this->em),
-                self::$hints,
-            );
+		foreach ($entityEntries as $index => $entityEntry) {
+			$entity = $this->uow->createEntity(
+				$entityEntry->class,
+				$entityEntry->resolveAssociationEntries($this->em),
+				self::$hints,
+			);
 
-            $collection->hydrateSet($index, $entity);
+			$collection->hydrateSet($index, $entity);
 
-            $list[$index] = $entity;
-        }
+			$list[$index] = $entity;
+		}
 
-        $this->uow->hydrationComplete();
+		$this->uow->hydrationComplete();
 
-        return $list;
-    }
+		return $list;
+	}
 }

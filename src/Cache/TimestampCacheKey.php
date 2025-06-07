@@ -9,9 +9,9 @@ namespace Doctrine\ORM\Cache;
  */
 class TimestampCacheKey extends CacheKey
 {
-    /** @param string $space Result cache id */
-    public function __construct(string $space)
-    {
-        parent::__construct($space);
-    }
+	/** @param string $space Result cache id */
+	public function __construct(string $space)
+	{
+		parent::__construct($space);
+	}
 }

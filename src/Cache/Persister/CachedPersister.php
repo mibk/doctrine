@@ -11,15 +11,15 @@ use Doctrine\ORM\Cache\Region;
  */
 interface CachedPersister
 {
-    /**
-     * Perform whatever processing is encapsulated here after completion of the transaction.
-     */
-    public function afterTransactionComplete(): void;
+	/**
+	 * Perform whatever processing is encapsulated here after completion of the transaction.
+	 */
+	public function afterTransactionComplete(): void;
 
-    /**
-     * Perform whatever processing is encapsulated here after completion of the rolled-back.
-     */
-    public function afterTransactionRolledBack(): void;
+	/**
+	 * Perform whatever processing is encapsulated here after completion of the rolled-back.
+	 */
+	public function afterTransactionRolledBack(): void;
 
-    public function getCacheRegion(): Region;
+	public function getCacheRegion(): Region;
 }

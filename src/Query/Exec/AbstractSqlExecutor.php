@@ -22,40 +22,40 @@ use Doctrine\DBAL\Types\Type;
  */
 abstract class AbstractSqlExecutor
 {
-    /** @var list<string>|string */
-    protected array|string $sqlStatements;
+	/** @var list<string>|string */
+	protected array|string $sqlStatements;
 
-    protected QueryCacheProfile|null $queryCacheProfile = null;
+	protected QueryCacheProfile|null $queryCacheProfile = null;
 
-    /**
-     * Gets the SQL statements that are executed by the executor.
-     *
-     * @return list<string>|string  All the SQL update statements.
-     */
-    public function getSqlStatements(): array|string
-    {
-        return $this->sqlStatements;
-    }
+	/**
+	 * Gets the SQL statements that are executed by the executor.
+	 *
+	 * @return list<string>|string  All the SQL update statements.
+	 */
+	public function getSqlStatements(): array|string
+	{
+		return $this->sqlStatements;
+	}
 
-    public function setQueryCacheProfile(QueryCacheProfile $qcp): void
-    {
-        $this->queryCacheProfile = $qcp;
-    }
+	public function setQueryCacheProfile(QueryCacheProfile $qcp): void
+	{
+		$this->queryCacheProfile = $qcp;
+	}
 
-    /**
-     * Do not use query cache
-     */
-    public function removeQueryCacheProfile(): void
-    {
-        $this->queryCacheProfile = null;
-    }
+	/**
+	 * Do not use query cache
+	 */
+	public function removeQueryCacheProfile(): void
+	{
+		$this->queryCacheProfile = null;
+	}
 
-    /**
-     * Executes all sql statements.
-     *
-     * @param Connection                       $conn   The database connection that is used to execute the queries.
-     * @param list<mixed>|array<string, mixed> $params The parameters.
-     * @phpstan-param WrapperParameterTypeArray  $types  The parameter types.
-     */
-    abstract public function execute(Connection $conn, array $params, array $types): Result|int;
+	/**
+	 * Executes all sql statements.
+	 *
+	 * @param Connection                       $conn   The database connection that is used to execute the queries.
+	 * @param list<mixed>|array<string, mixed> $params The parameters.
+	 * @phpstan-param WrapperParameterTypeArray  $types  The parameter types.
+	 */
+	abstract public function execute(Connection $conn, array $params, array $types): Result|int;
 }

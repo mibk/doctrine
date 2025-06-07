@@ -8,11 +8,11 @@ use LogicException;
 
 final class MissingMappingDriverImplementation extends LogicException implements ManagerException
 {
-    public static function create(): self
-    {
-        return new self(
-            "It's a requirement to specify a Metadata Driver and pass it " .
-            'to Doctrine\\ORM\\Configuration::setMetadataDriverImpl().',
-        );
-    }
+	public static function create(): self
+	{
+		return new self(
+			"It's a requirement to specify a Metadata Driver and pass it " .
+			'to Doctrine\\ORM\\Configuration::setMetadataDriverImpl().',
+		);
+	}
 }

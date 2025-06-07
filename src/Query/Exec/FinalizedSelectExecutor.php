@@ -14,16 +14,16 @@ use Doctrine\DBAL\Result;
  */
 class FinalizedSelectExecutor extends AbstractSqlExecutor
 {
-    public function __construct(string $sql)
-    {
-        $this->sqlStatements = $sql;
-    }
+	public function __construct(string $sql)
+	{
+		$this->sqlStatements = $sql;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public function execute(Connection $conn, array $params, array $types): Result
-    {
-        return $conn->executeQuery($this->getSqlStatements(), $params, $types, $this->queryCacheProfile);
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	public function execute(Connection $conn, array $params, array $types): Result
+	{
+		return $conn->executeQuery($this->getSqlStatements(), $params, $types, $this->queryCacheProfile);
+	}
 }

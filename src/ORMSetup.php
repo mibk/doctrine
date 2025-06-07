@@ -22,106 +22,106 @@ use function sys_get_temp_dir;
 
 final class ORMSetup
 {
-    /**
-     * Creates a configuration with an attribute metadata driver.
-     *
-     * @param string[] $paths
-     */
-    public static function createAttributeMetadataConfiguration(
-        array $paths,
-        bool $isDevMode = false,
-        string|null $proxyDir = null,
-        CacheItemPoolInterface|null $cache = null,
-    ): Configuration {
-        $config = self::createConfiguration($isDevMode, $proxyDir, $cache);
-        $config->setMetadataDriverImpl(new AttributeDriver($paths));
+	/**
+	 * Creates a configuration with an attribute metadata driver.
+	 *
+	 * @param string[] $paths
+	 */
+	public static function createAttributeMetadataConfiguration(
+		array $paths,
+		bool $isDevMode = false,
+		string|null $proxyDir = null,
+		CacheItemPoolInterface|null $cache = null,
+	): Configuration {
+		$config = self::createConfiguration($isDevMode, $proxyDir, $cache);
+		$config->setMetadataDriverImpl(new AttributeDriver($paths));
 
-        return $config;
-    }
+		return $config;
+	}
 
-    /**
-     * Creates a configuration with an XML metadata driver.
-     *
-     * @param string[] $paths
-     */
-    public static function createXMLMetadataConfiguration(
-        array $paths,
-        bool $isDevMode = false,
-        string|null $proxyDir = null,
-        CacheItemPoolInterface|null $cache = null,
-        bool $isXsdValidationEnabled = true,
-    ): Configuration {
-        $config = self::createConfiguration($isDevMode, $proxyDir, $cache);
-        $config->setMetadataDriverImpl(new XmlDriver($paths, XmlDriver::DEFAULT_FILE_EXTENSION, $isXsdValidationEnabled));
+	/**
+	 * Creates a configuration with an XML metadata driver.
+	 *
+	 * @param string[] $paths
+	 */
+	public static function createXMLMetadataConfiguration(
+		array $paths,
+		bool $isDevMode = false,
+		string|null $proxyDir = null,
+		CacheItemPoolInterface|null $cache = null,
+		bool $isXsdValidationEnabled = true,
+	): Configuration {
+		$config = self::createConfiguration($isDevMode, $proxyDir, $cache);
+		$config->setMetadataDriverImpl(new XmlDriver($paths, XmlDriver::DEFAULT_FILE_EXTENSION, $isXsdValidationEnabled));
 
-        return $config;
-    }
+		return $config;
+	}
 
-    /**
-     * Creates a configuration without a metadata driver.
-     */
-    public static function createConfiguration(
-        bool $isDevMode = false,
-        string|null $proxyDir = null,
-        CacheItemPoolInterface|null $cache = null,
-    ): Configuration {
-        $proxyDir = $proxyDir ?: sys_get_temp_dir();
+	/**
+	 * Creates a configuration without a metadata driver.
+	 */
+	public static function createConfiguration(
+		bool $isDevMode = false,
+		string|null $proxyDir = null,
+		CacheItemPoolInterface|null $cache = null,
+	): Configuration {
+		$proxyDir = $proxyDir ?: sys_get_temp_dir();
 
-        $cache = self::createCacheInstance($isDevMode, $proxyDir, $cache);
+		$cache = self::createCacheInstance($isDevMode, $proxyDir, $cache);
 
-        $config = new Configuration();
+		$config = new Configuration();
 
-        $config->setMetadataCache($cache);
-        $config->setQueryCache($cache);
-        $config->setResultCache($cache);
-        $config->setProxyDir($proxyDir);
-        $config->setProxyNamespace('DoctrineProxies');
-        $config->setAutoGenerateProxyClasses($isDevMode);
+		$config->setMetadataCache($cache);
+		$config->setQueryCache($cache);
+		$config->setResultCache($cache);
+		$config->setProxyDir($proxyDir);
+		$config->setProxyNamespace('DoctrineProxies');
+		$config->setAutoGenerateProxyClasses($isDevMode);
 
-        return $config;
-    }
+		return $config;
+	}
 
-    private static function createCacheInstance(
-        bool $isDevMode,
-        string $proxyDir,
-        CacheItemPoolInterface|null $cache,
-    ): CacheItemPoolInterface {
-        if ($cache !== null) {
-            return $cache;
-        }
+	private static function createCacheInstance(
+		bool $isDevMode,
+		string $proxyDir,
+		CacheItemPoolInterface|null $cache,
+	): CacheItemPoolInterface {
+		if ($cache !== null) {
+			return $cache;
+		}
 
-        if (! class_exists(ArrayAdapter::class)) {
-            throw new RuntimeException(
-                'The Doctrine setup tool cannot configure caches without symfony/cache.'
-                . ' Please add symfony/cache as explicit dependency or pass your own cache implementation.',
-            );
-        }
+		if (! class_exists(ArrayAdapter::class)) {
+			throw new RuntimeException(
+				'The Doctrine setup tool cannot configure caches without symfony/cache.'
+				. ' Please add symfony/cache as explicit dependency or pass your own cache implementation.',
+			);
+		}
 
-        if ($isDevMode) {
-            return new ArrayAdapter();
-        }
+		if ($isDevMode) {
+			return new ArrayAdapter();
+		}
 
-        $namespace = 'dc2_' . md5($proxyDir);
+		$namespace = 'dc2_' . md5($proxyDir);
 
-        if (extension_loaded('apcu') && apcu_enabled()) {
-            return new ApcuAdapter($namespace);
-        }
+		if (extension_loaded('apcu') && apcu_enabled()) {
+			return new ApcuAdapter($namespace);
+		}
 
-        if (MemcachedAdapter::isSupported()) {
-            return new MemcachedAdapter(MemcachedAdapter::createConnection('memcached://127.0.0.1'), $namespace);
-        }
+		if (MemcachedAdapter::isSupported()) {
+			return new MemcachedAdapter(MemcachedAdapter::createConnection('memcached://127.0.0.1'), $namespace);
+		}
 
-        if (extension_loaded('redis')) {
-            $redis = new Redis();
-            $redis->connect('127.0.0.1');
+		if (extension_loaded('redis')) {
+			$redis = new Redis();
+			$redis->connect('127.0.0.1');
 
-            return new RedisAdapter($redis, $namespace);
-        }
+			return new RedisAdapter($redis, $namespace);
+		}
 
-        return new ArrayAdapter();
-    }
+		return new ArrayAdapter();
+	}
 
-    private function __construct()
-    {
-    }
+	private function __construct()
+	{
+	}
 }

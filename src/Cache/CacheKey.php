@@ -10,7 +10,7 @@ namespace Doctrine\ORM\Cache;
  */
 abstract class CacheKey
 {
-    public function __construct(public readonly string $hash)
-    {
-    }
+	public function __construct(public readonly string $hash)
+	{
+	}
 }

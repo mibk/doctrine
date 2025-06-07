@@ -15,34 +15,34 @@ use function implode;
  */
 class Func implements Stringable
 {
-    /** @var mixed[] */
-    protected array $arguments;
+	/** @var mixed[] */
+	protected array $arguments;
 
-    /**
-     * Creates a function, with the given argument.
-     *
-     * @phpstan-param list<mixed>|mixed $arguments
-     */
-    public function __construct(
-        protected string $name,
-        mixed $arguments,
-    ) {
-        $this->arguments = (array) $arguments;
-    }
+	/**
+	 * Creates a function, with the given argument.
+	 *
+	 * @phpstan-param list<mixed>|mixed $arguments
+	 */
+	public function __construct(
+		protected string $name,
+		mixed $arguments,
+	) {
+		$this->arguments = (array) $arguments;
+	}
 
-    public function getName(): string
-    {
-        return $this->name;
-    }
+	public function getName(): string
+	{
+		return $this->name;
+	}
 
-    /** @phpstan-return list<mixed> */
-    public function getArguments(): array
-    {
-        return $this->arguments;
-    }
+	/** @phpstan-return list<mixed> */
+	public function getArguments(): array
+	{
+		return $this->arguments;
+	}
 
-    public function __toString(): string
-    {
-        return $this->name . '(' . implode(', ', $this->arguments) . ')';
-    }
+	public function __toString(): string
+	{
+		return $this->name . '(' . implode(', ', $this->arguments) . ')';
+	}
 }

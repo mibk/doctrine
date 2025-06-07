@@ -13,14 +13,14 @@ use Doctrine\ORM\Query\SqlWalker;
  */
 class UpdateStatement extends Node
 {
-    public WhereClause|null $whereClause = null;
+	public WhereClause|null $whereClause = null;
 
-    public function __construct(public UpdateClause $updateClause)
-    {
-    }
+	public function __construct(public UpdateClause $updateClause)
+	{
+	}
 
-    public function dispatch(SqlWalker $walker): string
-    {
-        return $walker->walkUpdateStatement($this);
-    }
+	public function dispatch(SqlWalker $walker): string
+	{
+		return $walker->walkUpdateStatement($this);
+	}
 }

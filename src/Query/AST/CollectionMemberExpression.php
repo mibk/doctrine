@@ -13,15 +13,15 @@ use Doctrine\ORM\Query\SqlWalker;
  */
 class CollectionMemberExpression extends Node
 {
-    public function __construct(
-        public mixed $entityExpression,
-        public PathExpression $collectionValuedPathExpression,
-        public bool $not = false,
-    ) {
-    }
+	public function __construct(
+		public mixed $entityExpression,
+		public PathExpression $collectionValuedPathExpression,
+		public bool $not = false,
+	) {
+	}
 
-    public function dispatch(SqlWalker $walker): string
-    {
-        return $walker->walkCollectionMemberExpression($this);
-    }
+	public function dispatch(SqlWalker $walker): string
+	{
+		return $walker->walkCollectionMemberExpression($this);
+	}
 }

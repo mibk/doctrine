@@ -8,21 +8,21 @@ use Doctrine\ORM\EntityManagerInterface;
 
 abstract class AbstractIdGenerator
 {
-    /**
-     * Generates an identifier for an entity.
-     */
-    abstract public function generateId(EntityManagerInterface $em, object|null $entity): mixed;
+	/**
+	 * Generates an identifier for an entity.
+	 */
+	abstract public function generateId(EntityManagerInterface $em, object|null $entity): mixed;
 
-    /**
-     * Gets whether this generator is a post-insert generator which means that
-     * {@link generateId()} must be called after the entity has been inserted
-     * into the database.
-     *
-     * By default, this method returns FALSE. Generators that have this requirement
-     * must override this method and return TRUE.
-     */
-    public function isPostInsertGenerator(): bool
-    {
-        return false;
-    }
+	/**
+	 * Gets whether this generator is a post-insert generator which means that
+	 * {@link generateId()} must be called after the entity has been inserted
+	 * into the database.
+	 *
+	 * By default, this method returns FALSE. Generators that have this requirement
+	 * must override this method and return TRUE.
+	 */
+	public function isPostInsertGenerator(): bool
+	{
+		return false;
+	}
 }

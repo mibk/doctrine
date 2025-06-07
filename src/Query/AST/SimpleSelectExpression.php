@@ -14,14 +14,14 @@ use Doctrine\ORM\Query\SqlWalker;
  */
 class SimpleSelectExpression extends Node
 {
-    public string|null $fieldIdentificationVariable = null;
+	public string|null $fieldIdentificationVariable = null;
 
-    public function __construct(public Node|string $expression)
-    {
-    }
+	public function __construct(public Node|string $expression)
+	{
+	}
 
-    public function dispatch(SqlWalker $walker): string
-    {
-        return $walker->walkSimpleSelectExpression($this);
-    }
+	public function dispatch(SqlWalker $walker): string
+	{
+		return $walker->walkSimpleSelectExpression($this);
+	}
 }

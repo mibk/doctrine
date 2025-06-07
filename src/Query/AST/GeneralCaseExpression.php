@@ -13,15 +13,15 @@ use Doctrine\ORM\Query\SqlWalker;
  */
 class GeneralCaseExpression extends Node
 {
-    /** @param mixed[] $whenClauses */
-    public function __construct(
-        public array $whenClauses,
-        public mixed $elseScalarExpression = null,
-    ) {
-    }
+	/** @param mixed[] $whenClauses */
+	public function __construct(
+		public array $whenClauses,
+		public mixed $elseScalarExpression = null,
+	) {
+	}
 
-    public function dispatch(SqlWalker $walker): string
-    {
-        return $walker->walkGeneralCaseExpression($this);
-    }
+	public function dispatch(SqlWalker $walker): string
+	{
+		return $walker->walkGeneralCaseExpression($this);
+	}
 }

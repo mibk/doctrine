@@ -13,26 +13,26 @@ use function is_array;
 #[Attribute(Attribute::TARGET_CLASS)]
 final class AssociationOverrides implements MappingAttribute
 {
-    /**
-     * Mapping overrides of relationship properties.
-     *
-     * @var list<AssociationOverride>
-     */
-    public readonly array $overrides;
+	/**
+	 * Mapping overrides of relationship properties.
+	 *
+	 * @var list<AssociationOverride>
+	 */
+	public readonly array $overrides;
 
-    /** @param array<AssociationOverride>|AssociationOverride $overrides */
-    public function __construct(array|AssociationOverride $overrides)
-    {
-        if (! is_array($overrides)) {
-            $overrides = [$overrides];
-        }
+	/** @param array<AssociationOverride>|AssociationOverride $overrides */
+	public function __construct(array|AssociationOverride $overrides)
+	{
+		if (! is_array($overrides)) {
+			$overrides = [$overrides];
+		}
 
-        foreach ($overrides as $override) {
-            if (! ($override instanceof AssociationOverride)) {
-                throw MappingException::invalidOverrideType('AssociationOverride', $override);
-            }
-        }
+		foreach ($overrides as $override) {
+			if (! ($override instanceof AssociationOverride)) {
+				throw MappingException::invalidOverrideType('AssociationOverride', $override);
+			}
+		}
 
-        $this->overrides = array_values($overrides);
-    }
+		$this->overrides = array_values($overrides);
+	}
 }

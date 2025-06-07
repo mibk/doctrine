@@ -16,16 +16,16 @@ use Doctrine\ORM\Query\SqlWalker;
  */
 class SingleSelectExecutor extends AbstractSqlExecutor
 {
-    public function __construct(SelectStatement $AST, SqlWalker $sqlWalker)
-    {
-        $this->sqlStatements = $sqlWalker->walkSelectStatement($AST);
-    }
+	public function __construct(SelectStatement $AST, SqlWalker $sqlWalker)
+	{
+		$this->sqlStatements = $sqlWalker->walkSelectStatement($AST);
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public function execute(Connection $conn, array $params, array $types): Result
-    {
-        return $conn->executeQuery($this->sqlStatements, $params, $types, $this->queryCacheProfile);
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	public function execute(Connection $conn, array $params, array $types): Result
+	{
+		return $conn->executeQuery($this->sqlStatements, $params, $types, $this->queryCacheProfile);
+	}
 }

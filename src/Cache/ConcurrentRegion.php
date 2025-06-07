@@ -13,24 +13,24 @@ namespace Doctrine\ORM\Cache;
  */
 interface ConcurrentRegion extends Region
 {
-    /**
-     * Attempts to read lock the mapping for the given key.
-     *
-     * @param CacheKey $key The key of the item to lock.
-     *
-     * @return Lock|null A lock instance or NULL if the lock already exists.
-     *
-     * @throws LockException Indicates a problem accessing the region.
-     */
-    public function lock(CacheKey $key): Lock|null;
+	/**
+	 * Attempts to read lock the mapping for the given key.
+	 *
+	 * @param CacheKey $key The key of the item to lock.
+	 *
+	 * @return Lock|null A lock instance or NULL if the lock already exists.
+	 *
+	 * @throws LockException Indicates a problem accessing the region.
+	 */
+	public function lock(CacheKey $key): Lock|null;
 
-    /**
-     * Attempts to read unlock the mapping for the given key.
-     *
-     * @param CacheKey $key  The key of the item to unlock.
-     * @param Lock     $lock The lock previously obtained from {@link readLock}
-     *
-     * @throws LockException Indicates a problem accessing the region.
-     */
-    public function unlock(CacheKey $key, Lock $lock): bool;
+	/**
+	 * Attempts to read unlock the mapping for the given key.
+	 *
+	 * @param CacheKey $key  The key of the item to unlock.
+	 * @param Lock     $lock The lock previously obtained from {@link readLock}
+	 *
+	 * @throws LockException Indicates a problem accessing the region.
+	 */
+	public function unlock(CacheKey $key, Lock $lock): bool;
 }

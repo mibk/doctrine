@@ -10,11 +10,11 @@ use function sprintf;
 
 final class EntityIdentityCollisionException extends Exception implements ORMException
 {
-    public static function create(object $existingEntity, object $newEntity, string $idHash): self
-    {
-        return new self(
-            sprintf(
-                <<<'EXCEPTION'
+	public static function create(object $existingEntity, object $newEntity, string $idHash): self
+	{
+		return new self(
+			sprintf(
+				<<<'EXCEPTION'
 While adding an entity of class %s with an ID hash of "%s" to the identity map,
 another object of class %s was already present for the same ID. This exception
 is a safeguard against an internal inconsistency - IDs should uniquely map to
@@ -29,11 +29,11 @@ entity.
 
 Otherwise, it might be an ORM-internal inconsistency, please report it.
 EXCEPTION
-                ,
-                $newEntity::class,
-                $idHash,
-                $existingEntity::class,
-            ),
-        );
-    }
+				,
+				$newEntity::class,
+				$idHash,
+				$existingEntity::class,
+			),
+		);
+	}
 }

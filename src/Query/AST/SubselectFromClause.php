@@ -13,13 +13,13 @@ use Doctrine\ORM\Query\SqlWalker;
  */
 class SubselectFromClause extends Node
 {
-    /** @param mixed[] $identificationVariableDeclarations */
-    public function __construct(public array $identificationVariableDeclarations)
-    {
-    }
+	/** @param mixed[] $identificationVariableDeclarations */
+	public function __construct(public array $identificationVariableDeclarations)
+	{
+	}
 
-    public function dispatch(SqlWalker $walker): string
-    {
-        return $walker->walkSubselectFromClause($this);
-    }
+	public function dispatch(SqlWalker $walker): string
+	{
+		return $walker->walkSubselectFromClause($this);
+	}
 }

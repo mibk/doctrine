@@ -25,31 +25,31 @@ use const DEBUG_BACKTRACE_IGNORE_ARGS;
  */
 trait NoUnknownNamedArguments
 {
-    /**
-     * @param TItem[] $parameter
-     *
-     * @template TItem
-     * @phpstan-assert list<TItem> $parameter
-     */
-    private static function validateVariadicParameter(array $parameter): void
-    {
-        if (array_is_list($parameter)) {
-            return;
-        }
+	/**
+	 * @param TItem[] $parameter
+	 *
+	 * @template TItem
+	 * @phpstan-assert list<TItem> $parameter
+	 */
+	private static function validateVariadicParameter(array $parameter): void
+	{
+		if (array_is_list($parameter)) {
+			return;
+		}
 
-        [, $trace] = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-        assert(isset($trace['class']));
+		[, $trace] = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+		assert(isset($trace['class']));
 
-        $additionalArguments = array_values(array_filter(
-            array_keys($parameter),
-            is_string(...),
-        ));
+		$additionalArguments = array_values(array_filter(
+			array_keys($parameter),
+			is_string(...),
+		));
 
-        throw new BadMethodCallException(sprintf(
-            'Invalid call to %s::%s(), unknown named arguments: %s',
-            $trace['class'],
-            $trace['function'],
-            implode(', ', $additionalArguments),
-        ));
-    }
+		throw new BadMethodCallException(sprintf(
+			'Invalid call to %s::%s(), unknown named arguments: %s',
+			$trace['class'],
+			$trace['function'],
+			implode(', ', $additionalArguments),
+		));
+	}
 }

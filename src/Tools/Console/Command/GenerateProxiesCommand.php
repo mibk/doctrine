@@ -26,71 +26,71 @@ use function sprintf;
  */
 class GenerateProxiesCommand extends AbstractEntityManagerCommand
 {
-    protected function configure(): void
-    {
-        $this->setName('orm:generate-proxies')
-             ->setAliases(['orm:generate:proxies'])
-             ->setDescription('Generates proxy classes for entity classes')
-             ->addArgument('dest-path', InputArgument::OPTIONAL, 'The path to generate your proxy classes. If none is provided, it will attempt to grab from configuration.')
-             ->addOption('em', null, InputOption::VALUE_REQUIRED, 'Name of the entity manager to operate on')
-             ->addOption('filter', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'A string pattern used to match entities that should be processed.')
-             ->setHelp('Generates proxy classes for entity classes.');
-    }
+	protected function configure(): void
+	{
+		$this->setName('orm:generate-proxies')
+			 ->setAliases(['orm:generate:proxies'])
+			 ->setDescription('Generates proxy classes for entity classes')
+			 ->addArgument('dest-path', InputArgument::OPTIONAL, 'The path to generate your proxy classes. If none is provided, it will attempt to grab from configuration.')
+			 ->addOption('em', null, InputOption::VALUE_REQUIRED, 'Name of the entity manager to operate on')
+			 ->addOption('filter', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'A string pattern used to match entities that should be processed.')
+			 ->setHelp('Generates proxy classes for entity classes.');
+	}
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $ui = (new SymfonyStyle($input, $output))->getErrorStyle();
+	protected function execute(InputInterface $input, OutputInterface $output): int
+	{
+		$ui = (new SymfonyStyle($input, $output))->getErrorStyle();
 
-        $em = $this->getEntityManager($input);
+		$em = $this->getEntityManager($input);
 
-        $metadatas = $em->getMetadataFactory()->getAllMetadata();
-        $metadatas = MetadataFilter::filter($metadatas, $input->getOption('filter'));
+		$metadatas = $em->getMetadataFactory()->getAllMetadata();
+		$metadatas = MetadataFilter::filter($metadatas, $input->getOption('filter'));
 
-        // Process destination directory
-        $destPath = $input->getArgument('dest-path');
-        if ($destPath === null) {
-            $destPath = $em->getConfiguration()->getProxyDir();
+		// Process destination directory
+		$destPath = $input->getArgument('dest-path');
+		if ($destPath === null) {
+			$destPath = $em->getConfiguration()->getProxyDir();
 
-            if ($destPath === null) {
-                throw new InvalidArgumentException('Proxy directory cannot be null');
-            }
-        }
+			if ($destPath === null) {
+				throw new InvalidArgumentException('Proxy directory cannot be null');
+			}
+		}
 
-        if (! is_dir($destPath)) {
-            mkdir($destPath, 0775, true);
-        }
+		if (! is_dir($destPath)) {
+			mkdir($destPath, 0775, true);
+		}
 
-        $destPath = realpath($destPath);
+		$destPath = realpath($destPath);
 
-        if (! file_exists($destPath)) {
-            throw new InvalidArgumentException(
-                sprintf("Proxies destination directory '<info>%s</info>' does not exist.", $em->getConfiguration()->getProxyDir()),
-            );
-        }
+		if (! file_exists($destPath)) {
+			throw new InvalidArgumentException(
+				sprintf("Proxies destination directory '<info>%s</info>' does not exist.", $em->getConfiguration()->getProxyDir()),
+			);
+		}
 
-        if (! is_writable($destPath)) {
-            throw new InvalidArgumentException(
-                sprintf("Proxies destination directory '<info>%s</info>' does not have write permissions.", $destPath),
-            );
-        }
+		if (! is_writable($destPath)) {
+			throw new InvalidArgumentException(
+				sprintf("Proxies destination directory '<info>%s</info>' does not have write permissions.", $destPath),
+			);
+		}
 
-        if (empty($metadatas)) {
-            $ui->success('No Metadata Classes to process.');
+		if (empty($metadatas)) {
+			$ui->success('No Metadata Classes to process.');
 
-            return 0;
-        }
+			return 0;
+		}
 
-        foreach ($metadatas as $metadata) {
-            $ui->text(sprintf('Processing entity "<info>%s</info>"', $metadata->name));
-        }
+		foreach ($metadatas as $metadata) {
+			$ui->text(sprintf('Processing entity "<info>%s</info>"', $metadata->name));
+		}
 
-        // Generating Proxies
-        $em->getProxyFactory()->generateProxyClasses($metadatas, $destPath);
+		// Generating Proxies
+		$em->getProxyFactory()->generateProxyClasses($metadatas, $destPath);
 
-        // Outputting information message
-        $ui->newLine();
-        $ui->text(sprintf('Proxy classes generated to "<info>%s</info>"', $destPath));
+		// Outputting information message
+		$ui->newLine();
+		$ui->text(sprintf('Proxy classes generated to "<info>%s</info>"', $destPath));
 
-        return 0;
-    }
+		return 0;
+	}
 }

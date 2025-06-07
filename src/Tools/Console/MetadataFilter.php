@@ -23,70 +23,70 @@ use function sprintf;
  */
 class MetadataFilter extends FilterIterator implements Countable
 {
-    /** @var mixed[] */
-    private array $filter = [];
+	/** @var mixed[] */
+	private array $filter = [];
 
-    /**
-     * Filter Metadatas by one or more filter options.
-     *
-     * @param ClassMetadata[] $metadatas
-     * @param string[]|string $filter
-     *
-     * @return ClassMetadata[]
-     */
-    public static function filter(array $metadatas, array|string $filter): array
-    {
-        $metadatas = new MetadataFilter(new ArrayIterator($metadatas), $filter);
+	/**
+	 * Filter Metadatas by one or more filter options.
+	 *
+	 * @param ClassMetadata[] $metadatas
+	 * @param string[]|string $filter
+	 *
+	 * @return ClassMetadata[]
+	 */
+	public static function filter(array $metadatas, array|string $filter): array
+	{
+		$metadatas = new MetadataFilter(new ArrayIterator($metadatas), $filter);
 
-        return iterator_to_array($metadatas);
-    }
+		return iterator_to_array($metadatas);
+	}
 
-    /** @param mixed[]|string $filter */
-    public function __construct(ArrayIterator $metadata, array|string $filter)
-    {
-        $this->filter = (array) $filter;
+	/** @param mixed[]|string $filter */
+	public function __construct(ArrayIterator $metadata, array|string $filter)
+	{
+		$this->filter = (array) $filter;
 
-        parent::__construct($metadata);
-    }
+		parent::__construct($metadata);
+	}
 
-    public function accept(): bool
-    {
-        if (count($this->filter) === 0) {
-            return true;
-        }
+	public function accept(): bool
+	{
+		if (count($this->filter) === 0) {
+			return true;
+		}
 
-        $it       = $this->getInnerIterator();
-        $metadata = $it->current();
+		$it       = $this->getInnerIterator();
+		$metadata = $it->current();
 
-        foreach ($this->filter as $filter) {
-            $pregResult = preg_match('/' . $filter . '/', $metadata->getName());
+		foreach ($this->filter as $filter) {
+			$pregResult = preg_match('/' . $filter . '/', $metadata->getName());
 
-            if ($pregResult === false) {
-                throw new RuntimeException(
-                    sprintf("Error while evaluating regex '/%s/'.", $filter),
-                );
-            }
+			if ($pregResult === false) {
+				throw new RuntimeException(
+					sprintf("Error while evaluating regex '/%s/'.", $filter),
+				);
+			}
 
-            if ($pregResult) {
-                return true;
-            }
-        }
+			if ($pregResult) {
+				return true;
+			}
+		}
 
-        return false;
-    }
+		return false;
+	}
 
-    /** @return ArrayIterator<int, ClassMetadata> */
-    public function getInnerIterator(): ArrayIterator
-    {
-        $innerIterator = parent::getInnerIterator();
+	/** @return ArrayIterator<int, ClassMetadata> */
+	public function getInnerIterator(): ArrayIterator
+	{
+		$innerIterator = parent::getInnerIterator();
 
-        assert($innerIterator instanceof ArrayIterator);
+		assert($innerIterator instanceof ArrayIterator);
 
-        return $innerIterator;
-    }
+		return $innerIterator;
+	}
 
-    public function count(): int
-    {
-        return count($this->getInnerIterator());
-    }
+	public function count(): int
+	{
+		return count($this->getInnerIterator());
+	}
 }

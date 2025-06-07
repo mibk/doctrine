@@ -35,160 +35,160 @@ use const LOCK_EX;
  */
 class FileLockRegion implements ConcurrentRegion
 {
-    final public const LOCK_EXTENSION = 'lock';
+	final public const LOCK_EXTENSION = 'lock';
 
-    /**
-     * @param numeric-string|int $lockLifetime
-     *
-     * @throws InvalidArgumentException
-     */
-    public function __construct(
-        private readonly Region $region,
-        private readonly string $directory,
-        private readonly string|int $lockLifetime,
-    ) {
-        if (! is_dir($directory) && ! @mkdir($directory, 0775, true)) {
-            throw new InvalidArgumentException(sprintf('The directory "%s" does not exist and could not be created.', $directory));
-        }
+	/**
+	 * @param numeric-string|int $lockLifetime
+	 *
+	 * @throws InvalidArgumentException
+	 */
+	public function __construct(
+		private readonly Region $region,
+		private readonly string $directory,
+		private readonly string|int $lockLifetime,
+	) {
+		if (! is_dir($directory) && ! @mkdir($directory, 0775, true)) {
+			throw new InvalidArgumentException(sprintf('The directory "%s" does not exist and could not be created.', $directory));
+		}
 
-        if (! is_writable($directory)) {
-            throw new InvalidArgumentException(sprintf('The directory "%s" is not writable.', $directory));
-        }
-    }
+		if (! is_writable($directory)) {
+			throw new InvalidArgumentException(sprintf('The directory "%s" is not writable.', $directory));
+		}
+	}
 
-    private function isLocked(CacheKey $key, Lock|null $lock = null): bool
-    {
-        $filename = $this->getLockFileName($key);
+	private function isLocked(CacheKey $key, Lock|null $lock = null): bool
+	{
+		$filename = $this->getLockFileName($key);
 
-        if (! is_file($filename)) {
-            return false;
-        }
+		if (! is_file($filename)) {
+			return false;
+		}
 
-        $time    = $this->getLockTime($filename);
-        $content = $this->getLockContent($filename);
+		$time    = $this->getLockTime($filename);
+		$content = $this->getLockContent($filename);
 
-        if ($content === false || $time === false) {
-            @unlink($filename);
+		if ($content === false || $time === false) {
+			@unlink($filename);
 
-            return false;
-        }
+			return false;
+		}
 
-        if ($lock && $content === $lock->value) {
-            return false;
-        }
+		if ($lock && $content === $lock->value) {
+			return false;
+		}
 
-        // outdated lock
-        if ($time + $this->lockLifetime <= time()) {
-            @unlink($filename);
+		// outdated lock
+		if ($time + $this->lockLifetime <= time()) {
+			@unlink($filename);
 
-            return false;
-        }
+			return false;
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    private function getLockFileName(CacheKey $key): string
-    {
-        return $this->directory . DIRECTORY_SEPARATOR . $key->hash . '.' . self::LOCK_EXTENSION;
-    }
+	private function getLockFileName(CacheKey $key): string
+	{
+		return $this->directory . DIRECTORY_SEPARATOR . $key->hash . '.' . self::LOCK_EXTENSION;
+	}
 
-    private function getLockContent(string $filename): string|false
-    {
-        return @file_get_contents($filename);
-    }
+	private function getLockContent(string $filename): string|false
+	{
+		return @file_get_contents($filename);
+	}
 
-    private function getLockTime(string $filename): int|false
-    {
-        return @fileatime($filename);
-    }
+	private function getLockTime(string $filename): int|false
+	{
+		return @fileatime($filename);
+	}
 
-    public function getName(): string
-    {
-        return $this->region->getName();
-    }
+	public function getName(): string
+	{
+		return $this->region->getName();
+	}
 
-    public function contains(CacheKey $key): bool
-    {
-        if ($this->isLocked($key)) {
-            return false;
-        }
+	public function contains(CacheKey $key): bool
+	{
+		if ($this->isLocked($key)) {
+			return false;
+		}
 
-        return $this->region->contains($key);
-    }
+		return $this->region->contains($key);
+	}
 
-    public function get(CacheKey $key): CacheEntry|null
-    {
-        if ($this->isLocked($key)) {
-            return null;
-        }
+	public function get(CacheKey $key): CacheEntry|null
+	{
+		if ($this->isLocked($key)) {
+			return null;
+		}
 
-        return $this->region->get($key);
-    }
+		return $this->region->get($key);
+	}
 
-    public function getMultiple(CollectionCacheEntry $collection): array|null
-    {
-        if (array_filter(array_map($this->isLocked(...), $collection->identifiers))) {
-            return null;
-        }
+	public function getMultiple(CollectionCacheEntry $collection): array|null
+	{
+		if (array_filter(array_map($this->isLocked(...), $collection->identifiers))) {
+			return null;
+		}
 
-        return $this->region->getMultiple($collection);
-    }
+		return $this->region->getMultiple($collection);
+	}
 
-    public function put(CacheKey $key, CacheEntry $entry, Lock|null $lock = null): bool
-    {
-        if ($this->isLocked($key, $lock)) {
-            return false;
-        }
+	public function put(CacheKey $key, CacheEntry $entry, Lock|null $lock = null): bool
+	{
+		if ($this->isLocked($key, $lock)) {
+			return false;
+		}
 
-        return $this->region->put($key, $entry);
-    }
+		return $this->region->put($key, $entry);
+	}
 
-    public function evict(CacheKey $key): bool
-    {
-        if ($this->isLocked($key)) {
-            @unlink($this->getLockFileName($key));
-        }
+	public function evict(CacheKey $key): bool
+	{
+		if ($this->isLocked($key)) {
+			@unlink($this->getLockFileName($key));
+		}
 
-        return $this->region->evict($key);
-    }
+		return $this->region->evict($key);
+	}
 
-    public function evictAll(): bool
-    {
-        // The check below is necessary because on some platforms glob returns false
-        // when nothing matched (even though no errors occurred)
-        $filenames = glob(sprintf('%s/*.%s', $this->directory, self::LOCK_EXTENSION)) ?: [];
+	public function evictAll(): bool
+	{
+		// The check below is necessary because on some platforms glob returns false
+		// when nothing matched (even though no errors occurred)
+		$filenames = glob(sprintf('%s/*.%s', $this->directory, self::LOCK_EXTENSION)) ?: [];
 
-        foreach ($filenames as $filename) {
-            @unlink($filename);
-        }
+		foreach ($filenames as $filename) {
+			@unlink($filename);
+		}
 
-        return $this->region->evictAll();
-    }
+		return $this->region->evictAll();
+	}
 
-    public function lock(CacheKey $key): Lock|null
-    {
-        if ($this->isLocked($key)) {
-            return null;
-        }
+	public function lock(CacheKey $key): Lock|null
+	{
+		if ($this->isLocked($key)) {
+			return null;
+		}
 
-        $lock     = Lock::createLockRead();
-        $filename = $this->getLockFileName($key);
+		$lock     = Lock::createLockRead();
+		$filename = $this->getLockFileName($key);
 
-        if (@file_put_contents($filename, $lock->value, LOCK_EX) === false) {
-            return null;
-        }
+		if (@file_put_contents($filename, $lock->value, LOCK_EX) === false) {
+			return null;
+		}
 
-        chmod($filename, 0664);
+		chmod($filename, 0664);
 
-        return $lock;
-    }
+		return $lock;
+	}
 
-    public function unlock(CacheKey $key, Lock $lock): bool
-    {
-        if ($this->isLocked($key, $lock)) {
-            return false;
-        }
+	public function unlock(CacheKey $key, Lock $lock): bool
+	{
+		if ($this->isLocked($key, $lock)) {
+			return false;
+		}
 
-        return @unlink($this->getLockFileName($key));
-    }
+		return @unlink($this->getLockFileName($key));
+	}
 }

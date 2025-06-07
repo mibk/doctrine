@@ -13,12 +13,12 @@ use Doctrine\ORM\Query\SqlWalker;
  */
 class NullIfExpression extends Node
 {
-    public function __construct(public mixed $firstExpression, public mixed $secondExpression)
-    {
-    }
+	public function __construct(public mixed $firstExpression, public mixed $secondExpression)
+	{
+	}
 
-    public function dispatch(SqlWalker $walker): string
-    {
-        return $walker->walkNullIfExpression($this);
-    }
+	public function dispatch(SqlWalker $walker): string
+	{
+		return $walker->walkNullIfExpression($this);
+	}
 }

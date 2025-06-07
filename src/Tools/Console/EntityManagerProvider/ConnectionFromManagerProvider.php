@@ -10,17 +10,17 @@ use Doctrine\ORM\Tools\Console\EntityManagerProvider;
 
 final class ConnectionFromManagerProvider implements ConnectionProvider
 {
-    public function __construct(private readonly EntityManagerProvider $entityManagerProvider)
-    {
-    }
+	public function __construct(private readonly EntityManagerProvider $entityManagerProvider)
+	{
+	}
 
-    public function getDefaultConnection(): Connection
-    {
-        return $this->entityManagerProvider->getDefaultManager()->getConnection();
-    }
+	public function getDefaultConnection(): Connection
+	{
+		return $this->entityManagerProvider->getDefaultManager()->getConnection();
+	}
 
-    public function getConnection(string $name): Connection
-    {
-        return $this->entityManagerProvider->getManager($name)->getConnection();
-    }
+	public function getConnection(string $name): Connection
+	{
+		return $this->entityManagerProvider->getManager($name)->getConnection();
+	}
 }

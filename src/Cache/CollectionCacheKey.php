@@ -14,29 +14,29 @@ use function strtolower;
  */
 class CollectionCacheKey extends CacheKey
 {
-    /**
-     * The owner entity identifier
-     *
-     * @var array<string, mixed>
-     */
-    public readonly array $ownerIdentifier;
+	/**
+	 * The owner entity identifier
+	 *
+	 * @var array<string, mixed>
+	 */
+	public readonly array $ownerIdentifier;
 
-    /**
-     * @param class-string         $entityClass     The owner entity class.
-     * @param array<string, mixed> $ownerIdentifier The identifier of the owning entity.
-     */
-    public function __construct(
-        public readonly string $entityClass,
-        public readonly string $association,
-        array $ownerIdentifier,
-        string $filterHash = '',
-    ) {
-        ksort($ownerIdentifier);
+	/**
+	 * @param class-string         $entityClass     The owner entity class.
+	 * @param array<string, mixed> $ownerIdentifier The identifier of the owning entity.
+	 */
+	public function __construct(
+		public readonly string $entityClass,
+		public readonly string $association,
+		array $ownerIdentifier,
+		string $filterHash = '',
+	) {
+		ksort($ownerIdentifier);
 
-        $this->ownerIdentifier = $ownerIdentifier;
+		$this->ownerIdentifier = $ownerIdentifier;
 
-        $filterHash = $filterHash === '' ? '' : '_' . $filterHash;
+		$filterHash = $filterHash === '' ? '' : '_' . $filterHash;
 
-        parent::__construct(str_replace('\\', '.', strtolower($entityClass)) . '_' . implode(' ', $ownerIdentifier) . '__' . $association . $filterHash);
-    }
+		parent::__construct(str_replace('\\', '.', strtolower($entityClass)) . '_' . implode(' ', $ownerIdentifier) . '__' . $association . $filterHash);
+	}
 }

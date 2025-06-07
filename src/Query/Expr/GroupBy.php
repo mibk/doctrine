@@ -11,15 +11,15 @@ namespace Doctrine\ORM\Query\Expr;
  */
 class GroupBy extends Base
 {
-    protected string $preSeparator  = '';
-    protected string $postSeparator = '';
+	protected string $preSeparator  = '';
+	protected string $postSeparator = '';
 
-    /** @phpstan-var list<string> */
-    protected array $parts = [];
+	/** @phpstan-var list<string> */
+	protected array $parts = [];
 
-    /** @phpstan-return list<string> */
-    public function getParts(): array
-    {
-        return $this->parts;
-    }
+	/** @phpstan-return list<string> */
+	public function getParts(): array
+	{
+		return $this->parts;
+	}
 }

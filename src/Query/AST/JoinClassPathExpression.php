@@ -13,14 +13,14 @@ use Doctrine\ORM\Query\SqlWalker;
  */
 class JoinClassPathExpression extends Node
 {
-    public function __construct(
-        public mixed $abstractSchemaName,
-        public mixed $aliasIdentificationVariable,
-    ) {
-    }
+	public function __construct(
+		public mixed $abstractSchemaName,
+		public mixed $aliasIdentificationVariable,
+	) {
+	}
 
-    public function dispatch(SqlWalker $walker): string
-    {
-        return $walker->walkJoinPathExpression($this);
-    }
+	public function dispatch(SqlWalker $walker): string
+	{
+		return $walker->walkJoinPathExpression($this);
+	}
 }

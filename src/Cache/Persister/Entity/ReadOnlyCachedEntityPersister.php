@@ -12,8 +12,8 @@ use Doctrine\ORM\Proxy\DefaultProxyClassNameResolver;
  */
 class ReadOnlyCachedEntityPersister extends NonStrictReadWriteCachedEntityPersister
 {
-    public function update(object $entity): void
-    {
-        throw CannotUpdateReadOnlyEntity::fromEntity(DefaultProxyClassNameResolver::getClass($entity));
-    }
+	public function update(object $entity): void
+	{
+		throw CannotUpdateReadOnlyEntity::fromEntity(DefaultProxyClassNameResolver::getClass($entity));
+	}
 }

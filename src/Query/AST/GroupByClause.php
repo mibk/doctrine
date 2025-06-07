@@ -8,13 +8,13 @@ use Doctrine\ORM\Query\SqlWalker;
 
 class GroupByClause extends Node
 {
-    /** @param mixed[] $groupByItems */
-    public function __construct(public array $groupByItems)
-    {
-    }
+	/** @param mixed[] $groupByItems */
+	public function __construct(public array $groupByItems)
+	{
+	}
 
-    public function dispatch(SqlWalker $walker): string
-    {
-        return $walker->walkGroupByClause($this);
-    }
+	public function dispatch(SqlWalker $walker): string
+	{
+		return $walker->walkGroupByClause($this);
+	}
 }

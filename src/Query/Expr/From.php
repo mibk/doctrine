@@ -13,36 +13,36 @@ use Stringable;
  */
 class From implements Stringable
 {
-    /**
-     * @param class-string $from  The class name.
-     * @param string       $alias The alias of the class.
-     */
-    public function __construct(
-        protected string $from,
-        protected string $alias,
-        protected string|null $indexBy = null,
-    ) {
-    }
+	/**
+	 * @param class-string $from  The class name.
+	 * @param string       $alias The alias of the class.
+	 */
+	public function __construct(
+		protected string $from,
+		protected string $alias,
+		protected string|null $indexBy = null,
+	) {
+	}
 
-    /** @return class-string */
-    public function getFrom(): string
-    {
-        return $this->from;
-    }
+	/** @return class-string */
+	public function getFrom(): string
+	{
+		return $this->from;
+	}
 
-    public function getAlias(): string
-    {
-        return $this->alias;
-    }
+	public function getAlias(): string
+	{
+		return $this->alias;
+	}
 
-    public function getIndexBy(): string|null
-    {
-        return $this->indexBy;
-    }
+	public function getIndexBy(): string|null
+	{
+		return $this->indexBy;
+	}
 
-    public function __toString(): string
-    {
-        return $this->from . ' ' . $this->alias .
-                ($this->indexBy ? ' INDEX BY ' . $this->indexBy : '');
-    }
+	public function __toString(): string
+	{
+		return $this->from . ' ' . $this->alias .
+				($this->indexBy ? ' INDEX BY ' . $this->indexBy : '');
+	}
 }

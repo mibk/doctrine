@@ -18,13 +18,13 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 class ResultCommand extends AbstractEntityManagerCommand
 {
-    protected function configure(): void
-    {
-        $this->setName('orm:clear-cache:result')
-             ->setDescription('Clear all result cache of the various cache drivers')
-             ->addOption('em', null, InputOption::VALUE_REQUIRED, 'Name of the entity manager to operate on')
-             ->addOption('flush', null, InputOption::VALUE_NONE, 'If defined, cache entries will be flushed instead of deleted/invalidated.')
-             ->setHelp(<<<'EOT'
+	protected function configure(): void
+	{
+		$this->setName('orm:clear-cache:result')
+			 ->setDescription('Clear all result cache of the various cache drivers')
+			 ->addOption('em', null, InputOption::VALUE_REQUIRED, 'Name of the entity manager to operate on')
+			 ->addOption('flush', null, InputOption::VALUE_NONE, 'If defined, cache entries will be flushed instead of deleted/invalidated.')
+			 ->setHelp(<<<'EOT'
 The <info>%command.name%</info> command is meant to clear the result cache of associated Entity Manager.
 It is possible to invalidate all cache entries at once - called delete -, or flushes the cache provider
 instance completely.
@@ -41,25 +41,25 @@ Alternatively, if you want to flush the cache provider using this command:
 Finally, be aware that if <info>--flush</info> option is passed, not all cache providers are able to flush entries,
 because of a limitation of its execution nature.
 EOT);
-    }
+	}
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $ui = (new SymfonyStyle($input, $output))->getErrorStyle();
+	protected function execute(InputInterface $input, OutputInterface $output): int
+	{
+		$ui = (new SymfonyStyle($input, $output))->getErrorStyle();
 
-        $em    = $this->getEntityManager($input);
-        $cache = $em->getConfiguration()->getResultCache();
+		$em    = $this->getEntityManager($input);
+		$cache = $em->getConfiguration()->getResultCache();
 
-        if (! $cache) {
-            throw new InvalidArgumentException('No Result cache driver is configured on given EntityManager.');
-        }
+		if (! $cache) {
+			throw new InvalidArgumentException('No Result cache driver is configured on given EntityManager.');
+		}
 
-        $ui->comment('Clearing <info>all</info> Result cache entries');
+		$ui->comment('Clearing <info>all</info> Result cache entries');
 
-        $message = $cache->clear() ? 'Successfully deleted cache entries.' : 'No cache entries were deleted.';
+		$message = $cache->clear() ? 'Successfully deleted cache entries.' : 'No cache entries were deleted.';
 
-        $ui->success($message);
+		$ui->success($message);
 
-        return 0;
-    }
+		return 0;
+	}
 }

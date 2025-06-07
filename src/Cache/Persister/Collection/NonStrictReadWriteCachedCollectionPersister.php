@@ -11,64 +11,64 @@ use function spl_object_id;
 
 class NonStrictReadWriteCachedCollectionPersister extends AbstractCollectionPersister
 {
-    public function afterTransactionComplete(): void
-    {
-        if (isset($this->queuedCache['update'])) {
-            foreach ($this->queuedCache['update'] as $item) {
-                $this->storeCollectionCache($item['key'], $item['list']);
-            }
-        }
+	public function afterTransactionComplete(): void
+	{
+		if (isset($this->queuedCache['update'])) {
+			foreach ($this->queuedCache['update'] as $item) {
+				$this->storeCollectionCache($item['key'], $item['list']);
+			}
+		}
 
-        if (isset($this->queuedCache['delete'])) {
-            foreach ($this->queuedCache['delete'] as $key) {
-                $this->region->evict($key);
-            }
-        }
+		if (isset($this->queuedCache['delete'])) {
+			foreach ($this->queuedCache['delete'] as $key) {
+				$this->region->evict($key);
+			}
+		}
 
-        $this->queuedCache = [];
-    }
+		$this->queuedCache = [];
+	}
 
-    public function afterTransactionRolledBack(): void
-    {
-        $this->queuedCache = [];
-    }
+	public function afterTransactionRolledBack(): void
+	{
+		$this->queuedCache = [];
+	}
 
-    public function delete(PersistentCollection $collection): void
-    {
-        $ownerId = $this->uow->getEntityIdentifier($collection->getOwner());
-        $key     = new CollectionCacheKey($this->sourceEntity->rootEntityName, $this->association->fieldName, $ownerId, $this->filters->getHash());
+	public function delete(PersistentCollection $collection): void
+	{
+		$ownerId = $this->uow->getEntityIdentifier($collection->getOwner());
+		$key     = new CollectionCacheKey($this->sourceEntity->rootEntityName, $this->association->fieldName, $ownerId, $this->filters->getHash());
 
-        $this->persister->delete($collection);
+		$this->persister->delete($collection);
 
-        $this->queuedCache['delete'][spl_object_id($collection)] = $key;
-    }
+		$this->queuedCache['delete'][spl_object_id($collection)] = $key;
+	}
 
-    public function update(PersistentCollection $collection): void
-    {
-        $isInitialized = $collection->isInitialized();
-        $isDirty       = $collection->isDirty();
+	public function update(PersistentCollection $collection): void
+	{
+		$isInitialized = $collection->isInitialized();
+		$isDirty       = $collection->isDirty();
 
-        if (! $isInitialized && ! $isDirty) {
-            return;
-        }
+		if (! $isInitialized && ! $isDirty) {
+			return;
+		}
 
-        $ownerId = $this->uow->getEntityIdentifier($collection->getOwner());
-        $key     = new CollectionCacheKey($this->sourceEntity->rootEntityName, $this->association->fieldName, $ownerId, $this->filters->getHash());
+		$ownerId = $this->uow->getEntityIdentifier($collection->getOwner());
+		$key     = new CollectionCacheKey($this->sourceEntity->rootEntityName, $this->association->fieldName, $ownerId, $this->filters->getHash());
 
-       // Invalidate non initialized collections OR ordered collection
-        if ($isDirty && ! $isInitialized || $this->association->isOrdered()) {
-            $this->persister->update($collection);
+	   // Invalidate non initialized collections OR ordered collection
+		if ($isDirty && ! $isInitialized || $this->association->isOrdered()) {
+			$this->persister->update($collection);
 
-            $this->queuedCache['delete'][spl_object_id($collection)] = $key;
+			$this->queuedCache['delete'][spl_object_id($collection)] = $key;
 
-            return;
-        }
+			return;
+		}
 
-        $this->persister->update($collection);
+		$this->persister->update($collection);
 
-        $this->queuedCache['update'][spl_object_id($collection)] = [
-            'key'   => $key,
-            'list'  => $collection,
-        ];
-    }
+		$this->queuedCache['update'][spl_object_id($collection)] = [
+			'key'   => $key,
+			'list'  => $collection,
+		];
+	}
 }

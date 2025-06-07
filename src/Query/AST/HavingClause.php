@@ -8,12 +8,12 @@ use Doctrine\ORM\Query\SqlWalker;
 
 class HavingClause extends Node
 {
-    public function __construct(public ConditionalExpression|Phase2OptimizableConditional $conditionalExpression)
-    {
-    }
+	public function __construct(public ConditionalExpression|Phase2OptimizableConditional $conditionalExpression)
+	{
+	}
 
-    public function dispatch(SqlWalker $walker): string
-    {
-        return $walker->walkHavingClause($this);
-    }
+	public function dispatch(SqlWalker $walker): string
+	{
+		return $walker->walkHavingClause($this);
+	}
 }

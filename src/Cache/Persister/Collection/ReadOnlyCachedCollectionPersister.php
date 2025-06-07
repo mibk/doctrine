@@ -10,15 +10,15 @@ use Doctrine\ORM\Proxy\DefaultProxyClassNameResolver;
 
 class ReadOnlyCachedCollectionPersister extends NonStrictReadWriteCachedCollectionPersister
 {
-    public function update(PersistentCollection $collection): void
-    {
-        if ($collection->isDirty() && $collection->getSnapshot()) {
-            throw CannotUpdateReadOnlyCollection::fromEntityAndField(
-                DefaultProxyClassNameResolver::getClass($collection->getOwner()),
-                $this->association->fieldName,
-            );
-        }
+	public function update(PersistentCollection $collection): void
+	{
+		if ($collection->isDirty() && $collection->getSnapshot()) {
+			throw CannotUpdateReadOnlyCollection::fromEntityAndField(
+				DefaultProxyClassNameResolver::getClass($collection->getOwner()),
+				$this->association->fieldName,
+			);
+		}
 
-        parent::update($collection);
-    }
+		parent::update($collection);
+	}
 }

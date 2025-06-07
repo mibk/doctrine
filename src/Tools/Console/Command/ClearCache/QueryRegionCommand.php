@@ -20,15 +20,15 @@ use function sprintf;
  */
 class QueryRegionCommand extends AbstractEntityManagerCommand
 {
-    protected function configure(): void
-    {
-        $this->setName('orm:clear-cache:region:query')
-             ->setDescription('Clear a second-level cache query region')
-             ->addArgument('region-name', InputArgument::OPTIONAL, 'The query region to clear.')
-             ->addOption('em', null, InputOption::VALUE_REQUIRED, 'Name of the entity manager to operate on')
-             ->addOption('all', null, InputOption::VALUE_NONE, 'If defined, all query regions will be deleted/invalidated.')
-             ->addOption('flush', null, InputOption::VALUE_NONE, 'If defined, all cache entries will be flushed.')
-             ->setHelp(<<<'EOT'
+	protected function configure(): void
+	{
+		$this->setName('orm:clear-cache:region:query')
+			 ->setDescription('Clear a second-level cache query region')
+			 ->addArgument('region-name', InputArgument::OPTIONAL, 'The query region to clear.')
+			 ->addOption('em', null, InputOption::VALUE_REQUIRED, 'Name of the entity manager to operate on')
+			 ->addOption('all', null, InputOption::VALUE_NONE, 'If defined, all query regions will be deleted/invalidated.')
+			 ->addOption('flush', null, InputOption::VALUE_NONE, 'If defined, all cache entries will be flushed.')
+			 ->setHelp(<<<'EOT'
 The <info>%command.name%</info> command is meant to clear a second-level cache query region for an associated Entity Manager.
 It is possible to delete/invalidate all query region, a specific query region or flushes the cache provider.
 
@@ -52,50 +52,50 @@ Alternatively, if you want to flush the configured cache provider use this comma
 Finally, be aware that if <info>--flush</info> option is passed,
 not all cache providers are able to flush entries, because of a limitation of its execution nature.
 EOT);
-    }
+	}
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $ui = (new SymfonyStyle($input, $output))->getErrorStyle();
+	protected function execute(InputInterface $input, OutputInterface $output): int
+	{
+		$ui = (new SymfonyStyle($input, $output))->getErrorStyle();
 
-        $em    = $this->getEntityManager($input);
-        $name  = $input->getArgument('region-name');
-        $cache = $em->getCache();
+		$em    = $this->getEntityManager($input);
+		$name  = $input->getArgument('region-name');
+		$cache = $em->getCache();
 
-        if ($name === null) {
-            $name = Cache::DEFAULT_QUERY_REGION_NAME;
-        }
+		if ($name === null) {
+			$name = Cache::DEFAULT_QUERY_REGION_NAME;
+		}
 
-        if (! $cache instanceof Cache) {
-            throw new InvalidArgumentException('No second-level cache is configured on the given EntityManager.');
-        }
+		if (! $cache instanceof Cache) {
+			throw new InvalidArgumentException('No second-level cache is configured on the given EntityManager.');
+		}
 
-        if ($input->getOption('flush')) {
-            $cache->getQueryCache($name)
-                ->getRegion()
-                ->evictAll();
+		if ($input->getOption('flush')) {
+			$cache->getQueryCache($name)
+				->getRegion()
+				->evictAll();
 
-            $ui->comment(
-                sprintf(
-                    'Flushing cache provider configured for second-level cache query region named <info>"%s"</info>',
-                    $name,
-                ),
-            );
+			$ui->comment(
+				sprintf(
+					'Flushing cache provider configured for second-level cache query region named <info>"%s"</info>',
+					$name,
+				),
+			);
 
-            return 0;
-        }
+			return 0;
+		}
 
-        if ($input->getOption('all')) {
-            $ui->comment('Clearing <info>all</info> second-level cache query regions');
+		if ($input->getOption('all')) {
+			$ui->comment('Clearing <info>all</info> second-level cache query regions');
 
-            $cache->evictQueryRegions();
+			$cache->evictQueryRegions();
 
-            return 0;
-        }
+			return 0;
+		}
 
-        $ui->comment(sprintf('Clearing second-level cache query region named <info>"%s"</info>', $name));
-        $cache->evictQueryRegion($name);
+		$ui->comment(sprintf('Clearing second-level cache query region named <info>"%s"</info>', $name));
+		$cache->evictQueryRegion($name);
 
-        return 0;
-    }
+		return 0;
+	}
 }

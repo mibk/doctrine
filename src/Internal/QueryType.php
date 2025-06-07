@@ -7,7 +7,7 @@ namespace Doctrine\ORM\Internal;
 /** @internal To be used inside the QueryBuilder only. */
 enum QueryType
 {
-    case Select;
-    case Delete;
-    case Update;
+	case Select;
+	case Delete;
+	case Update;
 }

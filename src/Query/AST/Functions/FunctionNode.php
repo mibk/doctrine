@@ -17,16 +17,16 @@ use Doctrine\ORM\Query\SqlWalker;
  */
 abstract class FunctionNode extends Node
 {
-    public function __construct(public string $name)
-    {
-    }
+	public function __construct(public string $name)
+	{
+	}
 
-    abstract public function getSql(SqlWalker $sqlWalker): string;
+	abstract public function getSql(SqlWalker $sqlWalker): string;
 
-    public function dispatch(SqlWalker $sqlWalker): string
-    {
-        return $sqlWalker->walkFunction($this);
-    }
+	public function dispatch(SqlWalker $sqlWalker): string
+	{
+		return $sqlWalker->walkFunction($this);
+	}
 
-    abstract public function parse(Parser $parser): void;
+	abstract public function parse(Parser $parser): void;
 }

@@ -13,15 +13,15 @@ use Doctrine\ORM\Query\SqlWalker;
  */
 class SelectClause extends Node
 {
-    /** @param mixed[] $selectExpressions */
-    public function __construct(
-        public array $selectExpressions,
-        public bool $isDistinct,
-    ) {
-    }
+	/** @param mixed[] $selectExpressions */
+	public function __construct(
+		public array $selectExpressions,
+		public bool $isDistinct,
+	) {
+	}
 
-    public function dispatch(SqlWalker $walker): string
-    {
-        return $walker->walkSelectClause($this);
-    }
+	public function dispatch(SqlWalker $walker): string
+	{
+		return $walker->walkSelectClause($this);
+	}
 }

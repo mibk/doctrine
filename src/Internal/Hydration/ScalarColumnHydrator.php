@@ -15,20 +15,20 @@ use function count;
  */
 final class ScalarColumnHydrator extends AbstractHydrator
 {
-    /**
-     * {@inheritDoc}
-     *
-     * @throws MultipleSelectorsFoundException
-     * @throws Exception
-     */
-    protected function hydrateAllData(): array
-    {
-        if (count($this->resultSetMapping()->fieldMappings) > 1) {
-            throw MultipleSelectorsFoundException::create($this->resultSetMapping()->fieldMappings);
-        }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @throws MultipleSelectorsFoundException
+	 * @throws Exception
+	 */
+	protected function hydrateAllData(): array
+	{
+		if (count($this->resultSetMapping()->fieldMappings) > 1) {
+			throw MultipleSelectorsFoundException::create($this->resultSetMapping()->fieldMappings);
+		}
 
-        $result = $this->statement()->fetchAllNumeric();
+		$result = $this->statement()->fetchAllNumeric();
 
-        return array_column($result, 0);
-    }
+		return array_column($result, 0);
+	}
 }

@@ -11,12 +11,12 @@ use Doctrine\ORM\Query\SqlWalker;
  */
 class ParenthesisExpression extends Node
 {
-    public function __construct(public Node $expression)
-    {
-    }
+	public function __construct(public Node $expression)
+	{
+	}
 
-    public function dispatch(SqlWalker $walker): string
-    {
-        return $walker->walkParenthesisExpression($this);
-    }
+	public function dispatch(SqlWalker $walker): string
+	{
+		return $walker->walkParenthesisExpression($this);
+	}
 }

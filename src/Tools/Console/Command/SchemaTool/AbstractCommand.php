@@ -17,23 +17,23 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 abstract class AbstractCommand extends AbstractEntityManagerCommand
 {
-    /** @param mixed[] $metadatas */
-    abstract protected function executeSchemaCommand(InputInterface $input, OutputInterface $output, SchemaTool $schemaTool, array $metadatas, SymfonyStyle $ui): int;
+	/** @param mixed[] $metadatas */
+	abstract protected function executeSchemaCommand(InputInterface $input, OutputInterface $output, SchemaTool $schemaTool, array $metadatas, SymfonyStyle $ui): int;
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $ui = new SymfonyStyle($input, $output);
+	protected function execute(InputInterface $input, OutputInterface $output): int
+	{
+		$ui = new SymfonyStyle($input, $output);
 
-        $em = $this->getEntityManager($input);
+		$em = $this->getEntityManager($input);
 
-        $metadatas = $em->getMetadataFactory()->getAllMetadata();
+		$metadatas = $em->getMetadataFactory()->getAllMetadata();
 
-        if (empty($metadatas)) {
-            $ui->getErrorStyle()->success('No Metadata Classes to process.');
+		if (empty($metadatas)) {
+			$ui->getErrorStyle()->success('No Metadata Classes to process.');
 
-            return 0;
-        }
+			return 0;
+		}
 
-        return $this->executeSchemaCommand($input, $output, new SchemaTool($em), $metadatas, $ui);
-    }
+		return $this->executeSchemaCommand($input, $output, new SchemaTool($em), $metadatas, $ui);
+	}
 }

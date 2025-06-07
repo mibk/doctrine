@@ -13,14 +13,14 @@ use Doctrine\ORM\Query\SqlWalker;
  */
 class IndexBy extends Node
 {
-    public function __construct(public PathExpression $singleValuedPathExpression)
-    {
-    }
+	public function __construct(public PathExpression $singleValuedPathExpression)
+	{
+	}
 
-    public function dispatch(SqlWalker $walker): string
-    {
-        $walker->walkIndexBy($this);
+	public function dispatch(SqlWalker $walker): string
+	{
+		$walker->walkIndexBy($this);
 
-        return '';
-    }
+		return '';
+	}
 }

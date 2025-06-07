@@ -11,19 +11,19 @@ use LogicException;
 
 class SqlOutputWalker extends SqlWalker implements OutputWalker
 {
-    public function getFinalizer(AST\DeleteStatement|AST\UpdateStatement|AST\SelectStatement $AST): SqlFinalizer
-    {
-        switch (true) {
-            case $AST instanceof AST\SelectStatement:
-                return new SingleSelectSqlFinalizer($this->createSqlForFinalizer($AST));
+	public function getFinalizer(AST\DeleteStatement|AST\UpdateStatement|AST\SelectStatement $AST): SqlFinalizer
+	{
+		switch (true) {
+			case $AST instanceof AST\SelectStatement:
+				return new SingleSelectSqlFinalizer($this->createSqlForFinalizer($AST));
 
-            case $AST instanceof AST\UpdateStatement:
-                return new PreparedExecutorFinalizer($this->createUpdateStatementExecutor($AST));
+			case $AST instanceof AST\UpdateStatement:
+				return new PreparedExecutorFinalizer($this->createUpdateStatementExecutor($AST));
 
-            case $AST instanceof AST\DeleteStatement:
-                return new PreparedExecutorFinalizer($this->createDeleteStatementExecutor($AST));
-        }
+			case $AST instanceof AST\DeleteStatement:
+				return new PreparedExecutorFinalizer($this->createDeleteStatementExecutor($AST));
+		}
 
-        throw new LogicException('Unexpected AST node type');
-    }
+		throw new LogicException('Unexpected AST node type');
+	}
 }

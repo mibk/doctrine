@@ -9,5 +9,5 @@ use Attribute;
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
 final class JoinColumn implements MappingAttribute
 {
-    use JoinColumnProperties;
+	use JoinColumnProperties;
 }

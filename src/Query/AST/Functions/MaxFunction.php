@@ -13,15 +13,15 @@ use Doctrine\ORM\Query\SqlWalker;
  */
 final class MaxFunction extends FunctionNode
 {
-    private AggregateExpression $aggregateExpression;
+	private AggregateExpression $aggregateExpression;
 
-    public function getSql(SqlWalker $sqlWalker): string
-    {
-        return $this->aggregateExpression->dispatch($sqlWalker);
-    }
+	public function getSql(SqlWalker $sqlWalker): string
+	{
+		return $this->aggregateExpression->dispatch($sqlWalker);
+	}
 
-    public function parse(Parser $parser): void
-    {
-        $this->aggregateExpression = $parser->AggregateExpression();
-    }
+	public function parse(Parser $parser): void
+	{
+		$this->aggregateExpression = $parser->AggregateExpression();
+	}
 }

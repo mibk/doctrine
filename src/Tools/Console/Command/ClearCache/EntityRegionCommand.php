@@ -20,16 +20,16 @@ use function sprintf;
  */
 class EntityRegionCommand extends AbstractEntityManagerCommand
 {
-    protected function configure(): void
-    {
-        $this->setName('orm:clear-cache:region:entity')
-             ->setDescription('Clear a second-level cache entity region')
-             ->addArgument('entity-class', InputArgument::OPTIONAL, 'The entity name.')
-             ->addArgument('entity-id', InputArgument::OPTIONAL, 'The entity identifier.')
-             ->addOption('em', null, InputOption::VALUE_REQUIRED, 'Name of the entity manager to operate on')
-             ->addOption('all', null, InputOption::VALUE_NONE, 'If defined, all entity regions will be deleted/invalidated.')
-             ->addOption('flush', null, InputOption::VALUE_NONE, 'If defined, all cache entries will be flushed.')
-             ->setHelp(<<<'EOT'
+	protected function configure(): void
+	{
+		$this->setName('orm:clear-cache:region:entity')
+			 ->setDescription('Clear a second-level cache entity region')
+			 ->addArgument('entity-class', InputArgument::OPTIONAL, 'The entity name.')
+			 ->addArgument('entity-id', InputArgument::OPTIONAL, 'The entity identifier.')
+			 ->addOption('em', null, InputOption::VALUE_REQUIRED, 'Name of the entity manager to operate on')
+			 ->addOption('all', null, InputOption::VALUE_NONE, 'If defined, all entity regions will be deleted/invalidated.')
+			 ->addOption('flush', null, InputOption::VALUE_NONE, 'If defined, all cache entries will be flushed.')
+			 ->setHelp(<<<'EOT'
 The <info>%command.name%</info> command is meant to clear a second-level cache entity region for an associated Entity Manager.
 It is possible to delete/invalidate all entity region, a specific entity region or flushes the cache provider.
 
@@ -53,58 +53,58 @@ Alternatively, if you want to flush the configured cache provider for an entity 
 Finally, be aware that if <info>--flush</info> option is passed,
 not all cache providers are able to flush entries, because of a limitation of its execution nature.
 EOT);
-    }
+	}
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $ui = (new SymfonyStyle($input, $output))->getErrorStyle();
+	protected function execute(InputInterface $input, OutputInterface $output): int
+	{
+		$ui = (new SymfonyStyle($input, $output))->getErrorStyle();
 
-        $em          = $this->getEntityManager($input);
-        $entityClass = $input->getArgument('entity-class');
-        $entityId    = $input->getArgument('entity-id');
-        $cache       = $em->getCache();
+		$em          = $this->getEntityManager($input);
+		$entityClass = $input->getArgument('entity-class');
+		$entityId    = $input->getArgument('entity-id');
+		$cache       = $em->getCache();
 
-        if (! $cache instanceof Cache) {
-            throw new InvalidArgumentException('No second-level cache is configured on the given EntityManager.');
-        }
+		if (! $cache instanceof Cache) {
+			throw new InvalidArgumentException('No second-level cache is configured on the given EntityManager.');
+		}
 
-        if (! $entityClass && ! $input->getOption('all')) {
-            throw new InvalidArgumentException('Invalid argument "--entity-class"');
-        }
+		if (! $entityClass && ! $input->getOption('all')) {
+			throw new InvalidArgumentException('Invalid argument "--entity-class"');
+		}
 
-        if ($input->getOption('flush')) {
-            $cache->getEntityCacheRegion($entityClass)
-                ->evictAll();
+		if ($input->getOption('flush')) {
+			$cache->getEntityCacheRegion($entityClass)
+				->evictAll();
 
-            $ui->comment(sprintf('Flushing cache provider configured for entity named <info>"%s"</info>', $entityClass));
+			$ui->comment(sprintf('Flushing cache provider configured for entity named <info>"%s"</info>', $entityClass));
 
-            return 0;
-        }
+			return 0;
+		}
 
-        if ($input->getOption('all')) {
-            $ui->comment('Clearing <info>all</info> second-level cache entity regions');
+		if ($input->getOption('all')) {
+			$ui->comment('Clearing <info>all</info> second-level cache entity regions');
 
-            $cache->evictEntityRegions();
+			$cache->evictEntityRegions();
 
-            return 0;
-        }
+			return 0;
+		}
 
-        if ($entityId) {
-            $ui->comment(
-                sprintf(
-                    'Clearing second-level cache entry for entity <info>"%s"</info> identified by <info>"%s"</info>',
-                    $entityClass,
-                    $entityId,
-                ),
-            );
-            $cache->evictEntity($entityClass, $entityId);
+		if ($entityId) {
+			$ui->comment(
+				sprintf(
+					'Clearing second-level cache entry for entity <info>"%s"</info> identified by <info>"%s"</info>',
+					$entityClass,
+					$entityId,
+				),
+			);
+			$cache->evictEntity($entityClass, $entityId);
 
-            return 0;
-        }
+			return 0;
+		}
 
-        $ui->comment(sprintf('Clearing second-level cache for entity <info>"%s"</info>', $entityClass));
-        $cache->evictEntityRegion($entityClass);
+		$ui->comment(sprintf('Clearing second-level cache for entity <info>"%s"</info>', $entityClass));
+		$cache->evictEntityRegion($entityClass);
 
-        return 0;
-    }
+		return 0;
+	}
 }

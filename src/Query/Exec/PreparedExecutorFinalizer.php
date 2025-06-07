@@ -13,15 +13,15 @@ use Doctrine\ORM\Query;
  */
 final class PreparedExecutorFinalizer implements SqlFinalizer
 {
-    private AbstractSqlExecutor $executor;
+	private AbstractSqlExecutor $executor;
 
-    public function __construct(AbstractSqlExecutor $exeutor)
-    {
-        $this->executor = $exeutor;
-    }
+	public function __construct(AbstractSqlExecutor $exeutor)
+	{
+		$this->executor = $exeutor;
+	}
 
-    public function createExecutor(Query $query): AbstractSqlExecutor
-    {
-        return $this->executor;
-    }
+	public function createExecutor(Query $query): AbstractSqlExecutor
+	{
+		return $this->executor;
+	}
 }

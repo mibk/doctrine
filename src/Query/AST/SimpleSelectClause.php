@@ -13,14 +13,14 @@ use Doctrine\ORM\Query\SqlWalker;
  */
 class SimpleSelectClause extends Node
 {
-    public function __construct(
-        public SimpleSelectExpression $simpleSelectExpression,
-        public bool $isDistinct = false,
-    ) {
-    }
+	public function __construct(
+		public SimpleSelectExpression $simpleSelectExpression,
+		public bool $isDistinct = false,
+	) {
+	}
 
-    public function dispatch(SqlWalker $walker): string
-    {
-        return $walker->walkSimpleSelectClause($this);
-    }
+	public function dispatch(SqlWalker $walker): string
+	{
+		return $walker->walkSimpleSelectClause($this);
+	}
 }

@@ -18,35 +18,35 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 class MetadataCommand extends AbstractEntityManagerCommand
 {
-    protected function configure(): void
-    {
-        $this->setName('orm:clear-cache:metadata')
-             ->setDescription('Clear all metadata cache of the various cache drivers')
-             ->addOption('em', null, InputOption::VALUE_REQUIRED, 'Name of the entity manager to operate on')
-             ->addOption('flush', null, InputOption::VALUE_NONE, 'If defined, cache entries will be flushed instead of deleted/invalidated.')
-             ->setHelp(<<<'EOT'
+	protected function configure(): void
+	{
+		$this->setName('orm:clear-cache:metadata')
+			 ->setDescription('Clear all metadata cache of the various cache drivers')
+			 ->addOption('em', null, InputOption::VALUE_REQUIRED, 'Name of the entity manager to operate on')
+			 ->addOption('flush', null, InputOption::VALUE_NONE, 'If defined, cache entries will be flushed instead of deleted/invalidated.')
+			 ->setHelp(<<<'EOT'
 The <info>%command.name%</info> command is meant to clear the metadata cache of associated Entity Manager.
 EOT);
-    }
+	}
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $ui = (new SymfonyStyle($input, $output))->getErrorStyle();
+	protected function execute(InputInterface $input, OutputInterface $output): int
+	{
+		$ui = (new SymfonyStyle($input, $output))->getErrorStyle();
 
-        $em          = $this->getEntityManager($input);
-        $cacheDriver = $em->getConfiguration()->getMetadataCache();
+		$em          = $this->getEntityManager($input);
+		$cacheDriver = $em->getConfiguration()->getMetadataCache();
 
-        if (! $cacheDriver) {
-            throw new InvalidArgumentException('No Metadata cache driver is configured on given EntityManager.');
-        }
+		if (! $cacheDriver) {
+			throw new InvalidArgumentException('No Metadata cache driver is configured on given EntityManager.');
+		}
 
-        $ui->comment('Clearing <info>all</info> Metadata cache entries');
+		$ui->comment('Clearing <info>all</info> Metadata cache entries');
 
-        $result  = $cacheDriver->clear();
-        $message = $result ? 'Successfully deleted cache entries.' : 'No cache entries were deleted.';
+		$result  = $cacheDriver->clear();
+		$message = $result ? 'Successfully deleted cache entries.' : 'No cache entries were deleted.';
 
-        $ui->success($message);
+		$ui->success($message);
 
-        return 0;
-    }
+		return 0;
+	}
 }

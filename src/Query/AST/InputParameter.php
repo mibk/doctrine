@@ -13,23 +13,23 @@ use function substr;
 
 class InputParameter extends Node
 {
-    public bool $isNamed;
-    public string $name;
+	public bool $isNamed;
+	public string $name;
 
-    /** @throws QueryException */
-    public function __construct(string $value)
-    {
-        if (strlen($value) === 1) {
-            throw QueryException::invalidParameterFormat($value);
-        }
+	/** @throws QueryException */
+	public function __construct(string $value)
+	{
+		if (strlen($value) === 1) {
+			throw QueryException::invalidParameterFormat($value);
+		}
 
-        $param         = substr($value, 1);
-        $this->isNamed = ! is_numeric($param);
-        $this->name    = $param;
-    }
+		$param         = substr($value, 1);
+		$this->isNamed = ! is_numeric($param);
+		$this->name    = $param;
+	}
 
-    public function dispatch(SqlWalker $walker): string
-    {
-        return $walker->walkInputParameter($this);
-    }
+	public function dispatch(SqlWalker $walker): string
+	{
+		return $walker->walkInputParameter($this);
+	}
 }

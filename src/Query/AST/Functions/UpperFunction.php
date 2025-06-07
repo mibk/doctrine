@@ -18,23 +18,23 @@ use function sprintf;
  */
 class UpperFunction extends FunctionNode
 {
-    public Node $stringPrimary;
+	public Node $stringPrimary;
 
-    public function getSql(SqlWalker $sqlWalker): string
-    {
-        return sprintf(
-            'UPPER(%s)',
-            $sqlWalker->walkSimpleArithmeticExpression($this->stringPrimary),
-        );
-    }
+	public function getSql(SqlWalker $sqlWalker): string
+	{
+		return sprintf(
+			'UPPER(%s)',
+			$sqlWalker->walkSimpleArithmeticExpression($this->stringPrimary),
+		);
+	}
 
-    public function parse(Parser $parser): void
-    {
-        $parser->match(TokenType::T_IDENTIFIER);
-        $parser->match(TokenType::T_OPEN_PARENTHESIS);
+	public function parse(Parser $parser): void
+	{
+		$parser->match(TokenType::T_IDENTIFIER);
+		$parser->match(TokenType::T_OPEN_PARENTHESIS);
 
-        $this->stringPrimary = $parser->StringPrimary();
+		$this->stringPrimary = $parser->StringPrimary();
 
-        $parser->match(TokenType::T_CLOSE_PARENTHESIS);
-    }
+		$parser->match(TokenType::T_CLOSE_PARENTHESIS);
+	}
 }

@@ -13,22 +13,22 @@ use Doctrine\ORM\Query\SqlWalker;
  */
 class ArithmeticExpression extends Node
 {
-    public Node|string|null $simpleArithmeticExpression = null;
+	public Node|string|null $simpleArithmeticExpression = null;
 
-    public Subselect|null $subselect = null;
+	public Subselect|null $subselect = null;
 
-    public function isSimpleArithmeticExpression(): bool
-    {
-        return (bool) $this->simpleArithmeticExpression;
-    }
+	public function isSimpleArithmeticExpression(): bool
+	{
+		return (bool) $this->simpleArithmeticExpression;
+	}
 
-    public function isSubselect(): bool
-    {
-        return (bool) $this->subselect;
-    }
+	public function isSubselect(): bool
+	{
+		return (bool) $this->subselect;
+	}
 
-    public function dispatch(SqlWalker $walker): string
-    {
-        return $walker->walkArithmeticExpression($this);
-    }
+	public function dispatch(SqlWalker $walker): string
+	{
+		return $walker->walkArithmeticExpression($this);
+	}
 }
