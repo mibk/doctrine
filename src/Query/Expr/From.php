@@ -11,7 +11,7 @@ use Stringable;
  *
  * @link www.doctrine-project.org
  */
-class From implements Stringable
+class from implements Stringable
 {
 	/**
 	 * @param class-string $from  The class name.

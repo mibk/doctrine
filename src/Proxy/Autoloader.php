@@ -62,7 +62,9 @@ final class Autoloader
 	{
 		$proxyNamespace = ltrim($proxyNamespace, '\\');
 
-		$autoloader = /** @param class-string $className */ static function(string $className) use ($proxyDir, $proxyNamespace, $notFoundCallback): void {
+		$autoloader =
+			/** @param class-string $className */
+			static function(string $className) use ($proxyDir, $proxyNamespace, $notFoundCallback): void {
 			if ($proxyNamespace === '') {
 				return;
 			}

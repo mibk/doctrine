@@ -2524,7 +2524,7 @@ class UnitOfWork implements PropertyChangedListener
 					$normalizedAssociatedId = $this->normalizeIdentifier($targetClass, $associatedId);
 
 					switch (true) {
-						// We are negating the condition here. Other cases will assume it is valid!
+					// We are negating the condition here. Other cases will assume it is valid!
 					case $hints['fetchMode'][$class->name][$field] !== ClassMetadata::FETCH_EAGER:
 						$newValue = $this->em->getProxyFactory()->getProxy($assoc->targetEntity, $normalizedAssociatedId);
 						$this->registerManaged($newValue, $associatedId, []);

@@ -123,8 +123,8 @@ abstract class AssociationMapping implements ArrayAccess
 		unset($mappingArray['isOwningSide'], $mappingArray['type']);
 		$mapping = new static(
 			$mappingArray['fieldName'],
-				$mappingArray['sourceEntity'],
-				$mappingArray['targetEntity'],
+			$mappingArray['sourceEntity'],
+			$mappingArray['targetEntity'],
 		);
 		unset($mappingArray['fieldName'], $mappingArray['sourceEntity'], $mappingArray['targetEntity']);
 

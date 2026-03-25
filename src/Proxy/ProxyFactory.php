@@ -211,7 +211,7 @@ EOPHP;
 	/**
 	 * Creates a closure capable of initializing a proxy
 	 *
-	 * @return Closure (InternalProxy, array):void
+	 * @return Closure(InternalProxy, array): void
 	 *
 	 * @throws EntityNotFoundException
 	 */

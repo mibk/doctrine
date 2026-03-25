@@ -40,22 +40,22 @@ use function trim;
  * An LL(*) recursive-descent parser for the context-free grammar of the Doctrine Query Language.
  * Parses a DQL query, reports any errors in it, and generates an AST.
  *
- * @phpstan-type DqlToken = Token<TokenType, string>
- * @phpstan-type QueryComponent = array{
- *                 metadata?: ClassMetadata<object>,
- *                 parent?: string|null,
- *                 relation?: AssociationMapping|null,
- *                 map?: string|null,
- *                 resultVariable?: AST\Node|string,
- *                 nestingLevel: int,
- *                 token: DqlToken,
- *             }
+ * @phpstan-type DqlToken Token<TokenType, string>
+ * @phpstan-type QueryComponent array{
+ *     metadata?: ClassMetadata<object>,
+ *     parent?: string|null,
+ *     relation?: AssociationMapping|null,
+ *     map?: string|null,
+ *     resultVariable?: AST\Node|string,
+ *     nestingLevel: int,
+ *     token: DqlToken,
+ * }
  */
 final class Parser
 {
 	/**
 	 * @readonly Maps BUILT-IN string function names to AST class names.
-	 * @var array<string, class-string<Functions\FunctionNode>>
+	 * @var      array<string, class-string<Functions\FunctionNode>>
 	 */
 	private static array $stringFunctions = [
 		'concat'    => Functions\ConcatFunction::class,
@@ -68,7 +68,7 @@ final class Parser
 
 	/**
 	 * @readonly Maps BUILT-IN numeric function names to AST class names.
-	 * @var array<string, class-string<Functions\FunctionNode>>
+	 * @var      array<string, class-string<Functions\FunctionNode>>
 	 */
 	private static array $numericFunctions = [
 		'length'    => Functions\LengthFunction::class,
@@ -91,7 +91,7 @@ final class Parser
 
 	/**
 	 * @readonly Maps BUILT-IN datetime function names to AST class names.
-	 * @var array<string, class-string<Functions\FunctionNode>>
+	 * @var      array<string, class-string<Functions\FunctionNode>>
 	 */
 	private static array $datetimeFunctions = [
 		'current_date'      => Functions\CurrentDateFunction::class,
@@ -435,7 +435,7 @@ final class Parser
 	/**
 	 * Generates a new semantical error.
 	 *
-	 * @param string $message Optional message.
+	 * @param         string $message Optional message.
 	 * @phpstan-param DqlToken|null $token
 	 *
 	 * @throws QueryException

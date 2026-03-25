@@ -1616,7 +1616,7 @@ class SqlWalker
 			$sql .= $this->walkParenthesisExpression($expr);
 			break;
 
-		default: 			// IdentificationVariable
+		default: // IdentificationVariable
 			$sql .= $this->walkEntityIdentificationVariable($expr);
 			break;
 		}

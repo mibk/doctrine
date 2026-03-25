@@ -365,7 +365,7 @@ class QueryBuilder implements Stringable
 				$from = substr($fromClause, 0, $spacePos);
 				$alias = substr($fromClause, $spacePos + 1);
 
-				$fromClause = new Query\Expr\From ($from, $alias);
+				$fromClause = new Query\Expr\From($from, $alias);
 			}
 
 			$aliases[] = $fromClause->getAlias();
@@ -422,7 +422,7 @@ class QueryBuilder implements Stringable
 				$from = substr($fromClause, 0, $spacePos);
 				$alias = substr($fromClause, $spacePos + 1);
 
-				$fromClause = new Query\Expr\From ($from, $alias);
+				$fromClause = new Query\Expr\From($from, $alias);
 			}
 
 			$entities[] = $fromClause->getFrom();
@@ -717,7 +717,7 @@ class QueryBuilder implements Stringable
 			));
 		}
 
-		return $this->add('from', new Expr\From ($delete, $alias));
+		return $this->add('from', new Expr\From($delete, $alias));
 	}
 
 	/**
@@ -752,7 +752,7 @@ class QueryBuilder implements Stringable
 			));
 		}
 
-		return $this->add('from', new Expr\From ($update, $alias));
+		return $this->add('from', new Expr\From($update, $alias));
 	}
 
 	/**
@@ -773,7 +773,7 @@ class QueryBuilder implements Stringable
 	 */
 	public function from(string $from, string $alias, string|null $indexBy = null): static
 	{
-		return $this->add('from', new Expr\From ($from, $alias, $indexBy), true);
+		return $this->add('from', new Expr\From($from, $alias, $indexBy), true);
 	}
 
 	/**
@@ -812,7 +812,7 @@ class QueryBuilder implements Stringable
 				continue;
 			}
 
-			$fromClause = new Expr\From ($fromClause->getFrom(), $fromClause->getAlias(), $indexBy);
+			$fromClause = new Expr\From($fromClause->getFrom(), $fromClause->getAlias(), $indexBy);
 		}
 
 		return $this;

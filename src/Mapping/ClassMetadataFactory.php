@@ -72,12 +72,7 @@ class ClassMetadataFactory extends AbstractClassMetadataFactory
 	/**
 	 * @param A $maybeOwningSide
 	 *
-	 * @return (A is ManyToManyAssociationMapping ? ManyToManyOwningSideMapping : (
-	 *     A is OneToOneAssociationMapping ? OneToOneOwningSideMapping : (
-	 *     A is OneToManyAssociationMapping ? ManyToOneAssociationMapping : (
-	 *     A is ManyToOneAssociationMapping ? ManyToOneAssociationMapping :
-	 *     ManyToManyOwningSideMapping|OneToOneOwningSideMapping|ManyToOneAssociationMapping
-	 * ))))
+	 * @return (A is ManyToManyAssociationMapping ? ManyToManyOwningSideMapping : (A is OneToOneAssociationMapping ? OneToOneOwningSideMapping : (A is OneToManyAssociationMapping ? ManyToOneAssociationMapping : (A is ManyToOneAssociationMapping ? ManyToOneAssociationMapping : ManyToManyOwningSideMapping|OneToOneOwningSideMapping|ManyToOneAssociationMapping))))
 	 *
 	 * @template A of AssociationMapping
 	 */

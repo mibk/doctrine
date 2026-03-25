@@ -73,8 +73,8 @@ use const PHP_VERSION_ID;
  *    get the whole class name, namespace inclusive, prepended to every property in
  *    the serialized representation).
  *
- * @phpstan-type ConcreteAssociationMapping = OneToOneOwningSideMapping|OneToOneInverseSideMapping|ManyToOneAssociationMapping|OneToManyAssociationMapping|ManyToManyOwningSideMapping|ManyToManyInverseSideMapping
- * @template-covariant T of object
+ * @phpstan-type        ConcreteAssociationMapping OneToOneOwningSideMapping|OneToOneInverseSideMapping|ManyToOneAssociationMapping|OneToManyAssociationMapping|ManyToManyOwningSideMapping|ManyToManyInverseSideMapping
+ * @template-covariant  T of object
  * @template-implements PersistenceClassMetadata<T>
  */
 class ClassMetadata implements PersistenceClassMetadata, Stringable
@@ -255,7 +255,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	 * </code>
 	 *
 	 * @todo Merge with tableGeneratorDefinition into generic generatorDefinition
-	 * @var array<string, string>|null
+	 * @var  array<string, string>|null
 	 */
 	public array|null $customGeneratorDefinition = null;
 
@@ -407,7 +407,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	 * indexes => array
 	 * uniqueConstraints => array
 	 *
-	 * @var mixed[]
+	 * @var         mixed[]
 	 * @phpstan-var array{
 	 *               name: string,
 	 *               schema?: string,
@@ -488,9 +488,9 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	 * )
 	 * </code>
 	 *
-	 * @var array<string, mixed>|null
+	 * @var         array<string, mixed>|null
 	 * @phpstan-var array{sequenceName: string, allocationSize: string, initialValue: string, quoted?: mixed}|null
-	 * @todo Merge with tableGeneratorDefinition into generic generatorDefinition
+	 * @todo        Merge with tableGeneratorDefinition into generic generatorDefinition
 	 */
 	public array|null $sequenceGeneratorDefinition = null;
 
@@ -555,7 +555,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	 * Initializes a new ClassMetadata instance that will hold the object-relational mapping
 	 * metadata of the class with the given name.
 	 *
-	 * @param string $name The name of the entity class the new instance is used for.
+	 * @param         string $name The name of the entity class the new instance is used for.
 	 * @phpstan-param class-string<T> $name
 	 */
 	public function __construct(public string $name, NamingStrategy|null $namingStrategy = null, TypedFieldMapper|null $typedFieldMapper = null)
@@ -569,7 +569,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	/**
 	 * Gets the ReflectionProperties of the mapped class.
 	 *
-	 * @return ReflectionProperty[]|null[] An array of ReflectionProperty instances.
+	 * @return         ReflectionProperty[]|null[] An array of ReflectionProperty instances.
 	 * @phpstan-return array<ReflectionProperty|null>
 	 */
 	public function getReflectionProperties(): array
@@ -963,7 +963,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	/**
 	 * @phpstan-param array{usage?: int, region?: string|null} $cache
 	 *
-	 * @return int[]|string[]
+	 * @return         int[]|string[]
 	 * @phpstan-return array{usage: int, region: string|null}
 	 */
 	public function getAssociationCacheDefaults(string $fieldName, array $cache): array
@@ -1112,7 +1112,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	/**
 	 * Validates & completes the given field mapping based on typed property.
 	 *
-	 * @param  array{fieldName: string, type?: string} $mapping The field mapping to validate & complete.
+	 * @param array{fieldName: string, type?: string} $mapping The field mapping to validate & complete.
 	 *
 	 * @return array{fieldName: string, enumType?: class-string<BackedEnum>, type?: string} The updated mapping.
 	 */
@@ -1489,7 +1489,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	 *
 	 * @phpstan-param list<string>|null $fieldNames
 	 *
-	 * @return mixed[]
+	 * @return         mixed[]
 	 * @phpstan-return list<string>
 	 */
 	public function getColumnNames(array|null $fieldNames = null): array
@@ -2016,7 +2016,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	/**
 	 * Registers a custom repository class for the entity class.
 	 *
-	 * @param string|null $repositoryClassName The class name of the custom mapper.
+	 * @param         string|null $repositoryClassName The class name of the custom mapper.
 	 * @phpstan-param class-string<EntityRepository>|null $repositoryClassName
 	 */
 	public function setCustomRepositoryClass(string|null $repositoryClassName): void
@@ -2056,7 +2056,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	/**
 	 * Gets the registered lifecycle callbacks for an event.
 	 *
-	 * @return string[]
+	 * @return         string[]
 	 * @phpstan-return list<string>
 	 */
 	public function getLifecycleCallbacks(string $event): array
@@ -2129,7 +2129,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	 *
 	 * @see getDiscriminatorColumn()
 	 *
-	 * @param DiscriminatorColumnMapping|mixed[]|null $columnDef
+	 * @param         DiscriminatorColumnMapping|mixed[]|null $columnDef
 	 * @phpstan-param DiscriminatorColumnMapping|array{
 	 *     name: string|null,
 	 *     fieldName?: string|null,
@@ -2518,7 +2518,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 	/**
 	 * @param C $className
 	 *
-	 * @return string|null null if and only if the input value is null
+	 * @return         string|null null if and only if the input value is null
 	 * @phpstan-return (C is class-string ? class-string : (C is string ? string : null))
 	 *
 	 * @template C of string|null
